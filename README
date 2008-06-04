@@ -1,7 +1,6 @@
+Stylus 1.2.0, Biologic Institute
 
-Stylus 1.1.1, Biologic Institute
-http://www.biologicinstitute.org/research/stylus
-http://www.sourceforge.net/projects/biologicstylus
+http://biologicstylus.svn.sourceforge.net/svnroot/biologicstylus
 
 BUILDING STYLUS
 Stylus requires a few external libraries, the GNU C/C++ V4.x, and related tools such as libtool.
@@ -14,6 +13,12 @@ of the source directories. The build script picks up where bootstrap leaves off 
 create the binaries. Both scripts display help information when passed a -h(elp) or --h(elp)
 argument. Running the two scripts in sequence without any arguments will create a default build
 of Stylus.
+
+Test the build by executing the following command from the root of the Stylus directory:
+
+    ./stylus -e -r -- -g 52DC.gene -p simple.xml -u ./sample/,./sample/
+
+If all is working, this will generate data and reports under the sample directory.
 
 EXTERNAL REQUIREMENTS
 The following must be installed prior to building or running Stylus:
