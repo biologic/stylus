@@ -1,0 +1,195 @@
+#!/bin/bash
+#--------------------------------------------------------------------------------
+# Recognized arguments - these must precede all other arguments:
+#   r -- Select the local release version
+#   d -- Select the local debug version
+#   p -- Select the local profile version
+#
+# 	i -- Do not set argument environment variables
+# 
+#   l -- Select the local web server for genes and Han definitions
+#   t -- Select the local sample directory for genes and Han definitions
+#   x -- Select the xgrid configuration for genes and Han definitions
+# 
+# All other arguments are passed unmodified to the stgrid.py script
+#
+# The following variables will be set if not present in the local environment:
+# 
+# STYLUS_GRIDARGS  - The default grid argument string (command-line overrides duplicate arguments)
+# STYLUS_EXECARGS  - The default execution argument string (command-line overrides duplicate arguments)
+# STYLUS_RPTARGS   - The default report argument string (command-line overrides duplicate arguments)
+#
+# STYLUS_DATAPATH  - The default path for experiment data (to which non-absolute experiment names are appended)
+# STYLUS_RPTPATH   - The default path for reports (to which non-absolute experiment names are appended)
+#
+# STYLUS_GENOMEURL - The URL from which to obtain genome files
+# STYLUS_HANURL    - The URL from which to obtain Han definition files
+# STYLUS_HTMLURL   - The URL from which to obtain XHTML-related files (e.g., stylus.css)
+# STYLUS_PLANURL   - The URL from which to obtain plan files
+# STYLUS_SCHEMAURL - The URL from which to obtain XML schemas
+# 
+# STYLUS_AUTHOR    - Experiment author
+#
+# SYTLUS_XGRID_VOLUME	- The absolute root path for an Xgrid configuration
+# STYLUS_XGRID_EMAIL	- E-mail address to which to send job completion notification 
+# STYLUS_XGRID_SHELL	- Shell in which to spawn the Stylus command
+# 
+# XGRID_CONTROLLER_HOSTNAME - Xgrid to use (IP address or DNS name) (Apple defined variable)
+# XGRID_CONTROLLER_PASSWORD - Xgrid password to use (Apple defined variable)
+# 
+# The following variables are modified:
+# PYTHONPATH        - Path to Python modules
+# DYLD_LIBRARY_PATH - Mac OS X path to dynamically loaded libraries
+# LD_LIBRARY_PATH   - Linux path to dynamically loaded libraries
+# 
+# Stylus, Copyright 2006-2008 Biologic Institute
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#--------------------------------------------------------------------------------
+
+task=stylus
+version=release
+setenv=1
+config=
+
+# Parse incoming arguments
+until [ -z "$1" ]
+do
+  case $1 in
+	r ) version=release; shift;;
+	d ) version=debug; shift;;
+	p ) version=profile; shift;;
+	i ) setenv=0; shift;;
+	l ) config=local; shift;;
+	t ) config=test; shift;;
+	x ) config=xgrid; shift;;
+	* ) break;;
+  esac
+done
+
+# Obtain Stylus home directory (assumed to be location of this script)
+STYLUS_HOME="$PWD/`dirname $0`"			# Obtain current directory
+STYLUS_HOME=${STYLUS_HOME%.}			# Strip off trailing period
+STYLUS_HOME=${STYLUS_HOME%\/}			# Strip off trailing slash
+STYLUS_HOME=${STYLUS_HOME/\/\/\//\/}	# Reduce any initial /// to /
+
+# Set Stylus-related environment variables
+if [ -z "$STYLUS_XGRID_VOLUME" ] ; then
+	export STYLUS_XGRID_VOLUME=/Volumes/Grid/Biologic
+fi
+
+if [[ $setenv = 1 ]] ; then
+	if [ -z "$STYLUS_GRIDARGS" ] ; then
+		export STYLUS_GRIDARGS=""
+	fi
+
+	if [ -z "$STYLUS_EXECARGS" ] ; then
+		export STYLUS_EXECARGS="-g 52DC.gene -p nosteps.xml -l ,debug,log,echo,long"
+	fi
+
+	if [ -z "$STYLUS_RPTARGS" ] ; then
+		export STYLUS_RPTARGS="-g 52DC.gene -p nosteps.xml -x d,d"
+	fi
+fi
+
+if [ -z "$STYLUS_DATAPATH" ] ; then
+	if [[ $config = xgrid ]] ; then
+		export STYLUS_DATAPATH="$STYLUS_XGRID_VOLUME"/results/data/
+	else
+		export STYLUS_DATAPATH="$STYLUS_HOME/sample/data/"
+	fi
+fi
+
+if [ -z "$STYLUS_RPTPATH" ] ; then
+	if [[ $config = xgrid ]] ; then
+		export STYLUS_RPTPATH="$STYLUS_XGRID_VOLUME"/results/reports/
+	else
+		export STYLUS_RPTPATH="$STYLUS_HOME/sample/reports/"
+	fi
+fi
+
+if [ -z "$STYLUS_GENOMEURL" ] ; then
+	if [[ $config = test ]] ; then
+		export STYLUS_GENOMEURL=file://$STYLUS_HOME/sample/
+	elif [[ $config = local ]] ; then
+		export STYLUS_GENOMEURL=http://localhost/genes/
+	elif [[ $config = xgrid ]] ; then
+		export STYLUS_GENOMEURL=file://$STYLUS_XGRID_VOLUME/genes/
+	else
+		export STYLUS_GENOMEURL=http://bioserve.bi010gic.net/genes/
+	fi
+fi
+
+if [ -z "$STYLUS_HANURL" ] ; then
+	if [[ $config = test ]] ; then
+		export STYLUS_HANURL=file://$STYLUS_HOME/sample/
+	elif [[ $config = local ]] ; then
+		export STYLUS_HANURL=http://localhost/archetypes/
+	else
+		export STYLUS_HANURL=http://bioserve.bi010gic.net/archetypes/
+	fi
+fi
+
+if [ -z "$STYLUS_HTMLURL" ] ; then
+	export STYLUS_HTMLURL=file://$STYLUS_HOME/html/
+fi
+
+if [ -z "$STYLUS_PLANURL" ] ; then
+	if [[ $config = xgrid ]] ; then
+		export STYLUS_PLANURL=file://$STYLUS_XGRID_VOLUME/plans/
+	else
+		export STYLUS_PLANURL=file://$STYLUS_HOME/sample/plans/
+	fi
+fi
+
+if [ -z "$STYLUS_SCHEMAURL" ] ; then
+	export STYLUS_SCHEMAURL=file://$STYLUS_HOME/schemas/
+fi
+
+if [ -z "$STYLUS_AUTHOR" ] ; then
+	export STYLUS_AUTHOR="D. Axe, Biologic Institute"
+fi
+
+if [ -z "$STYLUS_XGRID_SHELL" ] ; then
+	export STYLUS_XGRID_SHELL=/bin/bash
+fi
+
+if [ -z $XGRID_CONTROLLER_HOSTNAME ] ; then
+	export XGRID_CONTROLLER_HOSTNAME=bioserve.bi010gic.net
+fi
+
+if [ -z $XGRID_CONTROLLER_PASSWORD ] ; then
+	export XGRID_CONTROLLER_PASSWORD=""
+fi
+
+# Modify environment variables necessary to find Stylus code
+# - The release version looks first in a local bin directory (as supported by the Mac OS X deployment)
+if [[ $version = release ]] ; then
+	export PYTHONPATH="$STYLUS_HOME/bin":"$STYLUS_HOME/obj/release/src/include/.libs":"$STYLUS_HOME/obj/release/src/include":$PYTHONPATH
+	export DYLD_LIBRARY_PATH="$STYLUS_HOME/bin":"$STYLUS_HOME/obj/release/src/core/.libs":"$STYLUS_HOME/ext":$DYLD_LIBRARY_PATH
+	export LD_LIBRARY_PATH="$STYLUS_HOME/bin":"$STYLUS_HOME/obj/release/src/core/.libs":"$STYLUS_HOME/ext":$LD_LIBRARY_PATH
+elif [[ $version = profile ]] ; then
+	export PYTHONPATH="$STYLUS_HOME/obj/profile/src/include/.libs":"$STYLUS_HOME/obj/profile/src/include":$PYTHONPATH
+	export DYLD_LIBRARY_PATH="$STYLUS_HOME/obj/profile/src/core/.libs":"$STYLUS_HOME/ext":$DYLD_LIBRARY_PATH
+	export LD_LIBRARY_PATH="$STYLUS_HOME/obj/profile/src/core/.libs":"$STYLUS_HOME/ext":$LD_LIBRARY_PATH
+else
+	export PYTHONPATH="$STYLUS_HOME/obj/debug/src/include/.libs":"$STYLUS_HOME/obj/debug/src/include":$PYTHONPATH
+	export DYLD_LIBRARY_PATH="$STYLUS_HOME/obj/debug/src/core/.libs":"$STYLUS_HOME/ext":$DYLD_LIBRARY_PATH
+	export LD_LIBRARY_PATH="$STYLUS_HOME/obj/debug/src/core/.libs":"$STYLUS_HOME/ext":$LD_LIBRARY_PATH
+fi
+
+# Prepare the Xgrid client environment or launch Stylus as requested
+cc=0
+python "$STYLUS_HOME/scripts/stgrid.py" "$@"
+cc=$?
+exit $cc

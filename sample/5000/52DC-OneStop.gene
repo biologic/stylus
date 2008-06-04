@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Stylus, Copyright 2006-2008 Biologic Institute
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<genome xmlns="http://biologicinstitute.org/schemas/stylus/1.0" uuid="A5C1F8D6-6F8E-4E62-A545-76BD3F691B83" creationDate="2008-03-31T03:53:47.130067" creationTool="codonTable.py 1.0">
+	<codonTable uuid="889ED300-AFA3-4D0A-BD5D-B3ABE745BBE7" creationDate="2008-03-31T03:51:38.866715" creationTool="codonTable.py 1.0">
+		<entry codon="TTT" vector="NoL" hasStandardMapping="true"/>
+		<entry codon="TTC" vector="NoL" hasStandardMapping="true"/>
+		<entry codon="TTA" vector="NoM" hasStandardMapping="true"/>
+		<entry codon="TTG" vector="NoM" hasStandardMapping="true"/>
+		<entry codon="TCT" vector="SeM" hasStandardMapping="true"/>
+		<entry codon="TCC" vector="SeM" hasStandardMapping="true"/>
+		<entry codon="TCA" vector="SeM" hasStandardMapping="true"/>
+		<entry codon="TCG" vector="SeM" hasStandardMapping="true"/>
+		<entry codon="TAT" vector="SoL" hasStandardMapping="true"/>
+		<entry codon="TAC" vector="SoL" hasStandardMapping="true"/>
+		<entry codon="TAA" vector="SoL" hasStandardMapping="false"/>
+		<entry codon="TAG" vector="SoL" hasStandardMapping="false"/>
+		<entry codon="TGT" vector="NwM" hasStandardMapping="true"/>
+		<entry codon="TGC" vector="NwM" hasStandardMapping="true"/>
+		<entry codon="TGA" vector="STP" hasStandardMapping="true"/>
+		<entry codon="TGG" vector="NwM" hasStandardMapping="true"/>
+		<entry codon="CTT" vector="NoS" hasStandardMapping="true"/>
+		<entry codon="CTC" vector="NoS" hasStandardMapping="true"/>
+		<entry codon="CTA" vector="NoS" hasStandardMapping="true"/>
+		<entry codon="CTG" vector="NoS" hasStandardMapping="true"/>
+		<entry codon="CCT" vector="SeS" hasStandardMapping="true"/>
+		<entry codon="CCC" vector="SeS" hasStandardMapping="true"/>
+		<entry codon="CCA" vector="SeS" hasStandardMapping="true"/>
+		<entry codon="CCG" vector="SeS" hasStandardMapping="true"/>
+		<entry codon="CAT" vector="SoM" hasStandardMapping="true"/>
+		<entry codon="CAC" vector="SoM" hasStandardMapping="true"/>
+		<entry codon="CAA" vector="SoS" hasStandardMapping="true"/>
+		<entry codon="CAG" vector="SoS" hasStandardMapping="true"/>
+		<entry codon="CGT" vector="NwS" hasStandardMapping="true"/>
+		<entry codon="CGC" vector="NwS" hasStandardMapping="true"/>
+		<entry codon="CGA" vector="NwS" hasStandardMapping="true"/>
+		<entry codon="CGG" vector="NwS" hasStandardMapping="true"/>
+		<entry codon="ATT" vector="NeM" hasStandardMapping="true"/>
+		<entry codon="ATC" vector="NeM" hasStandardMapping="true"/>
+		<entry codon="ATA" vector="NeM" hasStandardMapping="true"/>
+		<entry codon="ATG" vector="NeM" hasStandardMapping="true"/>
+		<entry codon="ACT" vector="EaL" hasStandardMapping="true"/>
+		<entry codon="ACC" vector="EaL" hasStandardMapping="true"/>
+		<entry codon="ACA" vector="EaM" hasStandardMapping="true"/>
+		<entry codon="ACG" vector="EaM" hasStandardMapping="true"/>
+		<entry codon="AAT" vector="SwM" hasStandardMapping="true"/>
+		<entry codon="AAC" vector="SwM" hasStandardMapping="true"/>
+		<entry codon="AAA" vector="SwM" hasStandardMapping="true"/>
+		<entry codon="AAG" vector="SwM" hasStandardMapping="true"/>
+		<entry codon="AGT" vector="WeL" hasStandardMapping="true"/>
+		<entry codon="AGC" vector="WeL" hasStandardMapping="true"/>
+		<entry codon="AGA" vector="WeM" hasStandardMapping="true"/>
+		<entry codon="AGG" vector="WeM" hasStandardMapping="true"/>
+		<entry codon="GTT" vector="NeS" hasStandardMapping="true"/>
+		<entry codon="GTC" vector="NeS" hasStandardMapping="true"/>
+		<entry codon="GTA" vector="NeS" hasStandardMapping="true"/>
+		<entry codon="GTG" vector="NeS" hasStandardMapping="true"/>
+		<entry codon="GCT" vector="EaS" hasStandardMapping="true"/>
+		<entry codon="GCC" vector="EaS" hasStandardMapping="true"/>
+		<entry codon="GCA" vector="EaS" hasStandardMapping="true"/>
+		<entry codon="GCG" vector="EaS" hasStandardMapping="true"/>
+		<entry codon="GAT" vector="SwS" hasStandardMapping="true"/>
+		<entry codon="GAC" vector="SwS" hasStandardMapping="true"/>
+		<entry codon="GAA" vector="SwS" hasStandardMapping="true"/>
+		<entry codon="GAG" vector="SwS" hasStandardMapping="true"/>
+		<entry codon="GGT" vector="WeS" hasStandardMapping="true"/>
+		<entry codon="GGC" vector="WeS" hasStandardMapping="true"/>
+		<entry codon="GGA" vector="WeS" hasStandardMapping="true"/>
+		<entry codon="GGG" vector="WeS" hasStandardMapping="true"/>
+	</codonTable>
+	<bases>ATGATGATTACAATAATAATGATAATCTTAATAATCATGTTAATGTTGATTAGAACGACGAGGACGACAAGGACGACAAGAACGACAAGGACGACGAGGACAACAAGAACGACAAGGACAACGCGGCCGCCGCGCCCATCCTGTTCTACGTCATCGTCATCTTCGTCTCATTCGTCGCACTCCTGTTCCACGAGGACAAGAAGGACGAGGAGAACAAGAAGGACAAGAAGGACAAGGAGGACAAGAAGGACAAGAAGAACGAGGAGGACAAGAAGAACAAGGAGATCGTGGTGCACGAGAAGAACAAGAAAGATTAAGCATAAAAACAATAAGAAGAAGAATAAGAAGAAAAAAAAAACGACAATTACGACAACGACGACGATAACGACGACAACAACGATCACGACGACGAGAACGTCGTGCTCCTGCTGTTCCTGTTGCTCTTGTTGTTCCTGCTGGTCGTGGTGCTCTTGTTGGTCCTCATCTTCATCTTCCTCTCACTCACATTCGTGTTCCACGAGGACGAGGAGAACAAGAAGAACAAGGAGAACGAGAAGGACAAGAAGGACAAGAAGGACGAGAAGAACGAGGAGAACGAGGAGGACGAGGAGGACAAGGAGAACAAGGAGAACGAGGAGGACGAGAAGGACAAGGAGGACAAGAAGGACGAGGAGAACGAGAAGAACAAGAAGGATCAAGAATACGAGGAGAATAAAAAACACAAGAAGGATAAAGAAAACAAGAAGAACGACAACAACAACGACAACGACAACGACGTCGCACCACCACCATCATCACCATCATCACCATCACCACCACCATCATCACCACCATCACCACCATCACAGATGTAGGTGCAGGCATTTATTACATTTATTGCATTTATTGCATTTGTTATCCTGTTGCCACTTATTATCGTGCTGCCATTTATTATCGTGGTGCCACTTATTGTCCTGTTGCCATTTGTTATCGTGTTGTCATTTGTTATCCTGGTGGCACTTGTTATCCTGGTGCCATTTGTTATCTTGGTGCTCTACATCGTCTCACTCGCATATAAACAAGATGAAGAAATTACACCATATCAAAAAATTACATCATATTAACAATTTGCATCATATCAACAATACAATCACAATCATAACGATGATAACAATAATAATTAACATCATGAACATTATTAAAATTATTCACTTGTTGAATATAATTCATTTATTAAAAATTATGCACTTATTAAAGATAATACACTTGTTGAAGATCATGCATTTATTGCACTTAACGAGAACGACGACGACGACGACGACAACAACAACATCACATCATCACCATCACCACCACCACCATCATCACCACCACCATCACCACCATCACCACCATCACCACAGATGTAGATGCAGGCATTTGTTACACTTGTTACATTTATTACATTTATTGCACTTATTGCATTTATTGTCCTGGTGGCATTTATTGTCATGTTGGCATTTGTTATCATGCTGCCATTTATTGTCGTGTTGTCATTTGTTGTCATGGTGCCACTTATTATCATGCTGTCACTTATTATCCTGTTGTTCTTCGTCTTCGTCACACTCGATGAAGAACATGAAAAAAATGAAGAAGATTAAAAACATCAAAAAGATGAAAAAAATGAAAAAGTTACATCACTTACACACGAGAACAATTACAATTACAATCATAACAATGATGACGATTATTCACTTATTACACTTATTACATTTGTTGCATTTATTGCATTTGTTACACTTATTGCACTTATTACACTTGTTGCATTTATTACATTTGTTGCACTTATTACATTTATTACACTTATTACACTTGTTACATTTGTTGCATTTATTGAACATTATGCACTTGTTAAACATTATGCATTTATTGAAGATGATCCACTTGTTAAATATGATACACTTGTTACATTTGACAAGAACGACGACAACAACAACGACAACAACGACGACGACGACGTCCCACCACCATCATCATCACCATCACCATCATCACCATCATCACCATCATCATCATCACCATCACCATCATCACCATCATCACCATCACAACCACCATAATAAGAAAAGAAGATGCTGTTGGCATTTGTTACATTTGTTACATTTGTTACATTTATTACATTTATTACATTTGTTACACTTATTGCATTTGTTACATTTATTGCACTTGTTGCACTTGTTACATTTATTGCACTTATTACACTTATTGCATTTGTTACACTTATTACACTTATTGCACTTGTTGCATTTGTTACATTTATTACACTTGTTACACTTGTTACACTTATTACACTTATTGCACTTATTACACTTGTTGCACTTGTTACATTTATTACATTTATTGCATTTATTGCATTTGTTACATTTGTTGCACTTGTTGCATTTATTGCACTTGTTACATTTATTACACTTGTTACACTTATTACACTTATTACACTTATTACACTTATTGCATTTATTATCATGCTGCCAACTACTGCATCACCATCATCATCATCATCATCACCACCACCACCACCATCATCACCACCATCATCATCATCATCACCACCACCATCATCACAAACATCACCATCACAAGCACCATCACAATCATAATCACAATCATAACAAACACAACAATAACTGA</bases>
+	<genes>
+		<gene baseFirst="1" baseLast="2646">
+			<origin x="0.0" y="0.0"/>
+			<hanReferences>
+				<hanReference unicode="52DC">
+					<strokes>
+						<stroke baseFirst="4" baseLast="51" correspondsTo="1"/>
+						<stroke baseFirst="145" baseLast="183" correspondsTo="2"/>
+						<stroke baseFirst="316" baseLast="411" correspondsTo="3"/>
+						<stroke baseFirst="478" baseLast="510" correspondsTo="4"/>
+						<stroke baseFirst="748" baseLast="861" correspondsTo="5"/>
+						<stroke baseFirst="1033" baseLast="1053" correspondsTo="6"/>
+						<stroke baseFirst="1126" baseLast="1161" correspondsTo="7"/>
+						<stroke baseFirst="1282" baseLast="1395" correspondsTo="8"/>
+						<stroke baseFirst="1567" baseLast="1587" correspondsTo="9"/>
+						<stroke baseFirst="1672" baseLast="1710" correspondsTo="10"/>
+						<stroke baseFirst="1939" baseLast="2100" correspondsTo="11"/>
+						<stroke baseFirst="2497" baseLast="2643" correspondsTo="12"/>
+					</strokes>
+				</hanReference>
+			</hanReferences>
+		</gene>
+	</genes>
+</genome>
