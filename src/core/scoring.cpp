@@ -482,7 +482,7 @@ Gene::scoreOverlaps(const Han& han)
 
 	ASSERT(_aryScoreExponents[SC_ILLEGALOVERLAPS] == static_cast<UNIT>(0));
 
-	if (_setOverlaps.size() == 0)
+	if (_setOverlaps.size() == 0 && _vecHOverlaps.size() == 0)
 		return;
 
 	ASSERT(_vecMissingOverlaps.empty());
