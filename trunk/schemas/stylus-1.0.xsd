@@ -1,0 +1,1456 @@
+<?xml version="1.0"?>
+<!--
+	Stylus XML Schema definitions.
+
+	Stylus defines three core elements: genome, hanDefinition, and plan.
+	The genome element describes a string of bases containing one or more genes
+	Stylus is to score and mutate. The hanDefinition describes a single Han glyph
+	against which a gene (within a genome) should be scored. And a plan is the
+	series of steps (i.e., mutations) Stylus should perform against a genome.
+
+	Stylus, Copyright 2006-2008 Biologic Institute
+
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+
+	    http://www.apache.org/licenses/LICENSE-2.0
+
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+-->
+<xs:schema
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:st="http://biologicinstitute.org/schemas/stylus/1.0"
+	targetNamespace="http://biologicinstitute.org/schemas/stylus/1.0"
+	elementFormDefault="qualified">
+
+	<!-- =======================================================================================
+		Core Types
+	======================================================================================== -->
+
+	<!--
+		Name: basesType
+		Desc: A string restricted to the letters T, C, A, and G
+	-->
+	<xs:simpleType name="basesType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[TCAG]+" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--
+		Name: baseType
+		Desc: A single base restricted to the letter T, C, A, and G
+	-->
+	<xs:simpleType name="baseType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[TCAG]{1}" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--
+		Name: codonType
+		Desc: An enumeration of all possible codons
+	-->
+	<xs:simpleType name="codonType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="TTT" />
+			<xs:enumeration value="TTC" />
+			<xs:enumeration value="TTA" />
+			<xs:enumeration value="TTG" />
+			<xs:enumeration value="TCT" />
+			<xs:enumeration value="TCC" />
+			<xs:enumeration value="TCA" />
+			<xs:enumeration value="TCG" />
+			<xs:enumeration value="TAT" />
+			<xs:enumeration value="TAC" />
+			<xs:enumeration value="TAA" />
+			<xs:enumeration value="TAG" />
+			<xs:enumeration value="TGT" />
+			<xs:enumeration value="TGC" />
+			<xs:enumeration value="TGA" />
+			<xs:enumeration value="TGG" />
+			<xs:enumeration value="CTT" />
+			<xs:enumeration value="CTC" />
+			<xs:enumeration value="CTA" />
+			<xs:enumeration value="CTG" />
+			<xs:enumeration value="CCT" />
+			<xs:enumeration value="CCC" />
+			<xs:enumeration value="CCA" />
+			<xs:enumeration value="CCG" />
+			<xs:enumeration value="CAT" />
+			<xs:enumeration value="CAC" />
+			<xs:enumeration value="CAA" />
+			<xs:enumeration value="CAG" />
+			<xs:enumeration value="CGT" />
+			<xs:enumeration value="CGC" />
+			<xs:enumeration value="CGA" />
+			<xs:enumeration value="CGG" />
+			<xs:enumeration value="ATT" />
+			<xs:enumeration value="ATC" />
+			<xs:enumeration value="ATA" />
+			<xs:enumeration value="ATG" />
+			<xs:enumeration value="ACT" />
+			<xs:enumeration value="ACC" />
+			<xs:enumeration value="ACA" />
+			<xs:enumeration value="ACG" />
+			<xs:enumeration value="AAT" />
+			<xs:enumeration value="AAC" />
+			<xs:enumeration value="AAA" />
+			<xs:enumeration value="AAG" />
+			<xs:enumeration value="AGT" />
+			<xs:enumeration value="AGC" />
+			<xs:enumeration value="AGA" />
+			<xs:enumeration value="AGG" />
+			<xs:enumeration value="GTT" />
+			<xs:enumeration value="GTC" />
+			<xs:enumeration value="GTA" />
+			<xs:enumeration value="GTG" />
+			<xs:enumeration value="GCT" />
+			<xs:enumeration value="GCC" />
+			<xs:enumeration value="GCA" />
+			<xs:enumeration value="GCG" />
+			<xs:enumeration value="GAT" />
+			<xs:enumeration value="GAC" />
+			<xs:enumeration value="GAA" />
+			<xs:enumeration value="GAG" />
+			<xs:enumeration value="GGT" />
+			<xs:enumeration value="GGC" />
+			<xs:enumeration value="GGA" />
+			<xs:enumeration value="GGG" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--
+		Name: vectorType
+		Desc: An enumeration of all possible vectors
+	-->
+	<xs:simpleType name="vectorType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="STP" />
+			<xs:enumeration value="NoS" />
+			<xs:enumeration value="NoM" />
+			<xs:enumeration value="NoL" />
+			<xs:enumeration value="NeS" />
+			<xs:enumeration value="NeM" />
+			<xs:enumeration value="EaS" />
+			<xs:enumeration value="EaM" />
+			<xs:enumeration value="EaL" />
+			<xs:enumeration value="SeS" />
+			<xs:enumeration value="SeM" />
+			<xs:enumeration value="SoS" />
+			<xs:enumeration value="SoM" />
+			<xs:enumeration value="SoL" />
+			<xs:enumeration value="SwS" />
+			<xs:enumeration value="SwM" />
+			<xs:enumeration value="WeS" />
+			<xs:enumeration value="WeM" />
+			<xs:enumeration value="WeL" />
+			<xs:enumeration value="NwS" />
+			<xs:enumeration value="NwM" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--
+		Name: groupScoreModeType
+		Desc: An enumeration of possible group scoring modes
+	-->
+	<xs:simpleType name="groupScoreModeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="average" />
+			<xs:enumeration value="minimum" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!--
+		Name: emptyType
+		Desc: A type for declaring empty (without content) elements
+	-->
+	<xs:complexType mixed="false" name="emptyType" />
+	
+	<!--
+		Name: fractionalType
+		Desc: A double restricted to values between 0 and 1 inclusive
+	-->
+	<xs:simpleType name="fractionalType">
+		<xs:restriction base="xs:double">
+			<xs:minInclusive value="0.0" fixed="true" />
+			<xs:maxInclusive value="1.0" fixed="true" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--
+		Name: infiniteType
+		Desc: A string representing an infinite value
+	-->
+	<xs:simpleType name="infiniteType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="infinite" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--
+		Name: infiniteOrNonNegativeIntegerType
+		Desc: A union allowing non-negative integers or the "infinite" string
+	-->
+	<xs:simpleType name="infiniteOrNonNegativeIntegerType">
+		<xs:union memberTypes="xs:nonNegativeInteger st:infiniteType" />
+	</xs:simpleType>
+
+	<!--
+		Name: infiniteOrPositiveIntegerType
+		Desc: A union allowing positive integers or the "infinite" string
+	-->
+	<xs:simpleType name="infiniteOrPositiveIntegerType">
+		<xs:union memberTypes="xs:positiveInteger st:infiniteType" />
+	</xs:simpleType>
+
+	<!--
+		Name: integerListType
+		Desc: A list of positive integers
+	-->
+	<xs:simpleType name="integerListType">
+		<xs:list itemType="xs:positiveInteger" />
+	</xs:simpleType>
+	
+	<!--
+		Name: nonNegativeDoubleType
+		Desc: A double restricted to values greater than and including 0
+	-->
+	<xs:simpleType name="nonNegativeDoubleType">
+		<xs:restriction base="xs:double">
+			<xs:minInclusive value="0.0" fixed="true" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--
+		Name: percentageType
+		Desc: A single percentage value
+	-->
+	<xs:simpleType name="percentageType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d{1,3}%" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!--
+		Name: percentageListType
+		Desc: A list of percentage values
+	-->
+	<xs:simpleType name="percentageListType">
+		<xs:list itemType="st:percentageType" />
+	</xs:simpleType>
+	
+	<!--
+		Name: positiveDoubleType
+		Desc: A double restricted to values greater than 0
+	-->
+	<xs:simpleType name="positiveDoubleType">
+		<xs:restriction base="xs:double">
+			<xs:minExclusive value="0.0" fixed="true" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--Name: positiveFractionalType
+		Desc: A double restricted to values ranging from 0 to 1 (exclusive)
+	-->
+	<xs:simpleType name="positiveFractionalType">
+		<xs:restriction base="xs:double">
+			<xs:minExclusive value="0.0" fixed="true" />
+			<xs:maxInclusive value="1.0" fixed="true" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!--
+		Name: rectangleType
+		Desc: Describe a rectangle
+	-->
+	<xs:complexType mixed="false" name="rectangleType">
+		<xs:attribute name="top" type="xs:double" use="required"/>
+		<xs:attribute name="left" type="xs:double" use="required"/>
+		<xs:attribute name="bottom" type="xs:double" use="required"/>
+		<xs:attribute name="right" type="xs:double" use="required"/>
+		<xs:attribute name="width" type="st:nonNegativeDoubleType" use="required"/>
+		<xs:attribute name="height" type="st:nonNegativeDoubleType" use="required"/>
+		<xs:attribute name="x-midpoint" type="xs:double" use="required"/>
+		<xs:attribute name="y-midpoint" type="xs:double" use="required"/>
+	</xs:complexType>
+	
+	<!--
+		Name: scaleType
+		Desc: The set of scale factors
+	-->
+	<xs:complexType mixed="false" name="scaleType">
+		<xs:attribute name="sxToHan" type="xs:double" use="optional"/>
+		<xs:attribute name="syToHan" type="xs:double" use="optional"/>
+	</xs:complexType>
+	
+	<!--
+		Name: tandemIndexType
+		Desc: An enumeration of the single string 'tandem'
+	-->
+	<xs:simpleType name="tandemIndexType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="tandem" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--
+		Name: tandemOrPositiveIntegerType
+		Desc: A union allowing positive integers or the "tandem" string
+	-->
+	<xs:simpleType name="tandemOrPositiveIntegerType">
+		<xs:union memberTypes="xs:positiveInteger st:tandemIndexType" />
+	</xs:simpleType>
+
+	<!--
+		Name: trialConditionModeType
+		Desc: An enumeration of possible trial condition modes
+	-->
+	<xs:simpleType name="trialConditionModeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="none" />
+			<xs:enumeration value="decrease" />
+			<xs:enumeration value="increase" />
+			<xs:enumeration value="maintain" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!--
+		Name: translationType
+		Desc: The set of translation factors
+	-->
+	<xs:complexType mixed="false" name="translationType">
+		<xs:attribute name="dxToHan" type="xs:double" use="optional"/>
+		<xs:attribute name="dyToHan" type="xs:double" use="optional"/>
+	</xs:complexType>
+
+	<!--
+		Name: unicodeType
+		Desc: A string restricted to 4 to 5 valid hex digits denoting a Han Unicode number
+	-->
+	<xs:simpleType name="unicodeType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9A-F]{4,5}" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!--
+		Name: unicodeIndexType
+		Desc: A string restricted to 4 to 5 valid hex digits denoting a Han Unicode number followed by a single integer value
+	-->
+	<xs:simpleType name="unicodeIndexType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9A-F]{4,5},[1-9][0-9]*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--
+		Name: UUIDType
+		Desc: A string conforming to a UUID
+		Example: 309687F4-CE73-4A2B-BE92-627799F03B98
+	-->
+	<xs:simpleType name="UUIDType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}" />
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<!-- =======================================================================================
+		Attribute Groups
+	======================================================================================== -->
+
+	<!--
+		Name: baseRangeGroup
+		Desc: Attributes that describe a range within string of bases using 1-based indexing
+	-->
+	<xs:attributeGroup name="baseRangeGroup">
+		<xs:attribute name="baseFirst" type="xs:positiveInteger" use="required"/>
+		<xs:attribute name="baseLast" type="xs:positiveInteger" use="required"/>
+	</xs:attributeGroup>
+
+	<!--
+		Name: creationDescriptionGroup
+		Desc: A set of attributes used to describing the creation of an object
+	-->
+	<xs:attributeGroup name="creationDescriptionGroup">
+		<xs:attribute name="author" type="xs:string" use="optional" />
+		<xs:attribute name="creationDate" type="xs:dateTime" use="optional"/>
+		<xs:attribute name="creationTool" type="xs:string" use="optional"/>
+		<xs:attribute name="creationParameters" type="xs:string" use="optional"/>
+	</xs:attributeGroup>
+	
+	<!--
+		Name: indexPairType
+		Desc: A pair of legal index values
+	-->
+	<xs:simpleType name="indexPairType">
+		<xs:union>
+			<xs:simpleType>
+				<xs:restriction base="st:integerListType">
+					<xs:length value="2" />
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType>
+				<xs:restriction base="st:percentageListType">
+					<xs:length value="2" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+	
+	<!--
+		Name: indexRangeGroup
+		Desc: A set of attributes for limiting a mutational index range
+	-->
+	<xs:attributeGroup name="indexRangeGroup">
+		<xs:attribute name="indexRange" type="st:indexPairType" use="optional" />
+		<xs:attribute name="geneRange" type="xs:positiveInteger" use="optional" />
+		<xs:attribute name="hanStrokeRange" type="st:unicodeIndexType" use="optional" />
+	</xs:attributeGroup>
+
+	<!--
+		Name: pointGroup
+		Desc: A simple x,y point value
+	-->
+	<xs:attributeGroup name="pointGroup">
+		<xs:attribute name="x" type="xs:double" use="required"/>
+		<xs:attribute name="y" type="xs:double" use="required"/>
+	</xs:attributeGroup>
+
+	<!--
+		Name: pointDistanceGroup
+		Desc: A simple x,y point value with a fractional distance value
+		Note: The interpretation of the fractional distance is context dependent
+	-->
+	<xs:attributeGroup name="pointDistanceGroup">
+		<xs:attributeGroup ref="st:pointGroup" />
+		<xs:attribute name="fractionalDistance" type="st:fractionalType" use="required"/>
+	</xs:attributeGroup>
+
+	<!--
+		Name: processorIDGroup
+		Desc: A set of attributes uniquely identifying a processor of some sort
+	-->
+	<xs:attributeGroup name="processorIDGroup">
+		<xs:attribute name="processorID" type="st:UUIDType" use="required"/>
+	</xs:attributeGroup>
+
+	<!--
+		Name: strokePairGroup
+		Desc: A pair of strokes as attributes
+	-->
+	<xs:attributeGroup name="strokePairGroup">
+		<xs:attribute name="firstStroke" type="xs:positiveInteger" use="required"/>
+		<xs:attribute name="secondStroke" type="xs:positiveInteger" use="required"/>
+	</xs:attributeGroup>
+
+
+	<!-- =======================================================================================
+		Compound Types
+	======================================================================================== -->
+
+	<!--
+		Name: geneDimensionsType
+		Desc: Describe dimensions of an object within a gene
+	-->
+	<xs:complexType mixed="false" name="geneDimensionsType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="bounds" type="st:rectangleType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="scale" type="st:scaleType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="translation" type="st:translationType" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--
+		Name: hanDimensionsType
+		Desc: Describe dimensions of an object within a Han definition
+	-->
+	<xs:complexType mixed="false" name="hanDimensionsType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="bounds" type="st:rectangleType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="length" type="st:nonNegativeDoubleType" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!--
+		Name: pointType
+		Desc: A single point
+	-->
+	<xs:complexType mixed="false" name="pointType">
+		<xs:attributeGroup ref="st:pointGroup" />
+	</xs:complexType>
+
+	<!--
+		Name: pointArrayType
+		Desc: An array of points
+	-->
+	<xs:complexType mixed="false" name="pointArrayType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="point" type="st:pointType" minOccurs="2" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!--
+		Name: pointDistanceType
+		Desc: A single point with fractional distance
+	-->
+	<xs:complexType mixed="false" name="pointDistanceType">
+		<xs:attributeGroup ref="st:pointDistanceGroup" />
+	</xs:complexType>
+
+	<!--
+		Name: pointDistanceArrayType
+		Desc: An array of points with fractional distances
+	-->
+	<xs:complexType mixed="false" name="pointDistanceArrayType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="pointDistance" type="st:pointDistanceType" minOccurs="2" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--
+		Name: UUIDListType
+		Desc: A list of strings each conforming to a UUID
+	-->
+	<xs:simpleType name="UUIDListType">
+		<xs:list itemType="st:UUIDType"/>
+	</xs:simpleType>
+
+
+	<!-- =======================================================================================
+		Initialization-related types
+		
+	======================================================================================== -->
+	
+	<!--
+		Name: weightsType
+		Desc: Describe the weights used in scoring
+	-->
+	<xs:complexType mixed="false" name="weightsType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="genome" minOccurs="0" maxOccurs="1">
+				<xs:complexType mixed="false">
+					<xs:attribute name="fixedCost" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="costPerBase" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="costPerUnit" type="st:nonNegativeDoubleType" use="optional" />
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="gene" minOccurs="0" maxOccurs="1">
+				<xs:complexType mixed="false">
+					<xs:attribute name="scale" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="placement" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="illegalOverlaps" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="missingOverlaps" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="marks" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="sp-scale" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="sp-placement" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="sp-illegalOverlaps" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="sp-missingOverlaps" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="sp-marks" type="st:nonNegativeDoubleType" use="optional" />
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="group" minOccurs="0" maxOccurs="1">
+				<xs:complexType mixed="false">
+					<xs:attribute name="scale" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="placement" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="deviation" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="extraLength" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="illegalOverlaps" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="missingOverlaps" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="dropouts" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="sp-scale" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="sp-placement" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="sp-deviation" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="sp-extraLength" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="sp-illegalOverlaps" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="sp-missingOverlaps" type="st:nonNegativeDoubleType" use="optional" />
+					<xs:attribute name="sp-dropouts" type="st:nonNegativeDoubleType" use="optional" />
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<!-- =======================================================================================
+		Lineage-related types
+		
+		Lineage describes the history of a genome including its ancestors (by UUID) and
+		recent mutations.
+	======================================================================================== -->
+	
+	<!--
+		Name: changedType
+		Desc: Describe a change (point mutation)
+	-->
+	<xs:complexType mixed="false" name="changedType">
+		<xs:attribute name="targetIndex" type="xs:positiveInteger" use="required" />
+		<xs:attribute name="countBases" type="xs:positiveInteger" use="required" />
+		<xs:attribute name="bases" type="st:basesType" use="required" />
+		<xs:attribute name="basesAfter" type="st:basesType" use="required" />
+	</xs:complexType>
+	
+	<!--
+		Name: copiedType
+		Desc: Describe a copy
+	-->
+	<xs:complexType mixed="false" name="copiedType">
+		<xs:attribute name="sourceIndex" type="xs:positiveInteger" use="required" />
+		<xs:attribute name="targetIndex" type="st:tandemOrPositiveIntegerType" use="required" />
+		<xs:attribute name="countBases" type="xs:positiveInteger" use="required" />
+		<xs:attribute name="bases" type="st:basesType" use="required" />
+	</xs:complexType>
+	
+	<!--
+		Name: deletedType
+		Desc: Describe a deletion
+	-->
+	<xs:complexType mixed="false" name="deletedType">
+		<xs:attribute name="targetIndex" type="xs:positiveInteger" use="required" />
+		<xs:attribute name="countBases" type="xs:positiveInteger" use="required" />
+		<xs:attribute name="bases" type="st:basesType" use="required" />
+	</xs:complexType>
+	
+	<!--
+		Name: insertedType
+		Desc: Describe an insertion
+	-->
+	<xs:complexType mixed="false" name="insertedType">
+		<xs:attribute name="targetIndex" type="xs:positiveInteger" use="required" />
+		<xs:attribute name="countBases" type="xs:positiveInteger" use="required" />
+		<xs:attribute name="bases" type="st:basesType" use="required" />
+	</xs:complexType>
+	
+	<!--
+		Name: transposedType
+		Desc: Describe a transposition
+	-->
+	<xs:complexType mixed="false" name="transposedType">
+		<xs:attribute name="sourceIndex" type="xs:positiveInteger" use="required" />
+		<xs:attribute name="targetIndex" type="xs:positiveInteger" use="required" />
+		<xs:attribute name="countBases" type="xs:positiveInteger" use="required" />
+		<xs:attribute name="bases" type="st:basesType" use="required" />
+	</xs:complexType>
+	
+	<!--
+		Name: mutationsMadeType
+		Desc: An array of mutations made or attempted
+	-->
+	<xs:complexType mixed="false" name="mutationsMadeType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded" >
+			<xs:element name="inserted" type="st:insertedType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="deleted" type="st:deletedType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="copied" type="st:copiedType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="changed" type="st:changedType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="transposed" type="st:transposedType" minOccurs="1" maxOccurs="1" />
+		</xs:choice>
+
+		<xs:attribute name="description" type="xs:normalizedString" use="optional" />
+	</xs:complexType>
+
+	<!--
+		Name: lineageType
+		Desc: Describe the lineage of a genome
+	-->
+	<xs:complexType mixed="false" name="lineageType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="acceptedMutations" type="st:mutationsMadeType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="rejectedMutations" minOccurs="0" maxOccurs="1">
+				<xs:complexType mixed="false">
+					<xs:sequence minOccurs="1" maxOccurs="1">
+						<xs:element name="attempt" type="st:mutationsMadeType" minOccurs="1" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+
+		<!--
+			Strain is meant to identify the class to which the genome belongs and ancestors the
+			genomes from which the genome was derived. Interpretation and usage is user-dependent;
+			Stylus does not utilize these values.
+		-->
+		<xs:attribute name="strain" type="st:UUIDType" use="optional" />
+		<xs:attribute name="ancestors" type="st:UUIDListType" use="optional" />
+	</xs:complexType>
+
+
+	<!-- =======================================================================================
+		Options-related types
+	======================================================================================== -->
+	
+	<!--
+		Name: durationCondition
+		Desc: Maximum plan duration expressed as a number of trials or attempts to execute
+	-->
+	<xs:complexType mixed="false" name="durationConditionType">
+		<xs:attribute name="trials" type="xs:positiveInteger" use="optional" />
+		<xs:attribute name="attempts" type="xs:positiveInteger" use="optional" />
+	</xs:complexType>
+	
+	<!--
+		Name: mutationConditionType
+		Desc: Describe the mutation trial condition
+		
+		The sum of contained likelihoods must equal 1.0
+	-->
+	<xs:complexType mixed="false" name="mutationConditionType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="mutationsPerAttempt" minOccurs="1" maxOccurs="unbounded">
+				<xs:complexType mixed="false">
+					<xs:attribute name="likelihood" type="st:positiveFractionalType" use="optional" />
+					<xs:attribute name="count" type="xs:positiveInteger" use="required" />
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!--
+		Name: rollbackCondition
+		Desc: Describe a rollback limit for plan execution
+	-->
+	<xs:complexType mixed="false" name="rollbackConditionType">
+		<xs:attribute name="rollbackLimit" type="st:infiniteOrNonNegativeIntegerType" use="required" />
+	</xs:complexType>
+	
+	<!--
+		Name: fitnessCondition
+		Desc: Describe a fitness maximum and minimum limit for plan execution
+	-->
+	<xs:complexType mixed="false" name="fitnessConditionType">
+		<xs:attribute name="maximum" type="st:positiveDoubleType" use="optional" />
+		<xs:attribute name="minimum" type="st:positiveDoubleType" use="optional" />
+	</xs:complexType>
+	
+	<!--
+		Name: trialConditionType
+		Desc: Describe a trial condition
+	-->
+	<xs:complexType mixed="false" name="trialConditionType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="value" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType mixed="false">
+					<xs:attribute name="value" type="st:positiveDoubleType" use="required" />
+					<xs:attribute name="factor" type="st:positiveDoubleType" use="optional" />
+					<xs:attribute name="likelihood" type="st:positiveFractionalType" use="optional" />
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+			
+		<xs:attribute name="mode" type="st:trialConditionModeType" use="required" />
+	</xs:complexType>
+	
+	<!--
+		Name: trialConditionsType
+		Desc: Describe a set of trial conditions
+	-->
+	<xs:complexType mixed="false" name="trialConditionsType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="costCondition" type="st:trialConditionType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="fitnessCondition" type="st:trialConditionType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="scoreCondition" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType mixed="false">
+					<xs:complexContent mixed="false">
+						<xs:extension base="st:trialConditionType">
+							<xs:attribute name="gene" type="xs:positiveInteger" use="required" />
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="mutationCondition" type="st:mutationConditionType" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--
+		Name: optionsType
+		Desc: Describe the Stylus options in effect for a plan
+	-->
+	<xs:complexType mixed="false" name="optionsType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="trialConditions" type="st:trialConditionsType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="terminationConditions" minOccurs="0" maxOccurs="1">
+				<xs:complexType mixed="false">
+					<xs:sequence minOccurs="1" maxOccurs="1">
+						<xs:element name="durationCondition" type="st:durationConditionType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="fitnessCondition" type="st:fitnessConditionType" minOccurs="0" maxOccurs="1" />
+						<xs:element name="rollbackCondition" type="st:rollbackConditionType" minOccurs="0" maxOccurs="1" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+
+		<!--
+			Stylus interprets these options as follows:
+			
+			accumulateMutations
+				If true, accumulate changes from trial to trial; otherwise removes all changes made before starting the trial
+				
+			perserveGenes
+				Prevent the introduction or removal of codons that would alter gene start/stop locations
+				
+			ensureInFrame
+				Ensure all insertions, deletions, copies, and transposition take place on codon (frame) boundaries
+				
+			ensureWholeCodons
+				Ensure all insertions, deletions, copies, and transpositions take place in whole codon units (multiples of three)
+				
+			rejectSilent
+				Reject all silent mutations (effective only for change mutations)
+		-->
+		<xs:attribute name="accumulateMutations" type="xs:boolean" use="optional" />
+		<xs:attribute name="preserveGenes" type="xs:boolean" use="optional" />
+		<xs:attribute name="ensureInFrame" type="xs:boolean" use="optional" />
+		<xs:attribute name="ensureWholeCodons" type="xs:boolean" use="optional" />
+		<xs:attribute name="rejectSilent" type="xs:boolean" use="optional" />
+	</xs:complexType>
+
+
+	<!-- =======================================================================================
+		Segment-related types
+	======================================================================================== -->
+
+	<!--
+		Name: segmentType
+		Desc: A single segment (continuous range of coherent or incoherent vectors in a gene)
+
+		NOTE: The contained points describe the location *after* application of the codon (vector).
+	-->
+	<xs:complexType mixed="false" name="segmentType">
+		<xs:complexContent mixed="false">
+			<xs:extension base="st:pointArrayType">
+				<xs:attributeGroup ref="st:baseRangeGroup"/>
+				<xs:attribute name="coherent" type="xs:boolean" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<!--
+		Name: segmentArrayType
+		Desc: An array of segments
+	-->
+	<xs:complexType mixed="false" name="segmentArrayType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="segment" type="st:segmentType" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<!-- =======================================================================================
+		Statistics-related types
+	======================================================================================== -->
+
+	<!--
+		Name: statisticsBasesCountType
+		Desc: Describe the size of a genome in a trial
+	-->
+	<xs:complexType mixed="false" name="statisticsBasesCountType">
+		<xs:attribute name="trial" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="countBases" type="xs:nonNegativeInteger" use="required"/>
+	</xs:complexType>
+
+	<!--
+		Name: statisticsBasesType
+		Desc: Describe the maximum, minimum size and changes to the bases for a genome in a trial
+	-->
+	<xs:complexType mixed="false" name="statisticsBasesType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="maximum" type="st:statisticsBasesCountType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="minimum" type="st:statisticsBasesCountType" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+
+		<xs:attribute name="changed" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="inserted" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="deleted" type="xs:nonNegativeInteger" use="required"/>
+	</xs:complexType>
+
+	<!--
+		Name: statisticsMutationCountType
+		Desc: Describe the attempted/accepted rate for a mutation type
+	-->
+	<xs:complexType mixed="false" name="statisticsMutationCountType">
+		<xs:attribute name="attempted" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="accepted" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="countBases" type="xs:nonNegativeInteger" use="required" />
+	</xs:complexType>
+
+	<!--
+		Name: statisticsMutationsType
+		Desc: Describe the counts of genome mutations
+	-->
+	<xs:complexType mixed="false" name="statisticsMutationsType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="changes" minOccurs="1" maxOccurs="1">
+				<xs:complexType mixed="false">
+					<xs:complexContent mixed="false">
+						<xs:extension base="st:statisticsMutationCountType">
+							<xs:attribute name="silent" type="xs:nonNegativeInteger" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="copies" type="st:statisticsMutationCountType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="deletions" type="st:statisticsMutationCountType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="insertions" type="st:statisticsMutationCountType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="transpositions" type="st:statisticsMutationCountType" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--
+		Name: statisticsRollbackCountType
+		Desc: Describe the rollbacks within a single genome trial
+	-->
+	<xs:complexType mixed="false" name="statisticsRollbackCountType">
+		<xs:attribute name="trial" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="countRollbacks" type="xs:nonNegativeInteger" use="required"/>
+	</xs:complexType>
+
+	<!--
+		Name: statisticsRollbacksType
+		Desc: Describe the maximum and minimum genome rollbacks
+	-->
+	<xs:complexType mixed="false" name="statisticsRollbacksType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="maximum" type="st:statisticsRollbackCountType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="minimum" type="st:statisticsRollbackCountType" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="countRollbacks" type="xs:nonNegativeInteger" use="required"/>
+	</xs:complexType>
+	
+	<!--
+		Name: statisticsValueType
+		Desc: Describe a single per-trial value
+	-->
+	<xs:complexType mixed="false" name="statisticsValueType">
+		<xs:attribute name="trial" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="value" type="st:positiveDoubleType" use="required"/>
+	</xs:complexType>
+
+	<!--
+		Name: statisticsScoresType
+		Desc: Describe the maximum and minimum gene scores
+	-->
+	<xs:complexType mixed="false" name="statisticsScoresType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="maximum" type="st:statisticsValueType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="minimum" type="st:statisticsValueType" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--
+		Name: statisticsUnitsType
+		Desc: Describe the maximum and minimum gene units
+	-->
+	<xs:complexType mixed="false" name="statisticsUnitsType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="maximum" type="st:statisticsValueType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="minimum" type="st:statisticsValueType" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--
+		Name: statisticsCostsType
+		Desc: Describe the maximum and minimum genome level costs
+	-->
+	<xs:complexType mixed="false" name="statisticsCostsType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="maximum" type="st:statisticsValueType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="minimum" type="st:statisticsValueType" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--
+		Name: statisticsFitnessLevelsType
+		Desc: Describe the maximum and minimum genome fitness levels
+	-->
+	<xs:complexType mixed="false" name="statisticsFitnessLevelsType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="maximum" type="st:statisticsValueType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="minimum" type="st:statisticsValueType" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--
+		Name: statisticsType
+		Desc: Describe the statistics at a trial
+	-->
+	<xs:complexType mixed="false" name="statisticsType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="scoreRange" type="st:statisticsScoresType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="unitsRange" type="st:statisticsUnitsType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="costRange" type="st:statisticsCostsType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="fitnessRange" type="st:statisticsFitnessLevelsType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="bases" type="st:statisticsBasesType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="rollbacks" type="st:statisticsRollbacksType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="mutations" type="st:statisticsMutationsType" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+
+		<xs:attribute name="trialFirst" type="xs:nonNegativeInteger" use="required" />
+		<xs:attribute name="trialLast" type="xs:nonNegativeInteger" use="required" />
+		<xs:attribute name="trialAttempts" type="xs:nonNegativeInteger" use="optional" />
+		<xs:attribute name="score" type="st:fractionalType" use="optional"/>
+		<xs:attribute name="units" type="st:positiveDoubleType" use="optional" />
+		<xs:attribute name="cost" type="st:positiveDoubleType" use="optional"/>
+		<xs:attribute name="fitness" type="st:positiveDoubleType" use="optional"/>
+		<xs:attribute name="countBases" type="xs:nonNegativeInteger" use="optional"/>
+		<xs:attribute name="countRollbacks" type="xs:nonNegativeInteger" use="optional"/>
+	</xs:complexType>
+
+
+	<!-- =======================================================================================
+		Step array types
+		
+		Steps are the body of a plan. Each step is an array of possible mutations among which
+		Stylus randomly selects based on the assigned probabilities (likelihoods).
+	======================================================================================== -->
+	
+	<!--
+		Name: changeType
+		Desc: Describe a change
+	-->
+	<xs:complexType mixed="false" name="changeType">
+		<xs:attribute name="likelihood" type="st:positiveFractionalType" use="optional"/>
+		<xs:attribute name="targetIndex" type="xs:positiveInteger" use="optional" />
+		<xs:attribute name="countBases" type="xs:positiveInteger" use="optional" />
+		<xs:attribute name="bases" type="st:basesType" use="optional" />
+		<xs:attribute name="transversionLikelihood" type="st:fractionalType" use="optional" />
+		<xs:attributeGroup ref="st:indexRangeGroup" />
+	</xs:complexType>
+	
+	<!--
+		Name: copyType
+		Desc: Describe a copy
+	-->
+	<xs:complexType mixed="false" name="copyType">
+		<xs:attribute name="likelihood" type="st:positiveFractionalType" use="optional"/>
+		<xs:attribute name="sourceIndex" type="xs:positiveInteger" use="optional" />
+		<xs:attribute name="targetIndex" type="st:tandemOrPositiveIntegerType" use="optional" />
+		<xs:attribute name="countBases" type="xs:positiveInteger" use="optional" />
+		<xs:attributeGroup ref="st:indexRangeGroup" />
+	</xs:complexType>
+	
+	<!--
+		Name: deleteType
+		Desc: Describe a deletion
+	-->
+	<xs:complexType mixed="false" name="deleteType">
+		<xs:attribute name="likelihood" type="st:positiveFractionalType" use="optional"/>
+		<xs:attribute name="targetIndex" type="xs:positiveInteger" use="optional" />
+		<xs:attribute name="countBases" type="xs:positiveInteger" use="optional" />
+		<xs:attributeGroup ref="st:indexRangeGroup" />
+	</xs:complexType>
+	
+	<!--
+		Name: insertType
+		Desc: Describe an insertion
+	-->
+	<xs:complexType mixed="false" name="insertType">
+		<xs:attribute name="likelihood" type="st:positiveFractionalType" use="optional"/>
+		<xs:attribute name="targetIndex" type="xs:positiveInteger" use="optional" />
+		<xs:attribute name="countBases" type="xs:positiveInteger" use="optional" />
+		<xs:attribute name="bases" type="st:basesType" use="optional" />
+		<xs:attributeGroup ref="st:indexRangeGroup" />
+	</xs:complexType>
+	
+	<!--
+		Name: transposeType
+		Desc: Describe a copy
+	-->
+	<xs:complexType mixed="false" name="transposeType">
+		<xs:attribute name="likelihood" type="st:positiveFractionalType" use="optional"/>
+		<xs:attribute name="sourceIndex" type="xs:positiveInteger" use="optional" />
+		<xs:attribute name="targetIndex" type="xs:positiveInteger" use="optional" />
+		<xs:attribute name="countBases" type="xs:positiveInteger" use="optional" />
+		<xs:attributeGroup ref="st:indexRangeGroup" />
+	</xs:complexType>
+	
+	<!--
+		Name: stepArrayType
+		Desc: The steps within a plan
+	-->
+	<xs:complexType mixed="false" name="stepArrayType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="step" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType mixed="false">
+					<xs:sequence minOccurs="1" maxOccurs="1">
+						<xs:element name="trialConditions" type="st:trialConditionsType" minOccurs="0" maxOccurs="1" />
+						<xs:choice minOccurs="1" maxOccurs="unbounded">
+							<xs:element name="change" type="st:changeType" minOccurs="1" maxOccurs="1" />
+							<xs:element name="copy" type="st:copyType" minOccurs="1" maxOccurs="1" />
+							<xs:element name="delete" type="st:deleteType" minOccurs="1" maxOccurs="1" />
+							<xs:element name="insert" type="st:insertType" minOccurs="1" maxOccurs="1" />
+							<xs:element name="transpose" type="st:transposeType" minOccurs="1" maxOccurs="1" />
+						</xs:choice>
+					</xs:sequence>
+				
+					<xs:attribute name="trials" type="st:infiniteOrPositiveIntegerType" use="optional" />
+					<xs:attribute name="deltaIndex" type="xs:integer" use="optional" />
+					<xs:attributeGroup ref="st:indexRangeGroup" />
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<!-- =======================================================================================
+		Stroke array types
+	======================================================================================== -->
+
+	<!--
+		Name: strokeArrayType
+		Desc: An array of strokes within a gene
+	-->
+	<xs:complexType mixed="false" name="strokeArrayType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="stroke" minOccurs="1" maxOccurs="unbounded">
+				<xs:complexType mixed="false">
+					<xs:complexContent mixed="false">
+						<xs:extension base="st:geneDimensionsType">
+							<xs:sequence minOccurs="1" maxOccurs="1">
+								<xs:element name="score" minOccurs="0" maxOccurs="1">
+									<xs:complexType mixed="false">
+										<xs:attribute name="deviation" type="st:nonNegativeDoubleType" use="required"/>
+										<xs:attribute name="extraLength" type="st:nonNegativeDoubleType" use="required"/>
+										<xs:attribute name="dropouts" type="xs:nonNegativeInteger" use="required"/>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+
+							<xs:attributeGroup ref="st:baseRangeGroup"/>
+							
+							<!--
+								correspondsTo denotes the stroke within the associated Han glyph (using 1-based indexing)
+							-->
+							<xs:attribute name="correspondsTo" type="xs:positiveInteger" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--
+		Name: strokeHanArrayType
+		Desc: An array of strokes within a Han definition
+	-->
+	<xs:complexType mixed="false" name="strokeHanArrayType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="stroke" minOccurs="1" maxOccurs="unbounded">
+				<xs:complexType mixed="false">
+					<xs:complexContent mixed="false">
+						<xs:extension base="st:hanDimensionsType">
+							<xs:sequence minOccurs="1" maxOccurs="1">
+								<xs:element name="points" minOccurs="1" maxOccurs="1">
+									<xs:complexType>
+										<xs:sequence minOccurs="1" maxOccurs="1">
+											<xs:element name="forward" type="st:pointDistanceArrayType" minOccurs="1" maxOccurs="1"/>
+											<xs:element name="reverse" type="st:pointDistanceArrayType" minOccurs="1" maxOccurs="1"/>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<!-- =======================================================================================
+		Group array types
+	======================================================================================== -->
+
+	<!--
+		Name: groupArrayType
+		Desc: An array of groups within a gene
+	-->
+	<xs:complexType mixed="false" name="groupArrayType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="group" minOccurs="1" maxOccurs="unbounded">
+				<xs:complexType mixed="false">
+					<xs:complexContent mixed="false">
+						<xs:extension base="st:geneDimensionsType">
+							<xs:sequence minOccurs="1" maxOccurs="1">
+								<xs:element name="score" minOccurs="0" maxOccurs="1">
+									<xs:complexType mixed="false">
+										<xs:attribute name="score" type="st:fractionalType" use="required"/>
+										<xs:attribute name="scale" type="st:nonNegativeDoubleType" use="optional"/>
+										<xs:attribute name="placement" type="st:nonNegativeDoubleType" use="optional"/>
+										<xs:attribute name="deviation" type="st:nonNegativeDoubleType" use="optional"/>
+										<xs:attribute name="extraLength" type="st:nonNegativeDoubleType" use="optional"/>
+										<xs:attribute name="illegalOverlaps" type="xs:nonNegativeInteger" use="optional"/>
+										<xs:attribute name="missingOverlaps" type="xs:nonNegativeInteger" use="optional"/>
+										<xs:attribute name="dropouts" type="xs:nonNegativeInteger" use="optional"/>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="containedStrokes" type="st:integerListType" minOccurs="1" maxOccurs="1"/>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--
+		Name: groupHanArrayType
+		Desc: An array of groups within a Han definition
+	-->
+	<xs:complexType mixed="false" name="groupHanArrayType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="group" minOccurs="1" maxOccurs="unbounded">
+				<xs:complexType mixed="false">
+					<xs:complexContent mixed="false">
+						<xs:extension base="st:hanDimensionsType">
+							<xs:sequence minOccurs="1" maxOccurs="1">
+								<xs:element name="weightedCenter" type="st:pointType"/>
+								<xs:element name="containedStrokes" type="st:integerListType" minOccurs="1" maxOccurs="1"/>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<!-- =======================================================================================
+		Overlap array types
+	======================================================================================== -->
+	
+	<!--
+		Name: overlapArrayType
+		Desc: An array of overlaps within a gene
+	-->
+	<xs:complexType mixed="false" name="overlapArrayType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="overlap" minOccurs="1" maxOccurs="unbounded">
+				<xs:complexType mixed="false">
+					<xs:attributeGroup ref="st:strokePairGroup"/>
+					<xs:attributeGroup ref="st:pointGroup" />
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--
+		Name: overlapHanArrayType
+		Desc: An array of overlaps within a Han definition
+	-->
+	<xs:complexType mixed="false" name="overlapHanArrayType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="overlap" minOccurs="1" maxOccurs="unbounded">
+				<xs:complexType mixed="false">
+					<xs:attributeGroup ref="st:strokePairGroup"/>
+					<xs:attribute name="required" type="xs:boolean" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<!-- =======================================================================================
+		hanReference array type
+	======================================================================================== -->
+
+	<!--
+		Name: hanReferenceArrayType
+		Desc: An array of hanReference elements
+		
+		A hanReference specifies a Han definition against which Stylus should score a gene.
+	-->
+	<xs:complexType mixed="false" name="hanReferenceArrayType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="hanReference" minOccurs="1" maxOccurs="unbounded">
+				<xs:complexType mixed="false">
+					<xs:complexContent mixed="false">
+						<xs:extension base="st:geneDimensionsType">
+							<xs:sequence minOccurs="1" maxOccurs="1">
+								<xs:element name="score" minOccurs="0" maxOccurs="1">
+									<xs:complexType mixed="false">
+										<xs:attribute name="score" type="st:fractionalType" use="required"/>
+										<xs:attribute name="scale" type="xs:double" use="optional"/>
+										<xs:attribute name="placement" type="xs:double" use="optional"/>
+										<xs:attribute name="illegalOverlaps" type="xs:nonNegativeInteger" use="optional"/>
+										<xs:attribute name="missingOverlaps" type="xs:nonNegativeInteger" use="optional"/>
+										<xs:attribute name="marks" type="st:nonNegativeDoubleType" use="optional"/>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="groups" type="st:groupArrayType" minOccurs="0" maxOccurs="1"/>
+								<xs:element name="strokes" type="st:strokeArrayType" minOccurs="0" maxOccurs="1"/>
+								<xs:element name="overlaps" type="st:overlapArrayType" minOccurs="0" maxOccurs="1"/>
+							</xs:sequence>
+
+							<xs:attribute name="unicode" type="st:unicodeType" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<!-- =======================================================================================
+		Gene array type
+	======================================================================================== -->
+
+	<!--
+		Name: geneArrayType
+		Desc: An array of genes within a genome
+	-->
+	<xs:complexType mixed="false" name="geneArrayType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="gene" minOccurs="1" maxOccurs="unbounded">
+				<xs:complexType mixed="false">
+					<xs:sequence minOccurs="0" maxOccurs="1">
+						<xs:element name="origin" type="st:pointType" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="hanReferences" type="st:hanReferenceArrayType" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="segments" type="st:segmentArrayType" minOccurs="0" maxOccurs="1"/>
+					</xs:sequence>
+
+					<xs:attributeGroup ref="st:baseRangeGroup"/>
+					<xs:attribute name="units" type="st:positiveDoubleType" use="optional" />
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<!-- =======================================================================================
+		Globals type
+	======================================================================================== -->
+	
+	<xs:element name="globals">
+		<xs:complexType mixed="false">
+			<xs:sequence minOccurs="1" maxOccurs="1">
+				<xs:element name="weights" type="st:weightsType" minOccurs="0" maxOccurs="1" />
+			</xs:sequence>
+			
+			<xs:attribute name='groupScoreMode' type='st:groupScoreModeType' use='optional' />
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- =======================================================================================
+		Codon Table type
+	======================================================================================== -->
+
+	<xs:complexType mixed="false" name="codonTableType">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="entry" minOccurs="0" maxOccurs="64">
+				<xs:complexType mixed="false">
+					<xs:attribute name="codon" type="st:codonType" use="required" />
+					<xs:attribute name="vector" type="st:vectorType" use="required" />
+					<xs:attribute name="hasStandardMapping" type="xs:boolean" use="optional" />
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+
+		<xs:attribute name="uuid" type="st:UUIDType" use="required"/>
+		<xs:attributeGroup ref="st:creationDescriptionGroup"/>
+	</xs:complexType>
+
+	<xs:element name="codonTable" type="st:codonTableType" />
+
+
+	<!-- =======================================================================================
+		Plan type
+	======================================================================================== -->
+	
+	<xs:element name="plan">
+		<xs:complexType mixed="false">
+			<xs:sequence minOccurs="1" maxOccurs="1">
+				<xs:element name="options" type="st:optionsType" minOccurs="0" maxOccurs="1" />
+				<xs:element name="steps" type="st:stepArrayType" minOccurs="1" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- =======================================================================================
+		Genome type
+	======================================================================================== -->
+	
+	<xs:element name="genome">
+		<xs:complexType mixed="false">
+			<xs:sequence minOccurs="1" maxOccurs="1">
+				<xs:element name="seed" minOccurs="0" maxOccurs="1">
+					<xs:complexType mixed="false">
+						<xs:simpleContent>
+							<xs:extension base="xs:normalizedString">
+								<xs:attributeGroup ref="st:processorIDGroup"/>
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="codonTable" type="st:codonTableType" minOccurs="0" maxOccurs="1" />
+				<xs:element name="bases" type="st:basesType" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="termination" minOccurs="0" maxOccurs="1">
+					<xs:complexType mixed="false">
+						<xs:attribute name="terminationCode" type="xs:nonNegativeInteger" use="required" />
+						<xs:attribute name="reasonCode" type="xs:nonNegativeInteger" use="required" />
+						<xs:attribute name="description" type="xs:string" use="required" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="statistics" type="st:statisticsType" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="lineage" type="st:lineageType" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="genes" type="st:geneArrayType" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+
+			<xs:attribute name="uuid" type="st:UUIDType" use="required"/>
+			<xs:attributeGroup ref="st:creationDescriptionGroup"/>
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- =======================================================================================
+		History type
+	======================================================================================== -->
+	
+	<xs:element name="history">
+		<xs:complexType mixed="false">
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="acceptedMutations" minOccurs="1" maxOccurs="1">
+					<xs:complexType mixed="false">
+						<xs:complexContent mixed="false">
+							<xs:extension base="st:mutationsMadeType">
+								<xs:attribute name="trial" type="xs:nonNegativeInteger" use="required" />
+								<xs:attribute name="fitness" type="st:positiveDoubleType" use="required"/>
+							</xs:extension>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+
+			<xs:attribute name="uuid" type="st:UUIDType" use="required"/>
+			<xs:attributeGroup ref="st:creationDescriptionGroup"/>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- =======================================================================================
+		hanDefintion type
+	======================================================================================== -->
+	
+	<xs:element name="hanDefinition">
+		<xs:complexType mixed="false">
+			<xs:complexContent mixed="false">
+				<xs:extension base="st:hanDimensionsType">
+					<xs:sequence>
+						<xs:element name="minimumStrokeLength" type="st:nonNegativeDoubleType" minOccurs="1" maxOccurs="1"/>
+						<xs:element name="groups" type="st:groupHanArrayType" minOccurs="1" maxOccurs="1"/>
+						<xs:element name="strokes" type="st:strokeHanArrayType" minOccurs="1" maxOccurs="1"/>
+						<xs:element name="overlaps" type="st:overlapHanArrayType" minOccurs="0" maxOccurs="1"/>
+					</xs:sequence>
+
+					<xs:attribute name="uuid" type="st:UUIDType" use="required"/>
+					<xs:attribute name="unicode" type="st:unicodeType" use="required"/>
+					<xs:attributeGroup ref="st:creationDescriptionGroup"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

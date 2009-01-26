@@ -1,0 +1,42 @@
+# Stylus, Copyright 2006-2008 Biologic Institute
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+han:52DC:0:0
+dimensions:30,40,501,481
+
+inscribe:-8,-17:256
+
+stroke:(n)40,380:c107,424:130,490
+stroke:(n)220,490:c272,460:300,400
+stroke:(pz)180,410:c156,367:90,310:260,330
+stroke:(d)220,370:c268,336:280,290
+stroke:(hzg)40,260:150,260:150,30:100,50
+stroke:(d)50,220:c84,209:90,170
+stroke:(n)50,100:c101,118:140,150
+stroke:(hzg)200,260:310,260:310,30:260,50
+stroke:(d)210,220:c232,210:250,170
+stroke:(n)200,100:c251,116:300,150
+stroke:(hxg)340,390:480,390:c489,74:450,30:410,60
+stroke:(wp)400,500:400,310:c403,103:330,40
+
+group:1,2,3,4
+group:5,6,7
+group:8,9,10
+group:11,12
+
+overlap:11,12,1
+overlap:3,4,0
+overlap:5,7,0
+overlap:8,10,0
+
