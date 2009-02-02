@@ -197,7 +197,13 @@ inline Unit Unit::operator-() const { return Unit(-1*_n); }
 inline Unit& Unit::operator++() { ++_n; return *this; }
 inline Unit& Unit::operator--() { --_n; return *this; }
 
-inline bool Unit::isBothZero(const UNIT n1, const UNIT n2) { return ((n1 == static_cast<UNIT>(0.0)) && (n2 == static_cast<UNIT>(0.0))); }
+inline bool Unit::isZero() const { return Unit::isApproximateZero(_n); }
+inline bool Unit::isBelowZero() const { return (_n < s_nNegativeZero); }
+inline bool Unit::isAboveZero() const { return (_n > s_nPositiveZero); }
+
+inline bool Unit::isApproximateZero(const UNIT n) { return (n >= s_nNegativeZero && n <= s_nPositiveZero); }
+inline bool Unit::isTrueZero(const UNIT n) { return (n == static_cast<UNIT>(0.0)); }
+inline bool Unit::isBothZero(const UNIT n1, const UNIT n2) { return (Unit::isApproximateZero(n1) && Unit::isApproximateZero(n2)); }
 inline bool Unit::isNegativeAndPositive(const UNIT n1, const UNIT n2) { return ((n1 < 0.0) && (n2 > 0.0)); }
 inline bool Unit::isOverflow(const UNIT n1, const UNIT n2) { return (((n2 > 0.0) && (n2 < 1.0) && (n1 > (n2 * s_nMax))) || ((n2 < 0.0) && (n2 > -1.0) && (n1 < (n2 * s_nMax)))); }
 inline bool Unit::isUnderflow(const UNIT n1, const UNIT n2) { return (((n2 > 1.0) && (n1 < (n2 * s_nMin))) || ((n2 < -1.0) && (n1 > (n2 * s_nMin)))); }
@@ -226,9 +232,9 @@ inline bool Unit::operator<(UNIT n) const
 	// First, handle both positive and negative zero
 	if (Unit::isBothZero(_n, n))
 		return false;
-	if (_n == static_cast<UNIT>(0.0))
+	if (Unit::isApproximateZero(_n))
 		return (n > static_cast<UNIT>(0.0));
-	if (n == static_cast<UNIT>(0.0))
+	if (Unit::isApproximateZero(n))
 		return (_n < static_cast<UNIT>(0.0));
 	// Check for opposing signs
 	if (Unit::isNegativeAndPositive(_n, n))
@@ -250,9 +256,9 @@ inline bool Unit::operator<=(UNIT n) const
 	// First, handle both positive and negative zero
 	if (Unit::isBothZero(_n, n))
 		return true;
-	if (_n == static_cast<UNIT>(0.0))
+	if (Unit::isApproximateZero(_n))
 		return (n > static_cast<UNIT>(0.0));
-	if (n == static_cast<UNIT>(0.0))
+	if (Unit::isApproximateZero(n))
 		return (_n < static_cast<UNIT>(0.0));
 	// Check for opposing signs
 	if (Unit::isNegativeAndPositive(_n, n))
@@ -274,9 +280,9 @@ inline bool Unit::operator>(UNIT n) const
 	// First, handle both positive and negative zero
 	if (Unit::isBothZero(_n, n))
 		return false;
-	if (_n == static_cast<UNIT>(0.0))
+	if (Unit::isApproximateZero(_n))
 		return (n < static_cast<UNIT>(0.0));
-	if (n == static_cast<UNIT>(0.0))
+	if (Unit::isApproximateZero(n))
 		return (_n > static_cast<UNIT>(0.0));
 	// Check for opposing signs
 	if (Unit::isNegativeAndPositive(_n, n))
@@ -298,9 +304,9 @@ inline bool Unit::operator>=(UNIT n) const
 	// First, handle equality of both positive and negative zero
 	if (Unit::isBothZero(_n, n))
 		return true;
-	if (_n == static_cast<UNIT>(0.0))
+	if (Unit::isApproximateZero(_n))
 		return (n < static_cast<UNIT>(0.0));
-	if (n == static_cast<UNIT>(0.0))
+	if (Unit::isApproximateZero(n))
 		return (_n > static_cast<UNIT>(0.0));
 	// Check for opposing signs
 	if (Unit::isNegativeAndPositive(_n, n))
@@ -808,7 +814,7 @@ inline const Point& Rectangle::getCenter() const { return _ptCenter; }
 inline UNIT Rectangle::getWidth() const { return ::max<UNIT>(_dxWidth, static_cast<UNIT>(0)); }
 inline UNIT Rectangle::getHeight() const { return ::max<UNIT>(_dyHeight, static_cast<UNIT>(0)); }
 
-inline bool Rectangle::isEmpty() const { return ((_dxWidth < static_cast<UNIT>(0)) || (_dyHeight < static_cast<UNIT>(0))); }
+inline bool Rectangle::isEmpty() const { return (_dxWidth.isBelowZero() || _dyHeight.isBelowZero()); }
 
 inline bool Rectangle::contains(const Point& pt) const
 {

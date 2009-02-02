@@ -58,6 +58,8 @@ Range::toString(bool fAsPair) const
 
 UNIT Unit::s_nMaxRelativeError = 10000;
 UNIT Unit::s_nEpsilon = numeric_limits<UNIT>::epsilon();
+UNIT Unit::s_nNegativeZero = 0 - (Unit::s_nMaxRelativeError * Unit::s_nEpsilon);
+UNIT Unit::s_nPositiveZero = 0 + (Unit::s_nMaxRelativeError * Unit::s_nEpsilon);
 UNIT Unit::s_nLargeUnity = 1 + (Unit::s_nMaxRelativeError * Unit::s_nEpsilon);
 UNIT Unit::s_nSmallUnity = 1 - (Unit::s_nMaxRelativeError * Unit::s_nEpsilon);
 UNIT Unit::s_nMax = numeric_limits<UNIT>::max();
@@ -176,6 +178,8 @@ Line::set(const Point& ptStart, const Point& ptEnd, bool fCanonical)
 	_dy = _ptEnd.y() - _ptStart.y();
 
 	_nSlope = _dy / _dx;
+	if (_nSlope.isZero())
+		_nSlope = static_cast<UNIT>(0.0);
 
 	_yIntercept = _ptStart.y() - (_nSlope * _ptStart.x());
 
