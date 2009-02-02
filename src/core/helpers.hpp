@@ -145,6 +145,10 @@ namespace org_biologicinstitute_stylus
 		Unit& operator-=(UNIT n);
 		Unit& operator*=(UNIT n);
 		Unit& operator/=(UNIT n);
+		
+		bool isZero() const;
+		bool isBelowZero() const;
+		bool isAboveZero() const;
 
 		void setToMin();
 		void setToMax();
@@ -158,11 +162,15 @@ namespace org_biologicinstitute_stylus
 	private:
 		static UNIT s_nMaxRelativeError;
 		static UNIT s_nEpsilon;
+		static UNIT s_nNegativeZero;
+		static UNIT s_nPositiveZero;
 		static UNIT s_nLargeUnity;
 		static UNIT s_nSmallUnity;
 		static UNIT s_nMax;
 		static UNIT s_nMin;
 
+		static bool isApproximateZero(const UNIT n);
+		static bool isTrueZero(const UNIT n);
 		static bool isBothZero(const UNIT n1, const UNIT n2);
 		static bool isNegativeAndPositive(const UNIT n1, const UNIT n2);
 		static bool isOverflow(const UNIT n1, const UNIT n2);
