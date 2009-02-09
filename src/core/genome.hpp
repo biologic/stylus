@@ -58,6 +58,7 @@ namespace org_biologicinstitute_stylus
 
 		void recordModification(IModificationSRPtr& srpModification);
 		void recordDescription(const char* pszDescription);
+		void recordTrial(size_t iTrial, UNIT nFitness);
 		
 		void undo();
 
@@ -65,12 +66,17 @@ namespace org_biologicinstitute_stylus
 		size_t length() const;
 
 		void clear();
+		
+		size_t getTrial() const;
+		UNIT getFitness() const;
 
 		std::string toString() const;
 		void toXML(XMLStream& xs, STFLAGS grfRecordDetail) const;
 		
 	private:
 		std::string _strDescription;			///< Description of stack (if any)
+		size_t _iTrial;							///< Associated trial
+		UNIT _nFitness;							///< Associated fitness
 		MODIFICATIONARRAY _vecModifications;	///< Stack of modifications
 	};
 	
@@ -269,7 +275,7 @@ namespace org_biologicinstitute_stylus
 		static void setTraceTrial(size_t iTrialTrace);
 		static size_t getTraceTrial();
 		
-		static void setRecordRate(size_t cRecordRate, STFLAGS grfRecordDetail, const char* pszRecordDirectory, bool fRecordHistory);
+		static void setRecordRate(size_t cRecordRate, STFLAGS grfRecordDetail, const char* pszRecordDirectory);
 
 		static void executePlan(const char* pxmlPlan, size_t iTrial, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t cStatusRate);
 		//@}
@@ -335,14 +341,13 @@ namespace org_biologicinstitute_stylus
 		static STFLAGS _grfRecordDetail;
 		static std::string _strRecordDirectory;
 
-		static size_t _fRecordHistory;
-
 		static bool _fGenesAssigned;			///< Flag indicating if genes were assigned or discovered
 		static GENEARRAY _vecGenes;				///< Array of genes within the genome
 		static std::bitset<s_maxGENES> _grfGenesInvalid;	///< Bit-flags indicating invalid genes
 
 		static ModificationStack _msModifications;	///< Stack of modifications
 		static MODIFICATIONSTACKARRAY _vecAttempts;	///< Stack of failed attempts (each as a ModificationStack)
+		static MODIFICATIONSTACKARRAY _vecHistory;	///< Stack of modifications made in previous trials (each as a ModificationStack)
 
 		static ST_GENOMESTATE _gsCurrent;			///< Current genome state
 		
@@ -379,12 +384,10 @@ namespace org_biologicinstitute_stylus
 			RT_FINAL
 		};
 		static void record(RECORDTYPE rt);
-		static void recordHistory(RECORDTYPE rt);
 		static bool validate(bool fPreserveErrors = false);
 		
 		static bool isRecording();
 		static bool isRecordingTrial();
-		static bool isRecordingHistory();
 
 		static size_t indexToGene(size_t iBase);
 		

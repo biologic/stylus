@@ -472,7 +472,7 @@ extern "C"
 	 * 
 	 */
 	ST_RETCODE
-	stSetRecordRate(size_t cRecordRate, STFLAGS grfRecordDetail, const char* pszRecordDirectory, bool fRecordHistory)
+	stSetRecordRate(size_t cRecordRate, STFLAGS grfRecordDetail, const char* pszRecordDirectory)
 	{
 		ENTERPUBLIC(GLOBAL,stSetRecordRate);
 		RETURN_NOTINITIALIZED();
@@ -481,14 +481,11 @@ extern "C"
 
 		if (grfRecordDetail != STRD_NONE && !VALID(pszRecordDirectory))
 			RETURN_BADARGS();
-
-		if (fRecordHistory && !VALID(pszRecordDirectory))
-			RETURN_BADARGS();
 		
 		if (VALID(pszRecordDirectory) && ::stat(pszRecordDirectory, &st) != 0)
 			RETURN_BADARGS();
 
-		Genome::setRecordRate(cRecordRate, grfRecordDetail, pszRecordDirectory, fRecordHistory);
+		Genome::setRecordRate(cRecordRate, grfRecordDetail, pszRecordDirectory);
 		RETURN_SUCCESS();
 		
 		EXITPUBLIC(GLOBAL,stSetRecordRate);

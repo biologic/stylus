@@ -58,7 +58,7 @@ inline bool XMLDocument::isXPathSuccess(xmlXPathObjectPtr pxpo, int nMaximumNode
 
 inline XMLDocument* XMLDocument::createInstance(const std::string& strXML) { return createInstance(strXML.c_str()); }
 
-inline const char* XMLDocument::getStylusNamespace() { return (_fUsePrereleaseNamespaces ? s_szStylusNamespacePrerelease : s_szStylusNamespace); }
+inline const char* XMLDocument::getStylusNamespace() { return _pszStylusNamespace; }
 
 inline xmlNodePtr XMLDocument::addText(xmlNodePtr pxn, std::string& strText) { return addText(pxn, strText.c_str()); }
 
@@ -83,7 +83,7 @@ inline int XMLDocument::countChildren(xmlNodePtr pxn, std::string& strChildTag, 
 inline int XMLDocument::countChildren(xmlNodePtr pxn, std::string& strChildTag, const char* pszChildNS) { return countChildren(pxn, strChildTag.c_str(), pszChildNS); }
 
 inline xmlXPathObjectPtr XMLDocument::evalXPath(xmlXPathContextPtr pxpc, std::string& strExpression) { return evalXPath(pxpc, strExpression.c_str()); }
-inline xmlXPathObjectPtr XMLDocument::evalXPath(std::string& strExpression, const Namespace* aryNS, int cNS) { return evalXPath(strExpression.c_str(), aryNS, cNS); }
+inline xmlXPathObjectPtr XMLDocument::evalXPath(std::string& strExpression) { return evalXPath(strExpression.c_str()); }
 
 template<class T> void
 stylus::loadFromXML(T& t, XMLDocument* pxd, int cNodes, xmlNodePtr* aryNodes)

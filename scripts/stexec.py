@@ -51,7 +51,7 @@ class Globals:
     names = Common.Names()
     urls = Common.URLs()
     urlGlobals = ''
-    aryRecord = [ 500, ['all'], True ]
+    aryRecord = [ 500, ['all'] ]
     aryLog = [ 500, 'info', '', '', False ]
     aryStatistics = []
     aryTrace = []
@@ -77,7 +77,7 @@ class Usage(Common.BiologicError):
 \t[[-p|--plan] <plan path/url>[,<number of trials to execute>[,<first trial associated with plan>]]] - Plan to execute
 \t[[-c|--constants] <constants path/url>] - Optional global constants to load
 
-\t[[-f|--frequency] <record rate>[,(%s)+][,[true|false]]] - Set record rate, detail, and history recording
+\t[[-f|--frequency] <record rate>[,(%s)+]]] - Set record rate and detail
 \t[[-l|--log] <rate>[,(%s)][,<log file path>[,echo|silent]][,long|short] - Set log rate and output level
 \t[[-s|--statistics] (%s)[,time]]
 \t[[-t|--trace] (%s)+,[<flow trace level (1-5)>][,<data trace level (1-5)>[,<trial at which to start tracing>[,<attempt at which to start tracing>]]]]
@@ -200,10 +200,6 @@ def getArguments():
                 for value in Globals.aryRecord[1]:
                     if not value in Constants.optRecordDetails:
                         raise Usage(value + ' is an illegal value for frequency')
-            if len(aryArg) > 2 and aryArg[2]:
-                if aryArg[2] != 'true' and aryArg[2] != 'false':
-                    raise Usage(aryArg[2] + ' is an illegal frequency option')
-                Globals.aryRecord[2] = (aryArg[2] == 'true')
 
         if option in ('-l', '--log'):
             aryArg = value.split(',')
@@ -340,7 +336,7 @@ def main(argv=None):
         if rc:
             raise StylusError(rc)
             
-        rc = Stylus.setRecordRate(Globals.aryRecord[0], Globals.aryRecord[1], Globals.names.pathData, Globals.aryRecord[2])
+        rc = Stylus.setRecordRate(Globals.aryRecord[0], Globals.aryRecord[1], Globals.names.pathData)
         if rc:
             raise StylusError(rc)
             

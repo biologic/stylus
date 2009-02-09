@@ -398,9 +398,8 @@ extern "C" {
 	 * \param[in] cRecordRate Rate at which to record trials (0 records only initial and final)
 	 * \param[in] grfRecordDetail Detail level to record
 	 * \param[in] pszRecordDirectory Directory into which to record the trials (required for all but STRD_NONE)
-	 * \param[in] fRecordHistory Write mutation history to history files (requires a record directory)
 	 */
-	ST_RETCODE stSetRecordRate(size_t cRecordRate, STFLAGS grfRecordDetail, const char* pszRecordDirectory, bool fRecordHistory);
+	ST_RETCODE stSetRecordRate(size_t cRecordRate, STFLAGS grfRecordDetail, const char* pszRecordDirectory);
 
 	/**
 	 * \brief Set the active genome

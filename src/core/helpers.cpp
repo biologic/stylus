@@ -68,12 +68,12 @@ UNIT Unit::s_nMin = numeric_limits<UNIT>::min();
 void Unit::logConstants()
 {
 	LOGINFO((LLINFO, "Unit constants"));
-	LOGINFO((LLINFO, " - MaxRelativeError: %0.16f\n", s_nMaxRelativeError));
-	LOGINFO((LLINFO, " - Epsilon         : %0.16f\n", s_nEpsilon));
-	LOGINFO((LLINFO, " - LargeUnity      : %0.16f\n", s_nLargeUnity));
-	LOGINFO((LLINFO, " - SmallUnity      : %0.16f\n", s_nSmallUnity));
-	LOGINFO((LLINFO, " - Max             : %0.16f\n", s_nMax));
-	LOGINFO((LLINFO, " - Min             : %0.16f\n", s_nMin));
+	LOGINFO((LLINFO, " - MaxRelativeError: %0.16f", s_nMaxRelativeError));
+	LOGINFO((LLINFO, " - Epsilon         : %0.16f", s_nEpsilon));
+	LOGINFO((LLINFO, " - LargeUnity      : %0.16f", s_nLargeUnity));
+	LOGINFO((LLINFO, " - SmallUnity      : %0.16f", s_nSmallUnity));
+	LOGINFO((LLINFO, " - PositiveZero    : %0.16f", s_nPositiveZero));
+	LOGINFO((LLINFO, " - NegativeZero    : %0.16f", s_nNegativeZero));
 }
 
 //--------------------------------------------------------------------------------

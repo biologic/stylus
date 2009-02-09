@@ -32,6 +32,8 @@ inline ModificationStack::~ModificationStack() { clear(); }
 inline ModificationStack& ModificationStack::operator=(const ModificationStack& cs)
 {
 	_strDescription = cs._strDescription;
+	_iTrial = cs._iTrial;
+	_nFitness = cs._nFitness;
 	_vecModifications = cs._vecModifications;
 	return *this;
 }
@@ -46,11 +48,20 @@ inline void ModificationStack::recordDescription(const char* pszDescription)
 	ASSERT(VALID(pszDescription));
 	_strDescription = pszDescription;
 }
+inline void ModificationStack::recordTrial(size_t iTrial, UNIT nFitness)
+{
+	_iTrial = iTrial;
+	_nFitness = nFitness;
+}
+
 
 inline bool ModificationStack::isEmpty() const { return (_vecModifications.size() <= 0); }
 inline size_t ModificationStack::length() const { return _vecModifications.size(); }
 
-inline void ModificationStack::clear() { _strDescription.clear(); _vecModifications.clear(); }
+inline void ModificationStack::clear() { _strDescription.clear(); _iTrial = 0; _nFitness = 0; _vecModifications.clear(); }
+
+inline size_t ModificationStack::getTrial() const { return _iTrial; }
+inline UNIT ModificationStack::getFitness() const { return _nFitness; }
 
 inline std::string ModificationStack::toString() const { return std::string(_strDescription); }
 
@@ -156,7 +167,6 @@ inline bool Genome::isLoaded() { return (_tLoaded != 0); }
 
 inline bool Genome::isRecording() { return (_grfRecordDetail != STRD_NONE && _strRecordDirectory.length() > 0); }
 inline bool Genome::isRecordingTrial() { return (_fReady && _cRecordRate && (getTrial() % _cRecordRate) == 0); }
-inline bool Genome::isRecordingHistory() { return (_fReady && _fRecordHistory); }
 
 inline size_t Genome::indexToGene(size_t iBase)
 {

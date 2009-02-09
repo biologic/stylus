@@ -502,12 +502,12 @@ bool g_fStylusInitialized = false;
 		return s_aryRECORDDETAILS;
 	}
 
-	unsigned long setRecordRate(size_t cRate, VECSTRING* pvecDetail, const char* pszDirectory, bool fRecordHistory)
+	unsigned long setRecordRate(size_t cRate, VECSTRING* pvecDetail, const char* pszDirectory)
 	{
 		ST_RETCODE rc = ::ensureStylus();
 		return (!ST_ISSUCCESS(rc)
 				? rc
-				: ::stSetRecordRate(cRate, stringsToFlags(s_aryRECORDDETAILS, s_aryRECORDDETAILFLAGS, s_cRECORDDETAILS, pvecDetail), pszDirectory, fRecordHistory));
+				: ::stSetRecordRate(cRate, stringsToFlags(s_aryRECORDDETAILS, s_aryRECORDDETAILFLAGS, s_cRECORDDETAILS, pvecDetail), pszDirectory));
 	}
 
 	unsigned long setGenome(const char* pszGenome, const char* pszAuthor)

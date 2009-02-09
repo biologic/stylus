@@ -345,7 +345,6 @@ ST_STATISTICS Genome::_statsRecordRate;
 size_t Genome::_cRecordRate = 0;
 STFLAGS Genome::_grfRecordDetail = STRD_NONE;
 std::string Genome::_strRecordDirectory;
-size_t Genome::_fRecordHistory;
 
 bool Genome::_fGenesAssigned;
 GENEARRAY Genome::_vecGenes;
@@ -353,6 +352,7 @@ std::bitset<Genome::s_maxGENES> Genome::_grfGenesInvalid;
 
 ModificationStack Genome::_msModifications;
 MODIFICATIONSTACKARRAY Genome::_vecAttempts;
+MODIFICATIONSTACKARRAY Genome::_vecHistory;
 
 ST_GENOMESTATE Genome::_gsCurrent;
 
@@ -663,11 +663,10 @@ Genome::getGenome(char* pxmlGenome, size_t* pcchGenome, STFLAGS grfRecordDetail)
  * 
  */
 void
-Genome::setRecordRate(size_t cRecordRate, STFLAGS grfRecordDetail, const char* pszRecordDirectory, bool fRecordHistory)
+Genome::setRecordRate(size_t cRecordRate, STFLAGS grfRecordDetail, const char* pszRecordDirectory)
 {
 	ENTER(GENOME,setRecordRate);
 	ASSERT(grfRecordDetail == STRD_NONE || VALID(pszRecordDirectory));
-	ASSERT(!fRecordHistory || VALID(pszRecordDirectory));
 	
 	_cRecordRate = cRecordRate;
 	_grfRecordDetail = grfRecordDetail;
@@ -678,8 +677,6 @@ Genome::setRecordRate(size_t cRecordRate, STFLAGS grfRecordDetail, const char* p
 	}
 	else
 		_strRecordDirectory.clear();
-		
-	_fRecordHistory = fRecordHistory;
 }
 
 /*
@@ -1053,6 +1050,26 @@ Genome::toXML(XMLStream& xs, STFLAGS grfRecordDetail, bool fUseTrialStatistics)
 			xs.writeEnd(xmlTag(XT_REJECTEDMUTATIONS));
 		}
 		
+		if (_vecHistory.size() && ST_ISANYSET(grfRecordDetail, STRD_LINEAGEALL))
+		{
+			xs.writeStart(xmlTag(XT_HISTORY));
+			for (size_t iHistory=0; iHistory < _vecHistory.size(); ++iHistory)
+			{
+				const ModificationStack& ms = _vecHistory[iHistory];
+
+				xs.openStart(xmlTag(XT_ACCEPTEDMUTATIONS));
+				xs.writeAttribute(xmlTag(XT_TRIAL), ms.getTrial());
+				xs.writeAttribute(xmlTag(XT_FITNESS), ms.getFitness());
+				xs.closeStart();
+
+				if (!ms.isEmpty())
+					ms.toXML(xs, STRD_ALL);
+
+				xs.writeEnd(xmlTag(XT_ACCEPTEDMUTATIONS));
+			}
+			xs.writeEnd(xmlTag(XT_HISTORY));
+		}
+		
 		xs.writeEnd(xmlTag(XT_LINEAGE));
 	}
 	
@@ -1239,17 +1256,23 @@ Genome::doRecording()
 {
 	ENTER(GENOME,doRecording);
 	ASSERT(isState(STGS_RECORDING));
-	
-	if (isRecordingHistory())
-		recordHistory(RT_TRIAL);
 
 	if (isRecordingTrial())
 	{
 		record(RT_TRIAL);
 
-		// Clear the record rate statistics and advance to the next recording window
+		// Clear the record rate statistics, accumulated history, and advance to the next recording window
 		clearStatistics(_statsRecordRate, getTrial());
+		_vecHistory.clear();
 		++_statsRecordRate._iTrialInitial;
+	}
+	
+	// If modifications exist (implying plan execution), save them in the accumulating history
+	else if (_msModifications.length() > 0)
+	{
+		TFLOW(GENOME,L3,(LLTRACE, "Saving %ld changes to successful change history", _msModifications.length()));
+		_vecHistory.push_back(_msModifications);
+		_vecHistory[_vecHistory.size()-1].recordTrial(getTrial(), getFitness());
 	}
 
 	return true;
@@ -1532,77 +1555,6 @@ Genome::record(RECORDTYPE rt)
 }
 
 /*
- * Function: recordHistory
- * 
- */
-void
-Genome::recordHistory(RECORDTYPE rt)
-{
-	ENTER(GENOME,record);
-	
-	ASSERT(_fRecordHistory);
-	ASSERT(!EMPTYSTR(_strRecordDirectory));
-	
-	// Generate the full path name
-	ostringstream ostrPathname;
-	ostrPathname
-		<< _strRecordDirectory
-		<< Constants::s_strHISTORY
-		<< Constants::s_strXMLEXTENSION;
-		
-	// If initializing, remove any previous history file
-	if (rt == RT_INITIAL)
-	{
-		char szTime[Constants::s_cchTIME];
-
-		timeToString(szTime, &_tLoaded, false, true);
-
-		ofstream ofstr(ostrPathname.str().c_str(), ios::out | ios::trunc);
-		if (!ofstr || !ofstr.is_open())
-			THROWRC((RC(ERROR), "Unable to create genome history file %s", ostrPathname.str().c_str()));
-			
-		XMLStream xs(ofstr);
-		xs.openStart(xmlTag(XT_HISTORY));
-		xs.writeAttribute(xmlTag(XT_XMLNS), XMLDocument::s_szStylusNamespace);
-		xs.writeAttribute(xmlTag(XT_UUID), _strUUID);
-		xs.writeAttribute(xmlTag(XT_CREATIONTOOL), Globals::s_szBuild);
-		xs.writeAttribute(xmlTag(XT_CREATIONDATE), szTime);
-		xs.closeStart();
-	}
-
-	// If finalizing, close the history file
-	else if (rt == RT_FINAL)
-	{
-		ofstream ofstr(ostrPathname.str().c_str(), ios::out | ios::app);
-		if (!ofstr || !ofstr.is_open())
-			THROWRC((RC(ERROR), "Unable to open genome history file %s", ostrPathname.str().c_str()));
-
-		XMLStream xs(ofstr, false);
-		xs.writeEnd(xmlTag(XT_HISTORY));
-	}
-	
-	// Otherwise, write modifications to the file
-	else
-	{
-		ofstream ofstr(ostrPathname.str().c_str(), ios::out | ios::app);
-		if (!ofstr || !ofstr.is_open())
-			THROWRC((RC(ERROR), "Unable to open genome history file %s", ostrPathname.str().c_str()));
-
-		XMLStream xs(ofstr, false);
-
-		xs.openStart(xmlTag(XT_ACCEPTEDMUTATIONS));
-		xs.writeAttribute(xmlTag(XT_TRIAL), getTrial());
-		xs.writeAttribute(xmlTag(XT_FITNESS), getFitness());
-		xs.closeStart();
-
-		if (!_msModifications.isEmpty())
-			_msModifications.toXML(xs, STRD_ALL);
-
-		xs.writeEnd(xmlTag(XT_ACCEPTEDMUTATIONS));
-	}
-}
-
-/*
  * Function: validate
  *
  */
@@ -1690,7 +1642,7 @@ Genome::purgeModifications(bool fPreserveAttempts)
 {
 	ENTER(GENOME,purgeModifications);
 	
-	// If in ROLLBACK, save the failed changes to the failed change history stack
+	// If in ROLLBACK, save the failed changes to the failed changes stack
 	if (fPreserveAttempts)
 	{
 		TFLOW(GENOME,L3,(LLTRACE, "Saving %ld changes to failed change history", _msModifications.length()));
@@ -1698,7 +1650,7 @@ Genome::purgeModifications(bool fPreserveAttempts)
 		_vecAttempts.push_back(_msModifications);
 	}
 
-	// Otherwise, delete all history
+	// Otherwise, delete all failed changes
 	else
 	{
 		_vecAttempts.clear();

@@ -673,19 +673,13 @@ Genome::executePlan(const char* pxmlPlan, size_t iTrialFirst, size_t cTrials, ST
 		XMLStream xs(ofstr);
 		_plan.toXML(xs);
 	}
-	
-	// Initialize a history file if recording history
-	if (isRecordingHistory())
-		recordHistory(RT_INITIAL);
 
 	// Execute the loaded plan
 	_plan.execute(iTrialFirst, cTrials, pfnStatus, cStatusRate);
 	
-	// Save the final genome and close the history file
+	// Save the final genome
 	if (isRecording())
 		record(RT_FINAL);
-	if (isRecordingHistory())
-		recordHistory(RT_FINAL);
 }
 
 /*
