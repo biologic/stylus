@@ -33,7 +33,7 @@ inline ACIDTYPE Acid::vectorToType(const char* pszVector)
 
 	for (size_t at=ACID_STP; at < ACID_MAX; ++at)
 	{
-		if (!::strnicmp(pszVector, s_aryACIDS[at]._pszName, Codon::s_cchCODON))
+		if (!::strncmp(pszVector, s_aryACIDS[at]._pszName, Codon::s_cchCODON))
 			return (ACIDTYPE)at;
 	}
 
