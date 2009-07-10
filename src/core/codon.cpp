@@ -30,12 +30,12 @@ const Acid Acid::s_aryACIDS[ACID_MAX] =
 	{ 0, 0, 0.0, DIR_STOP, "STP" },
 
 	// NORTH vectors
-	{ 0,									Constants::s_nVECTOR_SHORT,  		Constants::s_nVECTOR_SHORT,		DIR_NORTH,	   	"Nos" },
-	{ 0,				  					Constants::s_nVECTOR_MEDIUM, 		Constants::s_nVECTOR_MEDIUM,	DIR_NORTH,	   	"Nom" },
-	{ 0,				  					Constants::s_nVECTOR_LONG,   		Constants::s_nVECTOR_LONG,		DIR_NORTH,	   	"Nol" },
+	{ 0,									Constants::s_nVECTOR_SHORT,			Constants::s_nVECTOR_SHORT,		DIR_NORTH,		"Nos" },
+	{ 0,									Constants::s_nVECTOR_MEDIUM,		Constants::s_nVECTOR_MEDIUM,	DIR_NORTH,		"Nom" },
+	{ 0,									Constants::s_nVECTOR_LONG,			Constants::s_nVECTOR_LONG,		DIR_NORTH,		"Nol" },
 
 	// NORTHEAST vectors
-	{ Constants::s_nSHORT_DIAGONALSTEP,		Constants::s_nSHORT_DIAGONALSTEP,   Constants::s_nVECTOR_SHORT,		DIR_NORTHEAST, 	"Nes" },
+	{ Constants::s_nSHORT_DIAGONALSTEP,		Constants::s_nSHORT_DIAGONALSTEP,	Constants::s_nVECTOR_SHORT,		DIR_NORTHEAST, 	"Nes" },
 	{ Constants::s_nMEDIUM_DIAGONALSTEP,	Constants::s_nMEDIUM_DIAGONALSTEP,	Constants::s_nVECTOR_MEDIUM,	DIR_NORTHEAST, 	"Nem" },
 
 	// EAST vectors
@@ -48,9 +48,9 @@ const Acid Acid::s_aryACIDS[ACID_MAX] =
 	{ Constants::s_nMEDIUM_DIAGONALSTEP,	-Constants::s_nMEDIUM_DIAGONALSTEP,	Constants::s_nVECTOR_MEDIUM,	DIR_SOUTHEAST, 	"Sem" },
 
 	// SOUTH vectors
-	{ 0,									-Constants::s_nVECTOR_SHORT,  		Constants::s_nVECTOR_SHORT,		DIR_SOUTH,	   	"Sos" },
-	{ 0,				  					-Constants::s_nVECTOR_MEDIUM,		Constants::s_nVECTOR_MEDIUM,	DIR_SOUTH,	   	"Som" },
-	{ 0,				  					-Constants::s_nVECTOR_LONG,			Constants::s_nVECTOR_LONG,		DIR_SOUTH,	   	"Sol" },
+	{ 0,									-Constants::s_nVECTOR_SHORT,		Constants::s_nVECTOR_SHORT,		DIR_SOUTH,	   	"Sos" },
+	{ 0,									-Constants::s_nVECTOR_MEDIUM,		Constants::s_nVECTOR_MEDIUM,	DIR_SOUTH,	   	"Som" },
+	{ 0,									-Constants::s_nVECTOR_LONG,			Constants::s_nVECTOR_LONG,		DIR_SOUTH,	   	"Sol" },
 
 	// SOUTHWEST vectors
 	{ -Constants::s_nSHORT_DIAGONALSTEP,	-Constants::s_nSHORT_DIAGONALSTEP,	Constants::s_nVECTOR_SHORT,		DIR_SOUTHWEST, 	"Sws" },

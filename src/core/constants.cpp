@@ -124,7 +124,7 @@ const int Constants::s_nHTTP_GATEWAY_TIME_OUT;
 const int Constants::s_nHTTP_VERSION_NOT_SUPPORTED;
 const int Constants::s_nHTTP_VARIANT_ALSO_VARIES;
 const int Constants::s_nHTTP_INSUFFICIENT_STORAGE;
-const int Constants::s_nHTTP_NOT_EXTENDED;    
+const int Constants::s_nHTTP_NOT_EXTENDED;
 
 const std::string Constants::s_strEMPTY;
 
