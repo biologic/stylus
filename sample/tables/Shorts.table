@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!--
-Stylus, Copyright 2006-2008 Biologic Institute
+Stylus, Copyright 2006-2009 Biologic Institute
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,69 +14,69 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<codonTable uuid='E3518EA1-AFA7-4996-B803-0C911B809EE7' creationDate='2008-04-01T19:36:40.986515' creationTool='codonTable.py 1.0' xmlns='http://biologicinstitute.org/schemas/stylus/1.0'>
-	<entry codon='TTT' vector='NoL' />
-	<entry codon='TTC' vector='NoS' />
-	<entry codon='TTA' vector='NoM' />
-	<entry codon='TTG' vector='NoS' />
-	<entry codon='TCT' vector='SeM' />
-	<entry codon='TCC' vector='SeS' />
-	<entry codon='TCA' vector='SeS' />
-	<entry codon='TCG' vector='SeS' />
-	<entry codon='TAT' vector='SoL' />
-	<entry codon='TAC' vector='SoS' />
+<codonTable uuid='E3518EA1-AFA7-4996-B803-0C911B809EE7' creationDate='2008-04-01T19:36:40.986515' creationTool='codonTable.py 1.3' xmlns='http://biologicinstitute.org/schemas/stylus/1.3'>
+	<entry codon='TTT' vector='Nol' />
+	<entry codon='TTC' vector='Nos' />
+	<entry codon='TTA' vector='Nom' />
+	<entry codon='TTG' vector='Nos' />
+	<entry codon='TCT' vector='Sem' />
+	<entry codon='TCC' vector='Ses' />
+	<entry codon='TCA' vector='Ses' />
+	<entry codon='TCG' vector='Ses' />
+	<entry codon='TAT' vector='Sol' />
+	<entry codon='TAC' vector='Sos' />
 	<entry codon='TAA' vector='STP' />
 	<entry codon='TAG' vector='STP' />
-	<entry codon='TGT' vector='NwM' />
-	<entry codon='TGC' vector='NwS' />
+	<entry codon='TGT' vector='Nwm' />
+	<entry codon='TGC' vector='Nws' />
 	<entry codon='TGA' vector='STP' />
-	<entry codon='TGG' vector='NwS' />
-	<entry codon='CTT' vector='NoS' />
-	<entry codon='CTC' vector='NoS' />
-	<entry codon='CTA' vector='NoS' />
-	<entry codon='CTG' vector='NoS' />
-	<entry codon='CCT' vector='SeS' />
-	<entry codon='CCC' vector='SeS' />
-	<entry codon='CCA' vector='SeS' />
-	<entry codon='CCG' vector='SeS' />
-	<entry codon='CAT' vector='SoM' />
-	<entry codon='CAC' vector='SoS' />
-	<entry codon='CAA' vector='SoS' />
-	<entry codon='CAG' vector='SoS' />
-	<entry codon='CGT' vector='NwS' />
-	<entry codon='CGC' vector='NwS' />
-	<entry codon='CGA' vector='NwS' />
-	<entry codon='CGG' vector='NwS' />
-	<entry codon='ATT' vector='NeM' />
-	<entry codon='ATC' vector='NeS' />
-	<entry codon='ATA' vector='NeS' />
-	<entry codon='ATG' vector='NeS' />
-	<entry codon='ACT' vector='EaL' />
-	<entry codon='ACC' vector='EaS' />
-	<entry codon='ACA' vector='EaM' />
-	<entry codon='ACG' vector='EaS' />
-	<entry codon='AAT' vector='SwM' />
-	<entry codon='AAC' vector='SwS' />
-	<entry codon='AAA' vector='SwS' />
-	<entry codon='AAG' vector='SwS' />
-	<entry codon='AGT' vector='WeL' />
-	<entry codon='AGC' vector='WeS' />
-	<entry codon='AGA' vector='WeM' />
-	<entry codon='AGG' vector='WeS' />
-	<entry codon='GTT' vector='NeS' />
-	<entry codon='GTC' vector='NeS' />
-	<entry codon='GTA' vector='NeS' />
-	<entry codon='GTG' vector='NeS' />
-	<entry codon='GCT' vector='EaS' />
-	<entry codon='GCC' vector='EaS' />
-	<entry codon='GCA' vector='EaS' />
-	<entry codon='GCG' vector='EaS' />
-	<entry codon='GAT' vector='SwS' />
-	<entry codon='GAC' vector='SwS' />
-	<entry codon='GAA' vector='SwS' />
-	<entry codon='GAG' vector='SwS' />
-	<entry codon='GGT' vector='WeS' />
-	<entry codon='GGC' vector='WeS' />
-	<entry codon='GGA' vector='WeS' />
-	<entry codon='GGG' vector='WeS' />
+	<entry codon='TGG' vector='Nws' />
+	<entry codon='CTT' vector='Nos' />
+	<entry codon='CTC' vector='Nos' />
+	<entry codon='CTA' vector='Nos' />
+	<entry codon='CTG' vector='Nos' />
+	<entry codon='CCT' vector='Ses' />
+	<entry codon='CCC' vector='Ses' />
+	<entry codon='CCA' vector='Ses' />
+	<entry codon='CCG' vector='Ses' />
+	<entry codon='CAT' vector='Som' />
+	<entry codon='CAC' vector='Sos' />
+	<entry codon='CAA' vector='Sos' />
+	<entry codon='CAG' vector='Sos' />
+	<entry codon='CGT' vector='Nws' />
+	<entry codon='CGC' vector='Nws' />
+	<entry codon='CGA' vector='Nws' />
+	<entry codon='CGG' vector='Nws' />
+	<entry codon='ATT' vector='Nem' />
+	<entry codon='ATC' vector='Nes' />
+	<entry codon='ATA' vector='Nes' />
+	<entry codon='ATG' vector='Nes' />
+	<entry codon='ACT' vector='Eal' />
+	<entry codon='ACC' vector='Eas' />
+	<entry codon='ACA' vector='Eam' />
+	<entry codon='ACG' vector='Eas' />
+	<entry codon='AAT' vector='Swm' />
+	<entry codon='AAC' vector='Sws' />
+	<entry codon='AAA' vector='Sws' />
+	<entry codon='AAG' vector='Sws' />
+	<entry codon='AGT' vector='Wel' />
+	<entry codon='AGC' vector='Wes' />
+	<entry codon='AGA' vector='Wem' />
+	<entry codon='AGG' vector='Wes' />
+	<entry codon='GTT' vector='Nes' />
+	<entry codon='GTC' vector='Nes' />
+	<entry codon='GTA' vector='Nes' />
+	<entry codon='GTG' vector='Nes' />
+	<entry codon='GCT' vector='Eas' />
+	<entry codon='GCC' vector='Eas' />
+	<entry codon='GCA' vector='Eas' />
+	<entry codon='GCG' vector='Eas' />
+	<entry codon='GAT' vector='Sws' />
+	<entry codon='GAC' vector='Sws' />
+	<entry codon='GAA' vector='Sws' />
+	<entry codon='GAG' vector='Sws' />
+	<entry codon='GGT' vector='Wes' />
+	<entry codon='GGC' vector='Wes' />
+	<entry codon='GGA' vector='Wes' />
+	<entry codon='GGG' vector='Wes' />
 </codonTable>

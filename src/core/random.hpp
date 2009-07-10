@@ -5,7 +5,7 @@
  * IRandom defines interface to the random number generator Stylus uses.
  * Randlib implements the interface using the Randlib library.
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,6 +110,13 @@ namespace org_biologicinstitute_stylus
 		 */
 		static void initialize(const std::string& strUUID);
 		static void terminate();
+
+		/**
+		 * \brief Generate a v4 UUID as per RFC 4122
+		 *
+		 * Use the random number generator to generate a v4 UUID.
+		 */
+		static std::string getUUIDv4();
 
 		/**
 		 * \brief Methods that statically reroute to the active random generator

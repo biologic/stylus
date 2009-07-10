@@ -15,7 +15,7 @@
  *   ranges and other index values relative to the start of the gene, not
  *   the genome since genes may move about (due to insertion/deletion events)
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

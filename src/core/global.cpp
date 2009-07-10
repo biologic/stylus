@@ -5,7 +5,7 @@
  * This file implements the C interface to Stylus and globally accessible
  * methods.
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ extern "C"
 		return rc;
 	}
 
-    /*
+	/*
 	 * Function: stInitialize
 	 *
 	 */
@@ -103,7 +103,7 @@ extern "C"
 		EXITPUBLIC(GLOBAL,stInitialize);
 	}
 
-    /*
+	/*
 	 * Function: stTerminate
 	 *
 	 */
@@ -145,6 +145,24 @@ extern "C"
 	}
 	
 	/*
+	 * Function: stSetUUIDSeeds
+	 * 
+	 */
+	ST_RETCODE
+	stSetUUIDSeeds(const char* pszSeeds)
+	{
+		ENTERPUBLIC(GLOBAL,stSetUUIDSeeds);
+		RETURN_NOTINITIALIZED();
+		
+		// Generate UUIDs
+		Genome::setUUIDSeeds(pszSeeds);
+
+		RETURN_SUCCESS();
+
+		EXITPUBLIC(GLOBAL,stSetUUIDSeeds);
+	}
+
+	/*
 	 * Function: stSetScope
 	 * 
 	 */
@@ -170,7 +188,7 @@ extern "C"
 		EXITPUBLIC(GLOBAL,stSetScope);
 	}
 
-    /*
+	/*
 	 * Function: stSetLogLevel
 	 *
 	 */
@@ -186,7 +204,7 @@ extern "C"
 		EXITPUBLIC(GLOBAL,stSetLogLevel);
 	}
 
-    /*
+	/*
 	 * Function: stGetLogLevel
 	 *
 	 */
@@ -275,7 +293,7 @@ extern "C"
 		EXITPUBLIC(GLOBAL,stGetLogRate);
 	}
 
-    /*
+	/*
 	 * Function: stClearTraceRegions
 	 *
 	 */
@@ -291,7 +309,7 @@ extern "C"
 		EXITPUBLIC(GLOBAL,stClearTraceRegions);
 	}
 
-    /*
+	/*
 	 * Function: stEnableTraceRegions
 	 *
 	 */
@@ -307,7 +325,7 @@ extern "C"
 		EXITPUBLIC(GLOBAL,stEnableTraceRegions);
 	}
 
-    /*
+	/*
 	 * Function: stSetTraceRegions
 	 *
 	 */
@@ -323,7 +341,7 @@ extern "C"
 		EXITPUBLIC(GLOBAL,stSetTraceRegions);
 	}
 
-    /*
+	/*
 	 * Function: stGetTraceRegions
 	 *
 	 */

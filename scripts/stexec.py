@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 # 
-# Stylus, Copyright 2006-2008 Biologic Institute
+# Stylus, Copyright 2006-2009 Biologic Institute
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ Stylus, Copyright 2006-2008 Biologic Institute.
 
 import getopt
 import os
+import random
 import re
 import shutil
 import stylus.common as Common
@@ -296,6 +297,52 @@ def getArguments():
             Globals.aryLog[2] = os.path.abspath(os.path.join(Globals.names.pathData, Globals.aryLog[2]))
         Globals.aryLog[2] = os.path.normpath(os.path.normcase(Globals.aryLog[2]))
         
+#------------------------------------------------------------------------------
+# Function: getUUIDSeeds
+#
+# Generate seeds for UUID generation
+#------------------------------------------------------------------------------
+def getUUIDSeeds():
+    # Get randomness from urandom or the 'random' module.
+    intbytecount = 1
+
+    while long(''.join(['7f'] + ['ff' for i in range(intbytecount)]), 16) <= sys.maxint:
+        intbytecount += 1
+
+    try:
+        seeds = [os.urandom(intbytecount) for i in range(2)]
+    except:
+        seeds = [''.join([chr(random.randrange(256)) for j in range(intbytecount)]) for i in range(2)]
+
+    acc1 = -sys.maxint - 1
+    acc2 = -sys.maxint - 1
+
+    mult = 1
+
+    for i in range(intbytecount):
+        acc1 += ord(seeds[0][i]) * mult
+        mult *= 256
+
+    mult = 1
+
+    for i in range(intbytecount):
+        acc2 += ord(seeds[1][i]) * mult
+        mult *= 256
+
+    if acc1 < 0:
+        acc1 += sys.maxint
+        
+    if acc1 > ((sys.maxint + 1) / 2):
+        acc1 /= 2
+
+    if acc2 < 0:
+        acc2 += sys.maxint
+
+    if acc2 > ((sys.maxint + 1) / 2):
+        acc2 /= 2
+
+    return '%d %d' % (acc1 , acc2)
+        
 #==============================================================================
 # Main
 #==============================================================================
@@ -350,6 +397,12 @@ def main(argv=None):
                 raise StylusError(rc)
             
         rc = Stylus.setGenome(strGenome, Globals.strAuthor)
+        if rc:
+            raise StylusError(rc)
+
+        seeds = ''.join(getUUIDSeeds())
+
+        rc = Stylus.setUUIDSeeds(seeds)
         if rc:
             raise StylusError(rc)
 

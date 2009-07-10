@@ -1,7 +1,7 @@
 #--------------------------------------------------------------------------------
 #	AUTOMAKE input script
 #
-# Stylus, Copyright 2006-2008 Biologic Institute
+# Stylus, Copyright 2006-2009 Biologic Institute
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

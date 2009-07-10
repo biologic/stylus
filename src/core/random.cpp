@@ -2,7 +2,7 @@
  * \file	random.cpp
  * \brief	Stylus RGenerator and CRandlib classes
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,6 +56,42 @@ RGenerator::terminate()
 	ENTER(GLOBAL,terminate);
 
 	::delete s_prgen;
+}
+
+/*
+ * Function: getUUIDv4
+ *
+ */
+std::string 
+RGenerator::getUUIDv4()
+{
+	ENTER(GLOBAL,getUUIDv4);
+
+	long bytes[16];
+	ostringstream ostr;
+
+	// Get random bytes for UUID
+	for (size_t index = 0; index < 16; index += 1) {
+		bytes[index] = getUniform((long)0, (long)255);
+	}
+
+	// Set the UUID variant to be RFC4122
+	bytes[7] &= ~0xc0;
+	bytes[7] |= 0x80;
+
+	// Set the UUID version number to 4
+	bytes[9] &= ~0xf0;
+	bytes[9] |= 0x40;
+
+	// Format UUID string
+	ostr << hex;
+	ostr << bytes[15] << bytes[14] << bytes[13] << bytes[12] << '-';
+	ostr << bytes[11] << bytes[10] << '-';
+	ostr << bytes[9] << bytes[8]<< '-';
+	ostr << bytes[7] << bytes[6] << '-';
+	ostr << bytes[5] << bytes[4] << bytes[3] << bytes[2] << bytes[1] << bytes[0];
+
+	return ostr.str();
 }
 
 /*

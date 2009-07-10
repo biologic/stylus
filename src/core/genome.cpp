@@ -2,7 +2,7 @@
  * \file	genome.cpp
  * \brief	Stylus Genome class
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,85 +117,85 @@ const std::string CodonTable::s_strUUID("9CF8BD5B-860C-4D7D-AED6-270C6EC14790");
 
 const ACIDTYPE CodonTable::s_mapCodonToType[Constants::s_nmaxCODONS] =
 {
-	ACID_NoL, // 00 - TTT
-	ACID_NoL, // 01 - TTC
-	ACID_NoM, // 02 - TTA
-	ACID_NoM, // 03 - TTG
+	ACID_Nol, // 00 - TTT
+	ACID_Nol, // 01 - TTC
+	ACID_Nom, // 02 - TTA
+	ACID_Nom, // 03 - TTG
 
-	ACID_SeM, // 04 - TCT
-	ACID_SeM, // 05 - TCC
-	ACID_SeM, // 06 - TCA
-	ACID_SeM, // 07 - TCG
+	ACID_Sem, // 04 - TCT
+	ACID_Sem, // 05 - TCC
+	ACID_Sem, // 06 - TCA
+	ACID_Sem, // 07 - TCG
 
-	ACID_SoL, // 08 - TAT
-	ACID_SoL, // 09 - TAC
+	ACID_Sol, // 08 - TAT
+	ACID_Sol, // 09 - TAC
 	ACID_STP, // 10 - TAA
 	ACID_STP, // 11 - TAG
 
-	ACID_NwM, // 12 - TGT
-	ACID_NwM, // 13 - TGC
+	ACID_Nwm, // 12 - TGT
+	ACID_Nwm, // 13 - TGC
 	ACID_STP, // 14 - TGA
-	ACID_NwM, // 15 - TGG
+	ACID_Nwm, // 15 - TGG
 
-	ACID_NoS, // 16 - CTT
-	ACID_NoS, // 17 - CTC
-	ACID_NoS, // 18 - CTA
-	ACID_NoS, // 19 - CTG
+	ACID_Nos, // 16 - CTT
+	ACID_Nos, // 17 - CTC
+	ACID_Nos, // 18 - CTA
+	ACID_Nos, // 19 - CTG
 
-	ACID_SeS, // 20 - CCT
-	ACID_SeS, // 21 - CCC
-	ACID_SeS, // 22 - CCA
-	ACID_SeS, // 23 - CCG
+	ACID_Ses, // 20 - CCT
+	ACID_Ses, // 21 - CCC
+	ACID_Ses, // 22 - CCA
+	ACID_Ses, // 23 - CCG
 
-	ACID_SoM, // 24 - CAT
-	ACID_SoM, // 25 - CAC
-	ACID_SoS, // 26 - CAA
-	ACID_SoS, // 27 - CAG
+	ACID_Som, // 24 - CAT
+	ACID_Som, // 25 - CAC
+	ACID_Sos, // 26 - CAA
+	ACID_Sos, // 27 - CAG
 
-	ACID_NwS, // 28 - CGT
-	ACID_NwS, // 29 - CGC
-	ACID_NwS, // 30 - CGA
-	ACID_NwS, // 31 - CGG
+	ACID_Nws, // 28 - CGT
+	ACID_Nws, // 29 - CGC
+	ACID_Nws, // 30 - CGA
+	ACID_Nws, // 31 - CGG
 
-	ACID_NeM, // 32 - ATT
-	ACID_NeM, // 33 - ATC
-	ACID_NeM, // 34 - ATA
-	ACID_NeM, // 35 - ATG
+	ACID_Nem, // 32 - ATT
+	ACID_Nem, // 33 - ATC
+	ACID_Nem, // 34 - ATA
+	ACID_Nem, // 35 - ATG
 
-	ACID_EaL, // 36 - ACT
-	ACID_EaL, // 37 - ACC
-	ACID_EaM, // 38 - ACA
-	ACID_EaM, // 39 - ACG
+	ACID_Eal, // 36 - ACT
+	ACID_Eal, // 37 - ACC
+	ACID_Eam, // 38 - ACA
+	ACID_Eam, // 39 - ACG
 
-	ACID_SwM, // 40 - AAT
-	ACID_SwM, // 41 - AAC
-	ACID_SwM, // 42 - AAA
-	ACID_SwM, // 43 - AAG
+	ACID_Swm, // 40 - AAT
+	ACID_Swm, // 41 - AAC
+	ACID_Swm, // 42 - AAA
+	ACID_Swm, // 43 - AAG
 
-	ACID_WeL, // 44 - AGT
-	ACID_WeL, // 45 - AGC
-	ACID_WeM, // 46 - AGA
-	ACID_WeM, // 47 - AGG
+	ACID_Wel, // 44 - AGT
+	ACID_Wel, // 45 - AGC
+	ACID_Wem, // 46 - AGA
+	ACID_Wem, // 47 - AGG
 
-	ACID_NeS, // 48 - GTT
-	ACID_NeS, // 49 - GTC
-	ACID_NeS, // 50 - GTA
-	ACID_NeS, // 51 - GTG
+	ACID_Nes, // 48 - GTT
+	ACID_Nes, // 49 - GTC
+	ACID_Nes, // 50 - GTA
+	ACID_Nes, // 51 - GTG
 
-	ACID_EaS, // 52 - GCT
-	ACID_EaS, // 53 - GCC
-	ACID_EaS, // 54 - GCA
-	ACID_EaS, // 55 - GCG
+	ACID_Eas, // 52 - GCT
+	ACID_Eas, // 53 - GCC
+	ACID_Eas, // 54 - GCA
+	ACID_Eas, // 55 - GCG
 
-	ACID_SwS, // 56 - GAT
-	ACID_SwS, // 57 - GAC
-	ACID_SwS, // 58 - GAA
-	ACID_SwS, // 59 - GAG
+	ACID_Sws, // 56 - GAT
+	ACID_Sws, // 57 - GAC
+	ACID_Sws, // 58 - GAA
+	ACID_Sws, // 59 - GAG
 
-	ACID_WeS, // 60 - GGT
-	ACID_WeS, // 61 - GGC
-	ACID_WeS, // 62 - GGA
-	ACID_WeS  // 63 - GGG
+	ACID_Wes, // 60 - GGT
+	ACID_Wes, // 61 - GGC
+	ACID_Wes, // 62 - GGA
+	ACID_Wes  // 63 - GGG
 };
 
 /*
@@ -334,6 +334,9 @@ utime Genome::_tLoaded = 0L;
 std::string Genome::_strUUID;
 std::string Genome::_strStrain;
 std::string Genome::_strAncestors;
+
+std::string Genome::_strUUIDSeeds;
+STRINGARRAY Genome::_vecUUIDs;
 
 bool Genome::_fReady;
 
@@ -631,6 +634,18 @@ Genome::setGenome(const char* pxmlGenome, const char* pszAuthor)
 }
 
 /*
+ * Function: setUUIDSeeds
+ *
+ */
+void
+Genome::setUUIDSeeds(const char* pszSeeds)
+{
+	ENTER(GENOME,setUUIDSeeds);
+
+	_strUUIDSeeds = pszSeeds;
+}
+
+/*
  * Function: getGenome
  *
  */
@@ -810,7 +825,11 @@ Genome::toXML(XMLStream& xs, STFLAGS grfRecordDetail, bool fUseTrialStatistics)
 	char szTime[Constants::s_cchTIME];
 	
 	timeToString(szTime, &_tLoaded, false, true);
-	
+
+	// Get a new UUID for the new XML file
+	_strUUID = _vecUUIDs.back();
+	_vecUUIDs.pop_back();
+
 	// Add the genome element and attributes
 	xs.openStart(xmlTag(XT_GENOME));
 	xs.writeAttribute(xmlTag(XT_XMLNS), XMLDocument::s_szStylusNamespace);
@@ -1723,7 +1742,7 @@ Genome::rgenIndex(const Range& rgBases, bool fInFrame)
 	{
 		long iBase;
 		do
-			iBase = RGenerator::getUniform(rgBases.getStart(), rgBases.getEnd()-1);
+			iBase = RGenerator::getUniform(rgBases.getStart(), rgBases.getEnd());
 		while (fInFrame && !Codon::onCodonBoundary(iBase));
 		return static_cast<size_t>(iBase);
 	}
@@ -1740,7 +1759,7 @@ Genome::rgenLength(size_t cbLength, bool fWholeCodons)
 	size_t cb;
 	do
 		cb = static_cast<size_t>(RGenerator::getUniform(1L, cbLength));
-	while (!fWholeCodons || (cb % Codon::s_cchCODON));
+	while (fWholeCodons && !Codon::onCodonBoundary(cb));
 	return cb;
 }
 

@@ -1,7 +1,7 @@
 #--------------------------------------------------------------------------------
 #	CONFIGURE input script
 #
-# Stylus, Copyright 2006-2008 Biologic Institute
+# Stylus, Copyright 2006-2009 Biologic Institute
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@
 AC_PREREQ(2.59)
 
 
-AC_INIT([Stylus], [1.2.1], [info@biologicinstitute.org], [stylus])
+AC_INIT([Stylus], [1.3.0], [info@biologicinstitute.org], [stylus])
 STYLUS_MAJOR_VERSION=1
-STYLUS_MINOR_VERSION=2
-STYLUS_MICRO_VERSION=1
+STYLUS_MINOR_VERSION=3
+STYLUS_MICRO_VERSION=0
 
 STYLUS_VERSION=$STYLUS_MAJOR_VERSION.$STYLUS_MINOR_VERSION.$STYLUS_MICRO_VERSION
 STYLUS_VERSION_INFO=`expr $STYLUS_MAJOR_VERSION + $STYLUS_MINOR_VERSION`:$STYLUS_MICRO_VERSION:$STYLUS_MINOR_VERSION

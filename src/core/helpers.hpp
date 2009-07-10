@@ -5,7 +5,7 @@
  * NOTE:
  * - None of the helper classes trace their flow in or out
  * 
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,19 +99,18 @@ namespace org_biologicinstitute_stylus
 	 * comparisons, it is *critical* that this class appear on the left-hand
 	 * side. (Providing global operators to accept UNIT on the left-hand side,
 	 * introduces too many ambiguities for the compiler.)
-	 * 
-	 * Units are equal if their ratio is sufficiently close to one (the s_nLargeUnity
-	 * and s_nSmallUnity values below). Selecting these values is somewhat sensitive
-	 * since if they are too coarse values that should not be equal (such as those calculated
-	 * during overlap detection) will not be and if they are too fine values that should
-	 * be the same will not be (such as endpoint comparisons). These values are a
-	 * multiple (s_nMaxRelativeError) of the error epsilon native to the UNIT type
-	 * (s_nEpsilon) from one.
-	 * 
-	 * Code should declare and use instances of Unit (this class) rather than UNIT
-	 * (the base type it wraps), but should pass values as UNIT. This will ensure that
-	 * value passing uses a basic type (e.g., double) while obtaining the benefits
-	 * of the full wrapper class.
+	 *
+	 * Units are equal if they lie within a small delta of each other
+	 * (s_nPositiveZero / s_nNegativeZero values below). Selecting this value is
+	 * somewhat sensitive since if it is too coarse values that should not be
+	 * equal (such as those calculated during overlap detection) will not be and
+	 * if it is too fine values that should be the same will not be (such as
+	 * endpoint comparisons).
+	 *
+	 * Code should declare and use instances of Unit (this class) rather than
+	 * UNIT (the base type it wraps), but should pass values as UNIT. This will
+	 * ensure that value passing uses a basic type (e.g., double) while
+	 * obtaining the benefits of the full wrapper class.
 	 */
 	class Unit
 	{
@@ -160,21 +159,8 @@ namespace org_biologicinstitute_stylus
 		void setUndefined();
 
 	private:
-		static UNIT s_nMaxRelativeError;
-		static UNIT s_nEpsilon;
 		static UNIT s_nNegativeZero;
 		static UNIT s_nPositiveZero;
-		static UNIT s_nLargeUnity;
-		static UNIT s_nSmallUnity;
-		static UNIT s_nMax;
-		static UNIT s_nMin;
-
-		static bool isApproximateZero(const UNIT n);
-		static bool isTrueZero(const UNIT n);
-		static bool isBothZero(const UNIT n1, const UNIT n2);
-		static bool isNegativeAndPositive(const UNIT n1, const UNIT n2);
-		static bool isOverflow(const UNIT n1, const UNIT n2);
-		static bool isUnderflow(const UNIT n1, const UNIT n2);
 
 		UNIT _n;
 

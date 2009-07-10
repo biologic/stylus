@@ -2,7 +2,7 @@
  * \file    xml.hpp
  * \brief   XML helper routines
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -341,8 +341,11 @@ namespace org_biologicinstitute_stylus
 		friend const char* xmlXPath(XMLXPATH xp);
 		
 	public:
+		static const char XMLDocument::s_szStylusPrefix[];
 		static const char s_szStylusNamespacePrerelease[];
-		static const char s_szStylusNamespace[];
+		static const char s_szStylusNamespace1_0[];
+		static const char s_szStylusNamespace1_3[];
+		static const char* s_szStylusNamespace;
 
 		static bool isXMLTrue(const std::string& str);
 		static bool isXMLTag(xmlNodePtr pxn, const char* pszTag, const char* pszNS = NULL);
@@ -486,13 +489,10 @@ namespace org_biologicinstitute_stylus
 
 		/**
 		 * \brief Create an XPath context (for reuse with multiple XPath expressions)
-		 * \param[in] aryNS Optional array of Namespace structures
-		 * \param[in] cNS Number of passed Namespace structures
 		 * \remarks
-		 * - When called with no arguments (i.e., aryNS is NULL), a default context is
-		 *   created using the standard Stylus namespaces
+		 * - The context is created using the document's Stylus namespace
 		 */
-		xmlXPathContextPtr createXPathContext(const Namespace* aryNS = NULL, int cNS = 0);
+		xmlXPathContextPtr createXPathContext();
 
 		/**
 		 * \brief Evaluate an XPath expression against the passed XML document
@@ -504,13 +504,11 @@ namespace org_biologicinstitute_stylus
 		//@{
 		xmlXPathObjectPtr evalXPath(xmlXPathContextPtr pxpc, const char* pszExpression);
 		xmlXPathObjectPtr evalXPath(xmlXPathContextPtr pxpc, std::string& strExpression);
-		xmlXPathObjectPtr evalXPath(const char* pszExpression, const Namespace* aryNS = NULL, int cNS = 0);
-		xmlXPathObjectPtr evalXPath(std::string& strExpression, const Namespace* aryNS = NULL, int cNS = 0);
+		xmlXPathObjectPtr evalXPath(const char* pszExpression);
+		xmlXPathObjectPtr evalXPath(std::string& strExpression);
 		//@}
 
 	private:
-		static const Namespace s_aryPrereleaseNamespaces[];
-		static const Namespace s_aryDefaultNamespaces[];
 		static SCHEMA s_arySCHEMAS[];
 
 		static const char* s_aryXMLTAG[XT_MAX];
@@ -551,8 +549,8 @@ namespace org_biologicinstitute_stylus
 		
 		XMLDocument(xmlDocPtr pxd);
 
-		xmlDocSPtr _spxd;		///< Active XML document
-		bool _fUsePrereleaseNamespaces; ///< Use prereleased Stylus namespaces
+		xmlDocSPtr _spxd;					///< Active XML document
+		const char* _pszStylusNamespace;	///< Pointer to the Stylus namespace in use
 	};
 
 	typedef smart_ptr<XMLDocument, XMLDocument::destroyInstance> XMLDocumentSPtr;

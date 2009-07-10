@@ -11,7 +11,7 @@
  * (Using static members intead of a single static object avoids start-up and
  * shut-down issues.)
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -230,14 +230,14 @@ namespace org_biologicinstitute_stylus
 		static size_t codonToIndex(const char* pszCodon);
 	};
 	
-    /**
+	/**
 	 * \brief The Stylus Genome object
 	 *
 	 * The Genome is a singleton object that, after loading, holds and evaluates genes.
 	 * Its singleton nature is enforced by making all data members static.
 	 */
-    class Genome
-    {
+	class Genome
+	{
 		friend class ModificationStack;
 		
 		friend class ChangeModification;
@@ -251,7 +251,7 @@ namespace org_biologicinstitute_stylus
 		
 		friend class StateGuard;
 		
-    public:
+	public:
 		static const size_t s_maxGENES = 128;
 
 		static void initialize();
@@ -265,6 +265,8 @@ namespace org_biologicinstitute_stylus
 		//{@
 		static void setGenome(const char* pxmlGenome, const char* pszAuthor);
 		static void getGenome(char* pxmlGenome, size_t* pcchGenome, STFLAGS grfRecordDetail);
+
+		static void setUUIDSeeds(const char* pszSeeds);
 
 		static void setTraceTrial(size_t iTrialTrace);
 		static size_t getTraceTrial();
@@ -310,7 +312,7 @@ namespace org_biologicinstitute_stylus
 		static std::string toString();
 		static void toXML(XMLStream& xs, STFLAGS grfRecordDetail, bool fUseTrialStatistics = false);
 
-    private:
+	private:
 		static const char* s_aryGENOMESTATES[STGS_MAX];
 		
 		//--------------------------------------------------------------------------------
@@ -320,9 +322,13 @@ namespace org_biologicinstitute_stylus
 		static CodonTable _ct;					///< Codon table for the bases
 		static std::string _strBases;			///< String of T, C, A, and G
 		static utime _tLoaded;					///< Time at when the genome was loaded
+
 		static std::string _strUUID;			///< Genome universally unique ID
 		static std::string _strStrain;			///< User-supplied strain identifier (unused and uninterpreted)
 		static std::string _strAncestors;		///< User-supplied ancestor identifiers (unused and uninterpreted)
+
+		static std::string _strUUIDSeeds;		///< Seed for UUID generation
+		static STRINGARRAY _vecUUIDs;			///< Array of unique IDs to use when recording
 
 		static bool _fReady;					///< Genome is ready for use
 		
@@ -386,6 +392,8 @@ namespace org_biologicinstitute_stylus
 		static bool isRecordingTrial();
 		static bool isRecordingHistory();
 
+		static size_t recordingRate();
+
 		static size_t indexToGene(size_t iBase);
 		
 		static void recordStatistics(MUTATIONTYPE mt, size_t cbBases, bool fSilent);
@@ -413,7 +421,7 @@ namespace org_biologicinstitute_stylus
 		static bool _fTestingRollback;
 		static bool testRollback();
 #endif
-    };
+	};
 
 #define THROWIFEXECUTING(x)		{ if (_plan.isExecuting()) THROWRC((RC(INVALIDSTATE), "Illegal nested call to " ST_STRINGIFY(x))); }
 

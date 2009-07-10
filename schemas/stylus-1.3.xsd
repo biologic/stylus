@@ -24,8 +24,8 @@
 -->
 <xs:schema
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:st="http://biologicinstitute.org/schemas/stylus/1.0"
-	targetNamespace="http://biologicinstitute.org/schemas/stylus/1.0"
+	xmlns:st="http://biologicinstitute.org/schemas/stylus/1.3"
+	targetNamespace="http://biologicinstitute.org/schemas/stylus/1.3"
 	elementFormDefault="qualified">
 
 	<!-- =======================================================================================
@@ -132,26 +132,26 @@
 	<xs:simpleType name="vectorType">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="STP" />
-			<xs:enumeration value="NoS" />
-			<xs:enumeration value="NoM" />
-			<xs:enumeration value="NoL" />
-			<xs:enumeration value="NeS" />
-			<xs:enumeration value="NeM" />
-			<xs:enumeration value="EaS" />
-			<xs:enumeration value="EaM" />
-			<xs:enumeration value="EaL" />
-			<xs:enumeration value="SeS" />
-			<xs:enumeration value="SeM" />
-			<xs:enumeration value="SoS" />
-			<xs:enumeration value="SoM" />
-			<xs:enumeration value="SoL" />
-			<xs:enumeration value="SwS" />
-			<xs:enumeration value="SwM" />
-			<xs:enumeration value="WeS" />
-			<xs:enumeration value="WeM" />
-			<xs:enumeration value="WeL" />
-			<xs:enumeration value="NwS" />
-			<xs:enumeration value="NwM" />
+			<xs:enumeration value="Nos" />
+			<xs:enumeration value="Nom" />
+			<xs:enumeration value="Nol" />
+			<xs:enumeration value="Nes" />
+			<xs:enumeration value="Nem" />
+			<xs:enumeration value="Eas" />
+			<xs:enumeration value="Eam" />
+			<xs:enumeration value="Eal" />
+			<xs:enumeration value="Ses" />
+			<xs:enumeration value="Sem" />
+			<xs:enumeration value="Sos" />
+			<xs:enumeration value="Som" />
+			<xs:enumeration value="Sol" />
+			<xs:enumeration value="Sws" />
+			<xs:enumeration value="Swm" />
+			<xs:enumeration value="Wes" />
+			<xs:enumeration value="Wem" />
+			<xs:enumeration value="Wel" />
+			<xs:enumeration value="Nws" />
+			<xs:enumeration value="Nwm" />
 		</xs:restriction>
 	</xs:simpleType>
 	

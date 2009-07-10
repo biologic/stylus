@@ -2,7 +2,7 @@
  * \file	plan.cpp
  * \brief	Stylus Plan and helper classes
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -720,7 +720,7 @@ IndexRange::load(XMLDocument* pxd, xmlNodePtr pxn)
 			str[iPercent] = Constants::s_chBLANK;
 			str[str.find(Constants::s_chPERCENT, iPercent+1)] = Constants::s_chBLANK;
 		}
-		
+
 		_rgIndex.set(str);
 
 		if (_fPercentageIndex)
@@ -729,7 +729,12 @@ IndexRange::load(XMLDocument* pxd, xmlNodePtr pxn)
 				THROWRC((RC(XMLERROR), "%s has an illegal indexRange of (%d,%d) - percentage values must range from 0 to 100", pxn->name, _rgIndex.getStart(), _rgIndex.getEnd()));
 		}
 		else
+		{
 			_rgIndex.move(-1);
+
+			if (!Codon::onCodonBoundary(_rgIndex.getStart()))
+				THROWRC((RC(XMLERROR), "%s has an illegal indexRange of (%d,%d) - index ranges must start on a codon boundary", pxn->name, _rgIndex.getStart() + 1, _rgIndex.getEnd() + 1));
+		}
 
 		if (_rgIndex.isEmpty())
 			THROWRC((RC(XMLERROR), "%s has an illegal indexRange of %s", pxn->name, str.c_str()));
@@ -847,29 +852,32 @@ IndexRange::toString() const
 Range
 IndexRange::getRange() const
 {
-	ENTER(PLAN,ensureRange);
+	ENTER(PLAN,getRange);
 	Range rg;
 
 	if (_grfSupplied == FS_NONE)
-		rg.set(Codon::s_cchCODON, Genome::getBases().length()-Codon::s_cchCODON);
-		
+	{
+		rg.set(Codon::s_cchCODON, (Genome::getBases().length() - 1) - Codon::s_cchCODON);
+	}
 	else if (ST_ISALLSET(_grfSupplied, FS_INDEXRANGE))
 	{
 		if (_fPercentageIndex)
 		{
-			size_t cbBases = Genome::getBases().length() - 1;
-			rg.set((cbBases * _rgIndex.getStart() / 100), (cbBases * _rgIndex.getEnd() / 100));
+			size_t cbCodons = ((Genome::getBases().length() - 1) / Codon::s_cchCODON) - 1;
+
+			rg.set((((cbCodons * (_rgIndex.getStart() / 100)) + 1) * Codon::s_cchCODON),
+				   (((cbCodons * (_rgIndex.getEnd() / 100)) + 2) * Codon::s_cchCODON) - 1);
 		}
 		else
 			rg.set(_rgIndex);
+
+		ASSERT(Codon::onCodonBoundary(rg.getStart()));
 	}
-		
 	else if (ST_ISALLSET(_grfSupplied, FS_HANSTROKE))
 	{
 		Gene& gene = Genome::getGenes()[_iGene];
 		rg.set(gene.codonToBaseRange(gene.getStrokes()[_iHanStroke].getRange()));
 	}
-
 	else
 	{
 		ASSERT(ST_ISALLSET(_grfSupplied, FS_GENERANGE));
@@ -1090,7 +1098,7 @@ StepMutation::load(XMLDocument* pxd, xmlNodePtr pxnStepMutation)
 			_iTarget = iIndex;
 		}
 	}
-	
+
 	_ir.load(pxd, pxnStepMutation);
 	
 	if (_mt == MT_CHANGE && pxd->getAttribute(pxnStepMutation, xmlTag(XT_TRANSVERSIONLIKELIHOOD), str))
@@ -1193,32 +1201,59 @@ Step::getMutation(Mutation& m, STFLAGS grfOptions, size_t iTrialInStep) const
 	bool fWillInsert = (m.isCopy() || m.isInsert() || m.isTranspose());
 	Range rg;
 
-	// Advance any supplied index values
-	// - Index values are *always* advanced by the number of repetitions, even if multiple mutations exist in the step
-	// - Index values will "wrap" once they reach outside the step's range
-	if (_dIndex)
-	{
-		rg.set(_ir.getRange());
-		if (m.hasSourceIndex())
-		{
-			m._iSource += _dIndex * iTrialInStep;
-			if (m._iSource > static_cast<size_t>(rg.getEnd()))
-				m._iSource = rg.getStart();
-		}
-
-		if (fWillInsert)
-			_ir.adjustRangeForInsert(rg);
-		if (m.hasTargetIndex())
-		{
-			m._iTarget += _dIndex * iTrialInStep;
-			if (m._iTarget > static_cast<size_t>(rg.getEnd()))
-				m._iTarget = rg.getStart();
-		}
-	}
-	
 	const IndexRange& ir = (m.hasRange() ? m.range() : _ir);
 	rg.set(ir.getRange());
-	
+
+	// Shift step-level indexrange by delta index, if delta index supplied and
+	// no per-mutation indexrange is specified
+	if (_dIndex && !m.hasRange())
+	{
+		long codon = Codon::s_cchCODON;
+		long range = Genome::getBases().length() - (2 * codon);
+		long shift = (_dIndex * iTrialInStep) % range;
+
+		if (rg.getLength() >= static_cast<size_t>(range))
+		{
+			rg.set(codon, codon + range - 1);
+		}
+		else
+		{
+			long offset = (rg.getStart() - codon);
+
+			if (offset >= range)
+			{
+				rg.move((offset % range) - offset);
+			}
+
+			ASSERT((rg.getStart() >= codon) &&
+				   (rg.getStart() < (codon + range)));
+
+			if (((rg.getEnd() + shift) < (codon + range)) &&
+				((rg.getEnd() + shift) >= rg.getEnd()))
+			{
+				rg.move(shift);
+			}
+			else if (((rg.getStart() + shift) >= (codon + range)) ||
+					 ((rg.getStart() + shift) < rg.getStart()))
+			{
+				rg.move(shift - range);
+			}
+			else
+			{
+				long oldlen = rg.getLength();
+				rg.set(rg.getStart() + shift, codon + range - 1);
+
+				long random = RGenerator::getUniform(0L, oldlen - 1);
+
+				if (((rg.getStart() + random) >= (codon + range)) ||
+					((rg.getStart() + random) < rg.getStart()))
+				{
+					rg.set(codon, codon + (oldlen - rg.getLength()) - 1);
+				}
+			}
+		}
+	}
+
 	// Populate any missing fields needed by the mutation
 	if (!m.hasCountBases())
 	{
@@ -1313,9 +1348,17 @@ Step::load(XMLDocument* pxd, xmlNodePtr pxnStep)
 	nDelta = (pxd->getAttribute(pxnStep, xmlTag(XT_DELTAINDEX), str)
 			? ::atol(str.c_str())
 			: 0);
-	if (::abs(nDelta) >= static_cast<size_t>(rgGenomeBases.getLength()-1))
+	
+	size_t range = rgGenomeBases.getLength() - (2 * Codon::s_cchCODON);
+
+	if (::abs(nDelta) >= static_cast<size_t>(range))
 		THROWRC((RC(XMLERROR), "Step has an illegal deltaIndex of %ld - it must be range from %ld to %ld",
-								nDelta, (-rgGenomeBases.getLength()+1), (rgGenomeBases.getLength()-1)));
+								nDelta, -(range-1), (range-1)));
+
+	if (!Codon::onCodonBoundary(nDelta))
+		THROWRC((RC(XMLERROR), "Step has an illegal deltaIndex of %ld - it must be a multiple of codon size (%ld)",
+								Codon::s_cchCODON));
+
 	_dIndex = nDelta;
 
 	_ir.load(pxd, pxnStep);
@@ -1419,9 +1462,8 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 	
 	// If the number of trials was not specified, run all remaining steps
 	// Otherwise, limit the requested number of trials to those remaining in the plan
-	cTrials = (cTrials == 0
-				? _cTrials
-				: min<size_t>(cTrials, (_cTrials - (Genome::getTrial()+1) + iTrialFirst)));
+	cTrials = getActualTrialCount(cTrials, iTrialFirst);
+
 	LOGINFO((LLINFO, "Plan will execute %lu trials of %lu total possible starting with trial %lu in step %lu", cTrials, _cTrials, Genome::getTrial()+1, _iStep));
 	LOGINFO((LLINFO, "Plan skipped execution of %lu steps to get to trial %lu", _iStep, (Genome::getTrial()+1)));
 							

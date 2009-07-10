@@ -5,7 +5,7 @@
  * Each instance of the Han class describes a single Han glyph (identified by the
  * contained Unicode value).
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -151,7 +151,7 @@ namespace org_biologicinstitute_stylus
 	/**
 	 * \brief Han class
 	 *
-	 * Describe a single Han glypyh used in scoring.
+	 * Describe a single Han glyph used in scoring.
 	 */
 	class Han : public HDimensions
 	{

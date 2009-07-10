@@ -2,7 +2,7 @@
  * \file    constants.cpp
  * \brief   Constants used by Stylus (see constants.hpp for details)
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ const UNIT Constants::s_nVECTOR_MEDIUM;
 const UNIT Constants::s_nVECTOR_LONG;
 const UNIT Constants::s_nSHORT_DIAGONALSTEP;
 const UNIT Constants::s_nMEDIUM_DIAGONALSTEP;
+const UNIT Constants::s_nERROR_MARGIN;
 
 const size_t Constants::s_nMAXIMUMGENERATEDLENGTH;
 

@@ -2,7 +2,7 @@
  * \file	codon.cpp
  * \brief	Stylus Codon class
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,40 +30,40 @@ const Acid Acid::s_aryACIDS[ACID_MAX] =
 	{ 0, 0, 0.0, DIR_STOP, "STP" },
 
 	// NORTH vectors                                                                                                           
-	{ 0,									Constants::s_nVECTOR_SHORT,  		Constants::s_nVECTOR_SHORT,		DIR_NORTH,	   	"NoS" },
-	{ 0,                  					Constants::s_nVECTOR_MEDIUM, 		Constants::s_nVECTOR_MEDIUM,	DIR_NORTH,	   	"NoM" },
-	{ 0,                  					Constants::s_nVECTOR_LONG,   		Constants::s_nVECTOR_LONG,		DIR_NORTH,	   	"NoL" },
+	{ 0,									Constants::s_nVECTOR_SHORT,  		Constants::s_nVECTOR_SHORT,		DIR_NORTH,	   	"Nos" },
+	{ 0,                  					Constants::s_nVECTOR_MEDIUM, 		Constants::s_nVECTOR_MEDIUM,	DIR_NORTH,	   	"Nom" },
+	{ 0,                  					Constants::s_nVECTOR_LONG,   		Constants::s_nVECTOR_LONG,		DIR_NORTH,	   	"Nol" },
                                                                                                                                       
 	// NORTHEAST vectors                                                                                                              
-	{ Constants::s_nSHORT_DIAGONALSTEP,		Constants::s_nSHORT_DIAGONALSTEP,   Constants::s_nVECTOR_SHORT,		DIR_NORTHEAST, 	"NeS" },
-	{ Constants::s_nMEDIUM_DIAGONALSTEP,	Constants::s_nMEDIUM_DIAGONALSTEP,	Constants::s_nVECTOR_MEDIUM,	DIR_NORTHEAST, 	"NeM" },
+	{ Constants::s_nSHORT_DIAGONALSTEP,		Constants::s_nSHORT_DIAGONALSTEP,   Constants::s_nVECTOR_SHORT,		DIR_NORTHEAST, 	"Nes" },
+	{ Constants::s_nMEDIUM_DIAGONALSTEP,	Constants::s_nMEDIUM_DIAGONALSTEP,	Constants::s_nVECTOR_MEDIUM,	DIR_NORTHEAST, 	"Nem" },
                                                                                                                                       
 	// EAST vectors                                                                                                                   
-	{ Constants::s_nVECTOR_SHORT,			0,  								Constants::s_nVECTOR_SHORT,		DIR_EAST,	   	"EaS" },
-	{ Constants::s_nVECTOR_MEDIUM,			0,									Constants::s_nVECTOR_MEDIUM,	DIR_EAST,	   	"EaM" },
-	{ Constants::s_nVECTOR_LONG,			0,									Constants::s_nVECTOR_LONG,		DIR_EAST,	   	"EaL" },
+	{ Constants::s_nVECTOR_SHORT,			0,  								Constants::s_nVECTOR_SHORT,		DIR_EAST,	   	"Eas" },
+	{ Constants::s_nVECTOR_MEDIUM,			0,									Constants::s_nVECTOR_MEDIUM,	DIR_EAST,	   	"Eam" },
+	{ Constants::s_nVECTOR_LONG,			0,									Constants::s_nVECTOR_LONG,		DIR_EAST,	   	"Eal" },
                                                                                                                                       
 	// SOUTHEAST vectors                                                                                                              
-	{ Constants::s_nSHORT_DIAGONALSTEP,		-Constants::s_nSHORT_DIAGONALSTEP,	Constants::s_nVECTOR_SHORT,		DIR_SOUTHEAST, 	"SeS" },
-	{ Constants::s_nMEDIUM_DIAGONALSTEP,	-Constants::s_nMEDIUM_DIAGONALSTEP,	Constants::s_nVECTOR_MEDIUM,	DIR_SOUTHEAST, 	"SeM" },
+	{ Constants::s_nSHORT_DIAGONALSTEP,		-Constants::s_nSHORT_DIAGONALSTEP,	Constants::s_nVECTOR_SHORT,		DIR_SOUTHEAST, 	"Ses" },
+	{ Constants::s_nMEDIUM_DIAGONALSTEP,	-Constants::s_nMEDIUM_DIAGONALSTEP,	Constants::s_nVECTOR_MEDIUM,	DIR_SOUTHEAST, 	"Sem" },
                                                                                                                                       
 	// SOUTH vectors                                                                                                                  
-	{ 0,									-Constants::s_nVECTOR_SHORT,  		Constants::s_nVECTOR_SHORT,		DIR_SOUTH,	   	"SoS" },
-	{ 0,                  					-Constants::s_nVECTOR_MEDIUM,		Constants::s_nVECTOR_MEDIUM,	DIR_SOUTH,	   	"SoM" },
-	{ 0,                  					-Constants::s_nVECTOR_LONG,			Constants::s_nVECTOR_LONG,		DIR_SOUTH,	   	"SoL" },
+	{ 0,									-Constants::s_nVECTOR_SHORT,  		Constants::s_nVECTOR_SHORT,		DIR_SOUTH,	   	"Sos" },
+	{ 0,                  					-Constants::s_nVECTOR_MEDIUM,		Constants::s_nVECTOR_MEDIUM,	DIR_SOUTH,	   	"Som" },
+	{ 0,                  					-Constants::s_nVECTOR_LONG,			Constants::s_nVECTOR_LONG,		DIR_SOUTH,	   	"Sol" },
                                                                                                                                       
 	// SOUTHWEST vectors                                                                                                              
-	{ -Constants::s_nSHORT_DIAGONALSTEP,	-Constants::s_nSHORT_DIAGONALSTEP,	Constants::s_nVECTOR_SHORT,		DIR_SOUTHWEST, 	"SwS" },
-	{ -Constants::s_nMEDIUM_DIAGONALSTEP,	-Constants::s_nMEDIUM_DIAGONALSTEP,	Constants::s_nVECTOR_MEDIUM,	DIR_SOUTHWEST, 	"SwM" },
+	{ -Constants::s_nSHORT_DIAGONALSTEP,	-Constants::s_nSHORT_DIAGONALSTEP,	Constants::s_nVECTOR_SHORT,		DIR_SOUTHWEST, 	"Sws" },
+	{ -Constants::s_nMEDIUM_DIAGONALSTEP,	-Constants::s_nMEDIUM_DIAGONALSTEP,	Constants::s_nVECTOR_MEDIUM,	DIR_SOUTHWEST, 	"Swm" },
                                                                                                                                       
 	// WEST vectors                                                                                                                   
-	{ -Constants::s_nVECTOR_SHORT,			0,									Constants::s_nVECTOR_SHORT,		DIR_WEST,	   	"WeS" },
-	{ -Constants::s_nVECTOR_MEDIUM,			0,									Constants::s_nVECTOR_MEDIUM,	DIR_WEST,	   	"WeM" },
-	{ -Constants::s_nVECTOR_LONG,			0,									Constants::s_nVECTOR_LONG,		DIR_WEST,	   	"WeL" },
+	{ -Constants::s_nVECTOR_SHORT,			0,									Constants::s_nVECTOR_SHORT,		DIR_WEST,	   	"Wes" },
+	{ -Constants::s_nVECTOR_MEDIUM,			0,									Constants::s_nVECTOR_MEDIUM,	DIR_WEST,	   	"Wem" },
+	{ -Constants::s_nVECTOR_LONG,			0,									Constants::s_nVECTOR_LONG,		DIR_WEST,	   	"Wel" },
                                                                                                                                       
 	// NORTHWEST vectors                                                                                                              
-	{ -Constants::s_nSHORT_DIAGONALSTEP,	Constants::s_nSHORT_DIAGONALSTEP,   Constants::s_nVECTOR_SHORT,		DIR_NORTHWEST, 	"NwS" },
-	{ -Constants::s_nMEDIUM_DIAGONALSTEP,	Constants::s_nMEDIUM_DIAGONALSTEP,  Constants::s_nVECTOR_MEDIUM,	DIR_NORTHWEST, 	"NwM" }
+	{ -Constants::s_nSHORT_DIAGONALSTEP,	Constants::s_nSHORT_DIAGONALSTEP,   Constants::s_nVECTOR_SHORT,		DIR_NORTHWEST, 	"Nws" },
+	{ -Constants::s_nMEDIUM_DIAGONALSTEP,	Constants::s_nMEDIUM_DIAGONALSTEP,  Constants::s_nVECTOR_MEDIUM,	DIR_NORTHWEST, 	"Nwm" }
 };
 
 const size_t Codon::s_cchCODON;

@@ -65,7 +65,7 @@
  * - All XML data is null-terminated, UTF-8 encoded strings (passed as \c char)
  * - Stylus requires C callers to include <stdbool.h>
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,8 +117,8 @@ extern "C" {
 	 * \brief Public Stylus return codes
 	 */
 	//{@
-	const ST_RETCODE ST_MASKTYPECODE        = 0xF0000000;					///< Mask for isolating error type
-	const ST_RETCODE ST_MASKERRORCODE       = 0x0FFFFFFF;					///< Mask for isolating error code
+	const ST_RETCODE ST_MASKTYPECODE		= 0xF0000000;					///< Mask for isolating error type
+	const ST_RETCODE ST_MASKERRORCODE		= 0x0FFFFFFF;					///< Mask for isolating error code
 
 	const ST_RETCODE ST_ERRORTYPE			= 0x10000000;
 	const ST_RETCODE ST_WARNINGTYPE			= 0x20000000;
@@ -138,7 +138,7 @@ extern "C" {
 	const ST_RETCODE ST_RCINEXECUTION		= (ST_ERRORTYPE | 0x00000006);	///< Illegal recursive call to genome
 	const ST_RETCODE ST_RCXMLERROR			= (ST_ERRORTYPE | 0x00000007);	///< Error in XML/XSLT processing
 	const ST_RETCODE ST_RCINVALIDSTATE		= (ST_ERRORTYPE | 0x00000008);	///< Call made during an invalid state
-	const ST_RETCODE ST_RCPLAN		        = (ST_INFOTYPE  | 0x00000009);	///< A plan failed to complete
+	const ST_RETCODE ST_RCPLAN				= (ST_INFOTYPE  | 0x00000009);	///< A plan failed to complete
 	const ST_RETCODE ST_RCDEAD				= (ST_ERRORTYPE | 0x0000000A);	///< Genome is dead
 
 #define ST_ISSUCCESS(x)			(ST_RCCODE(x) == ST_RCSUCCESS)
@@ -185,6 +185,30 @@ extern "C" {
 	 * \param[in] pxmlConstants Pointer to the XML Globals document
 	 */
 	ST_RETCODE stSetGlobals(const char* pxmlGlobals);
+	
+	/**
+	 * \brief Load Stylus UUID seeds
+	 * 
+	 * Stylus generates unique UUIDs for each genome XML file it records during
+	 * execution of a plan.
+	 * 
+	 * When a plan is executed, the random number generator is temporarily
+	 * initialised with this seed to generate a sequence of UUIDs for the genome
+	 * XML files. After a sequence of UUIDs for the plan to be executed have
+	 * been generated, the seed used during the trials in this plan is restored
+	 * and subsequently saved in each of the genome XML files when recording (in
+	 * order to allow the sequence of trials in the plan's execution to be
+	 * recreated).
+	 * 
+	 * After the sequence of UUIDs for a plan's execution has been generated and
+	 * before the normal seed is restored, the random number generator's
+	 * (updated) current seed is saved and maintained separately, so that it can
+	 * be used for subsequent plan executions - i.e. this method need only be
+	 * called once at after initialisation.
+	 * 
+	 * \param[in] pszSeeds Pointer to the UUID seeds
+	 */
+	ST_RETCODE stSetUUIDSeeds(const char* pszSeeds);
 	
 	/**
 	 * \brief Establish the Han and XML scopes for locating external files

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 # 
-# Stylus, Copyright 2006-2008 Biologic Institute
+# Stylus, Copyright 2006-2009 Biologic Institute
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ codonTable.py
 This script creates and verifies codon tables. It also converts a gene using
 one codon table to use another.
 
-Stylus, Copyright 2006-2008 Biologic Institute.
+Stylus, Copyright 2006-2009 Biologic Institute.
 '''
 
 import datetime
@@ -42,11 +42,11 @@ import uuid
 #==============================================================================
 # Global Constants
 #==============================================================================
-_VERSION = '1.0'
+_VERSION = '1.3'
 _NAME = 'codonTable.py %s' % _VERSION
 
 _CODONTABLE_DEFINITION = '''<?xml version='1.0' encoding='UTF-8' ?>
-<codonTable uuid='%s'%s creationDate='%s' creationTool='%s' xmlns='http://biologicinstitute.org/schemas/stylus/1.0'>
+<codonTable uuid='%s'%s creationDate='%s' creationTool='%s' xmlns='http://biologicinstitute.org/schemas/stylus/1.3'>
 %s
 </codonTable>
 '''
@@ -56,7 +56,7 @@ _CODONTABLE_ENTRY = '''\t<entry codon='%s' vector='%s' %s/>'''
 _CODONTABLE_ISSTANDARD = '''hasStandardMapping='%s' '''
 
 _GENE_DEFINITION = '''<?xml version='1.0' encoding='UTF-8' ?>
-<genome uuid='%s'%s creationDate='%s' creationTool='%s' xmlns='http://biologicinstitute.org/schemas/stylus/1.0'>
+<genome uuid='%s'%s creationDate='%s' creationTool='%s' xmlns='http://biologicinstitute.org/schemas/stylus/1.3'>
 <codonTable uuid='%s'%s creationDate='%s' creationTool='%s'>
 %s
 </codonTable>

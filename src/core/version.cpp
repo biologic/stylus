@@ -6,7 +6,7 @@
  * version information. Callers access version information through static
  * members of the Stylus object.
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ using namespace stylus;
 #define STYLUS_BUILDTYPE_STRING "RELEASE"
 #endif
 #define STYLUS_DATE_STRING		__DATE__ " "  __TIME__
-#define STYLUS_COPYRIGHT_STRING	"(c) 2006-2008 Biologic Institute"
+#define STYLUS_COPYRIGHT_STRING	"(c) 2006-2009 Biologic Institute"
 #define STYLUS_BUILD_STRING		"Stylus " STYLUS_VERSION " [" STYLUS_BUILDTYPE_STRING " - " STYLUS_DATE_STRING "]"
 #define STYLUS_VERSION_STRING	STYLUS_BUILD_STRING " " STYLUS_COPYRIGHT_STRING
 #define STYLUS_LIBXML			"LibXML "

@@ -2,7 +2,7 @@
  * \file	overlap.cpp
  * \brief	Stylus Gene class (stroke overlap detection)
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -260,7 +260,7 @@ Overlaps::buildStrokeLines()
 
 				TDATA(VALIDATION,L4,(LLTRACE, "Strokes %ld and %ld may intersect within %s", (iStroke1+1), (iStroke2+1), rIntersect.toString().c_str()));
 
-				rIntersect.expand(Constants::s_nVECTOR_LONG, -Constants::s_nVECTOR_LONG, -Constants::s_nVECTOR_LONG, Constants::s_nVECTOR_LONG);
+				rIntersect.expand(Constants::s_nVECTOR_MEDIUM, -Constants::s_nVECTOR_MEDIUM, -Constants::s_nVECTOR_MEDIUM, Constants::s_nVECTOR_MEDIUM);
 				vecIntersects.push_back(rIntersect);
 			}
 		}

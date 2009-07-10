@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 # 
-# Stylus, Copyright 2006-2008 Biologic Institute
+# Stylus, Copyright 2006-2009 Biologic Institute
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ stgrid.py
 
 This script launches one or more instances of the underlying execution and report scripts.
 
-Stylus, Copyright 2006-2008 Biologic Institute.
+Stylus, Copyright 2006-2009 Biologic Institute.
 '''
 
 import datetime

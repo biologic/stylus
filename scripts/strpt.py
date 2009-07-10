@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 # 
-# Stylus, Copyright 2006-2008 Biologic Institute
+# Stylus, Copyright 2006-2009 Biologic Institute
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ This script assumes a single gene, compared against a single Han definition, wit
 genome XML file. It further assumes that all genome files within the data directory
 reference the same Han definition.
 
-Stylus, Copyright 2006-2008 Biologic Institute.
+Stylus, Copyright 2006-2009 Biologic Institute.
 '''
 
 import fnmatch

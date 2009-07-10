@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 # 
-# Stylus, Copyright 2006-2008 Biologic Institute
+# Stylus, Copyright 2006-2009 Biologic Institute
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ codons.py
 
 This script contains codon related data used by Stylus scripts.
 
-Stylus, Copyright 2006-2008 Biologic Institute.
+Stylus, Copyright 2006-2009 Biologic Institute.
 '''
 
 import random
@@ -306,33 +306,33 @@ class Vectors:
     __mapVectorToName = [
         'STP',
 
-        'NoS',
-        'NoM',
-        'NoL', 
+        'Nos',
+        'Nom',
+        'Nol', 
 
-        'NeS',
-        'NeM',
+        'Nes',
+        'Nem',
 
-        'EaS',
-        'EaM',
-        'EaL',
+        'Eas',
+        'Eam',
+        'Eal',
 
-        'SeS',
-        'SeM',
+        'Ses',
+        'Sem',
 
-        'SoS',
-        'SoM',
-        'SoL',
+        'Sos',
+        'Som',
+        'Sol',
 
-        'SwS',
-        'SwM',
+        'Sws',
+        'Swm',
 
-        'WeS',
-        'WeM',
-        'WeL',
+        'Wes',
+        'Wem',
+        'Wel',
 
-        'NwS',
-        'NwM'
+        'Nws',
+        'Nwm'
         ]
 
     def __toName(id):
@@ -402,7 +402,7 @@ class STP(Vector):
         self.direction = 0
         self.id = Vectors.Stop
     
-class NoS(Vector):
+class Nos(Vector):
     def __init__(self):
         self.dx = 0
         self.dy = Constants.vectorShort
@@ -410,7 +410,7 @@ class NoS(Vector):
         self.direction = Directions.North
         self.id = Vectors.NorthShort
     
-class NoM(Vector):
+class Nom(Vector):
     def __init__(self):
         self.dx = 0
         self.dy = Constants.vectorMedium
@@ -418,7 +418,7 @@ class NoM(Vector):
         self.direction = Directions.North
         self.id = Vectors.NorthMedium
         
-class NoL(Vector):
+class Nol(Vector):
     def __init__(self):
         self.dx = 0
         self.dy = Constants.vectorLong
@@ -426,7 +426,7 @@ class NoL(Vector):
         self.direction = Directions.North
         self.id = Vectors.NorthLong
 
-class NeS(Vector):
+class Nes(Vector):
     def __init__(self):
         self.dx = Constants.stepDiagonalShort
         self.dy = Constants.stepDiagonalShort
@@ -434,7 +434,7 @@ class NeS(Vector):
         self.direction = Directions.Northeast
         self.id = Vectors.NortheastShort
 
-class NeM(Vector):
+class Nem(Vector):
     def __init__(self):
         self.dx = Constants.stepDiagonalMedium
         self.dy = Constants.stepDiagonalMedium
@@ -442,7 +442,7 @@ class NeM(Vector):
         self.direction = Directions.Northeast
         self.id = Vectors.NortheastMedium
 
-class EaS(Vector):
+class Eas(Vector):
     def __init__(self):
         self.dx = Constants.vectorShort
         self.dy = 0
@@ -450,7 +450,7 @@ class EaS(Vector):
         self.direction = Directions.East
         self.id = Vectors.EastShort
     
-class EaM(Vector):
+class Eam(Vector):
     def __init__(self):
         self.dx = Constants.vectorMedium
         self.dy = 0
@@ -458,7 +458,7 @@ class EaM(Vector):
         self.direction = Directions.East
         self.id = Vectors.EastMedium
 
-class EaL(Vector):
+class Eal(Vector):
     def __init__(self):
         self.dx = Constants.vectorLong
         self.dy = 0
@@ -466,7 +466,7 @@ class EaL(Vector):
         self.direction = Directions.East
         self.id = Vectors.EastLong
 
-class SeS(Vector):
+class Ses(Vector):
     def __init__(self):
         self.dx = Constants.stepDiagonalShort
         self.dy = -Constants.stepDiagonalShort
@@ -474,7 +474,7 @@ class SeS(Vector):
         self.direction = Directions.Southeast
         self.id = Vectors.SoutheastShort
 
-class SeM(Vector):
+class Sem(Vector):
     def __init__(self):
         self.dx = Constants.stepDiagonalMedium
         self.dy = -Constants.stepDiagonalMedium
@@ -482,7 +482,7 @@ class SeM(Vector):
         self.direction = Directions.Southeast
         self.id = Vectors.SoutheastMedium
     
-class SoS(Vector):
+class Sos(Vector):
     def __init__(self):
         self.dx = 0
         self.dy = -Constants.vectorShort
@@ -490,7 +490,7 @@ class SoS(Vector):
         self.direction = Directions.South
         self.id = Vectors.SouthShort
     
-class SoM(Vector):
+class Som(Vector):
     def __init__(self):
         self.dx = 0
         self.dy = -Constants.vectorMedium
@@ -498,7 +498,7 @@ class SoM(Vector):
         self.direction = Directions.South
         self.id = Vectors.SouthMedium
 
-class SoL(Vector):
+class Sol(Vector):
     def __init__(self):
         self.dx = 0
         self.dy = -Constants.vectorLong
@@ -506,7 +506,7 @@ class SoL(Vector):
         self.direction = Directions.South
         self.id = Vectors.SouthLong
 
-class SwS(Vector):
+class Sws(Vector):
     def __init__(self):
         self.dx = -Constants.stepDiagonalShort
         self.dy = -Constants.stepDiagonalShort
@@ -514,7 +514,7 @@ class SwS(Vector):
         self.direction = Directions.Southwest
         self.id = Vectors.SouthwestShort
     
-class SwM(Vector):
+class Swm(Vector):
     def __init__(self):
         self.dx = -Constants.stepDiagonalMedium
         self.dy = -Constants.stepDiagonalMedium
@@ -522,7 +522,7 @@ class SwM(Vector):
         self.direction = Directions.Southwest
         self.id = Vectors.SouthwestMedium
 
-class WeS(Vector):
+class Wes(Vector):
     def __init__(self):
         self.dx = -Constants.vectorShort
         self.dy = 0
@@ -530,7 +530,7 @@ class WeS(Vector):
         self.direction = Directions.West
         self.id = Vectors.WestShort
 
-class WeM(Vector):
+class Wem(Vector):
     def __init__(self):
         self.dx = -Constants.vectorMedium
         self.dy = 0
@@ -538,7 +538,7 @@ class WeM(Vector):
         self.direction = Directions.West
         self.id = Vectors.WestMedium
 
-class WeL(Vector):
+class Wel(Vector):
     def __init__(self):
         self.dx = -Constants.vectorLong
         self.dy = 0
@@ -546,7 +546,7 @@ class WeL(Vector):
         self.direction = Directions.West
         self.id = Vectors.WestLong
 
-class NwS(Vector):
+class Nws(Vector):
     def __init__(self):
         self.dx = -Constants.stepDiagonalShort
         self.dy = Constants.stepDiagonalShort
@@ -554,7 +554,7 @@ class NwS(Vector):
         self.direction = Directions.Northwest
         self.id = Vectors.NorthwestShort
 
-class NwM(Vector):
+class Nwm(Vector):
     def __init__(self):
         self.dx = -Constants.stepDiagonalMedium
         self.dy = Constants.stepDiagonalMedium
@@ -810,33 +810,33 @@ if __name__ == "__main__":
 _vectors = [
     STP(),
 
-    NoS(),
-    NoM(),
-    NoL(),
+    Nos(),
+    Nom(),
+    Nol(),
 
-    NeS(),
-    NeM(),
+    Nes(),
+    Nem(),
 
-    EaS(),
-    EaM(),
-    EaL(),
+    Eas(),
+    Eam(),
+    Eal(),
 
-    SeS(),
-    SeM(),
+    Ses(),
+    Sem(),
 
-    SoS(),
-    SoM(),
-    SoL(),
+    Sos(),
+    Som(),
+    Sol(),
 
-    SwS(),
-    SwM(),
+    Sws(),
+    Swm(),
 
-    WeS(),
-    WeM(),
-    WeL(),
+    Wes(),
+    Wem(),
+    Wel(),
 
-    NwS(),
-    NwM()
+    Nws(),
+    Nwm()
     ]
 
 # Triple indexed by vector identifier

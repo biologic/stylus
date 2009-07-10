@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Stylus, Copyright 2006-2008 Biologic Institute
+Stylus, Copyright 2006-2009 Biologic Institute
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,72 +14,72 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<genome xmlns="http://biologicinstitute.org/schemas/stylus/1.0" uuid="DC76909D-8F8F-46C4-9C34-BB071A6630E6" creationDate="2008-04-01T19:58:08.880165" creationTool="codonTable.py 1.0">
-	<codonTable uuid="E3518EA1-AFA7-4996-B803-0C911B809EE7" creationDate="2008-04-01T19:36:40.986515" creationTool="codonTable.py 1.0">
-		<entry codon="TTT" vector="NoL" hasStandardMapping="true"/>
-		<entry codon="TTC" vector="NoS" hasStandardMapping="false"/>
-		<entry codon="TTA" vector="NoM" hasStandardMapping="true"/>
-		<entry codon="TTG" vector="NoS" hasStandardMapping="false"/>
-		<entry codon="TCT" vector="SeM" hasStandardMapping="true"/>
-		<entry codon="TCC" vector="SeS" hasStandardMapping="false"/>
-		<entry codon="TCA" vector="SeS" hasStandardMapping="false"/>
-		<entry codon="TCG" vector="SeS" hasStandardMapping="false"/>
-		<entry codon="TAT" vector="SoL" hasStandardMapping="true"/>
-		<entry codon="TAC" vector="SoS" hasStandardMapping="false"/>
+<genome xmlns="http://biologicinstitute.org/schemas/stylus/1.3" uuid="DC76909D-8F8F-46C4-9C34-BB071A6630E6" creationDate="2008-04-01T19:58:08.880165" creationTool="codonTable.py 1.3">
+	<codonTable uuid="E3518EA1-AFA7-4996-B803-0C911B809EE7" creationDate="2008-04-01T19:36:40.986515" creationTool="codonTable.py 1.3">
+		<entry codon="TTT" vector="Nol" hasStandardMapping="true"/>
+		<entry codon="TTC" vector="Nos" hasStandardMapping="false"/>
+		<entry codon="TTA" vector="Nom" hasStandardMapping="true"/>
+		<entry codon="TTG" vector="Nos" hasStandardMapping="false"/>
+		<entry codon="TCT" vector="Sem" hasStandardMapping="true"/>
+		<entry codon="TCC" vector="Ses" hasStandardMapping="false"/>
+		<entry codon="TCA" vector="Ses" hasStandardMapping="false"/>
+		<entry codon="TCG" vector="Ses" hasStandardMapping="false"/>
+		<entry codon="TAT" vector="Sol" hasStandardMapping="true"/>
+		<entry codon="TAC" vector="Sos" hasStandardMapping="false"/>
 		<entry codon="TAA" vector="STP" hasStandardMapping="true"/>
 		<entry codon="TAG" vector="STP" hasStandardMapping="true"/>
-		<entry codon="TGT" vector="NwM" hasStandardMapping="true"/>
-		<entry codon="TGC" vector="NwS" hasStandardMapping="false"/>
+		<entry codon="TGT" vector="Nwm" hasStandardMapping="true"/>
+		<entry codon="TGC" vector="Nws" hasStandardMapping="false"/>
 		<entry codon="TGA" vector="STP" hasStandardMapping="true"/>
-		<entry codon="TGG" vector="NwS" hasStandardMapping="false"/>
-		<entry codon="CTT" vector="NoS" hasStandardMapping="true"/>
-		<entry codon="CTC" vector="NoS" hasStandardMapping="true"/>
-		<entry codon="CTA" vector="NoS" hasStandardMapping="true"/>
-		<entry codon="CTG" vector="NoS" hasStandardMapping="true"/>
-		<entry codon="CCT" vector="SeS" hasStandardMapping="true"/>
-		<entry codon="CCC" vector="SeS" hasStandardMapping="true"/>
-		<entry codon="CCA" vector="SeS" hasStandardMapping="true"/>
-		<entry codon="CCG" vector="SeS" hasStandardMapping="true"/>
-		<entry codon="CAT" vector="SoM" hasStandardMapping="true"/>
-		<entry codon="CAC" vector="SoS" hasStandardMapping="false"/>
-		<entry codon="CAA" vector="SoS" hasStandardMapping="true"/>
-		<entry codon="CAG" vector="SoS" hasStandardMapping="true"/>
-		<entry codon="CGT" vector="NwS" hasStandardMapping="true"/>
-		<entry codon="CGC" vector="NwS" hasStandardMapping="true"/>
-		<entry codon="CGA" vector="NwS" hasStandardMapping="true"/>
-		<entry codon="CGG" vector="NwS" hasStandardMapping="true"/>
-		<entry codon="ATT" vector="NeM" hasStandardMapping="true"/>
-		<entry codon="ATC" vector="NeS" hasStandardMapping="false"/>
-		<entry codon="ATA" vector="NeS" hasStandardMapping="false"/>
-		<entry codon="ATG" vector="NeS" hasStandardMapping="false"/>
-		<entry codon="ACT" vector="EaL" hasStandardMapping="true"/>
-		<entry codon="ACC" vector="EaS" hasStandardMapping="false"/>
-		<entry codon="ACA" vector="EaM" hasStandardMapping="true"/>
-		<entry codon="ACG" vector="EaS" hasStandardMapping="false"/>
-		<entry codon="AAT" vector="SwM" hasStandardMapping="true"/>
-		<entry codon="AAC" vector="SwS" hasStandardMapping="false"/>
-		<entry codon="AAA" vector="SwS" hasStandardMapping="false"/>
-		<entry codon="AAG" vector="SwS" hasStandardMapping="false"/>
-		<entry codon="AGT" vector="WeL" hasStandardMapping="true"/>
-		<entry codon="AGC" vector="WeS" hasStandardMapping="false"/>
-		<entry codon="AGA" vector="WeM" hasStandardMapping="true"/>
-		<entry codon="AGG" vector="WeS" hasStandardMapping="false"/>
-		<entry codon="GTT" vector="NeS" hasStandardMapping="true"/>
-		<entry codon="GTC" vector="NeS" hasStandardMapping="true"/>
-		<entry codon="GTA" vector="NeS" hasStandardMapping="true"/>
-		<entry codon="GTG" vector="NeS" hasStandardMapping="true"/>
-		<entry codon="GCT" vector="EaS" hasStandardMapping="true"/>
-		<entry codon="GCC" vector="EaS" hasStandardMapping="true"/>
-		<entry codon="GCA" vector="EaS" hasStandardMapping="true"/>
-		<entry codon="GCG" vector="EaS" hasStandardMapping="true"/>
-		<entry codon="GAT" vector="SwS" hasStandardMapping="true"/>
-		<entry codon="GAC" vector="SwS" hasStandardMapping="true"/>
-		<entry codon="GAA" vector="SwS" hasStandardMapping="true"/>
-		<entry codon="GAG" vector="SwS" hasStandardMapping="true"/>
-		<entry codon="GGT" vector="WeS" hasStandardMapping="true"/>
-		<entry codon="GGC" vector="WeS" hasStandardMapping="true"/>
-		<entry codon="GGA" vector="WeS" hasStandardMapping="true"/>
-		<entry codon="GGG" vector="WeS" hasStandardMapping="true"/>
+		<entry codon="TGG" vector="Nws" hasStandardMapping="false"/>
+		<entry codon="CTT" vector="Nos" hasStandardMapping="true"/>
+		<entry codon="CTC" vector="Nos" hasStandardMapping="true"/>
+		<entry codon="CTA" vector="Nos" hasStandardMapping="true"/>
+		<entry codon="CTG" vector="Nos" hasStandardMapping="true"/>
+		<entry codon="CCT" vector="Ses" hasStandardMapping="true"/>
+		<entry codon="CCC" vector="Ses" hasStandardMapping="true"/>
+		<entry codon="CCA" vector="Ses" hasStandardMapping="true"/>
+		<entry codon="CCG" vector="Ses" hasStandardMapping="true"/>
+		<entry codon="CAT" vector="Som" hasStandardMapping="true"/>
+		<entry codon="CAC" vector="Sos" hasStandardMapping="false"/>
+		<entry codon="CAA" vector="Sos" hasStandardMapping="true"/>
+		<entry codon="CAG" vector="Sos" hasStandardMapping="true"/>
+		<entry codon="CGT" vector="Nws" hasStandardMapping="true"/>
+		<entry codon="CGC" vector="Nws" hasStandardMapping="true"/>
+		<entry codon="CGA" vector="Nws" hasStandardMapping="true"/>
+		<entry codon="CGG" vector="Nws" hasStandardMapping="true"/>
+		<entry codon="ATT" vector="Nem" hasStandardMapping="true"/>
+		<entry codon="ATC" vector="Nes" hasStandardMapping="false"/>
+		<entry codon="ATA" vector="Nes" hasStandardMapping="false"/>
+		<entry codon="ATG" vector="Nes" hasStandardMapping="false"/>
+		<entry codon="ACT" vector="Eal" hasStandardMapping="true"/>
+		<entry codon="ACC" vector="Eas" hasStandardMapping="false"/>
+		<entry codon="ACA" vector="Eam" hasStandardMapping="true"/>
+		<entry codon="ACG" vector="Eas" hasStandardMapping="false"/>
+		<entry codon="AAT" vector="Swm" hasStandardMapping="true"/>
+		<entry codon="AAC" vector="Sws" hasStandardMapping="false"/>
+		<entry codon="AAA" vector="Sws" hasStandardMapping="false"/>
+		<entry codon="AAG" vector="Sws" hasStandardMapping="false"/>
+		<entry codon="AGT" vector="Wel" hasStandardMapping="true"/>
+		<entry codon="AGC" vector="Wes" hasStandardMapping="false"/>
+		<entry codon="AGA" vector="Wem" hasStandardMapping="true"/>
+		<entry codon="AGG" vector="Wes" hasStandardMapping="false"/>
+		<entry codon="GTT" vector="Nes" hasStandardMapping="true"/>
+		<entry codon="GTC" vector="Nes" hasStandardMapping="true"/>
+		<entry codon="GTA" vector="Nes" hasStandardMapping="true"/>
+		<entry codon="GTG" vector="Nes" hasStandardMapping="true"/>
+		<entry codon="GCT" vector="Eas" hasStandardMapping="true"/>
+		<entry codon="GCC" vector="Eas" hasStandardMapping="true"/>
+		<entry codon="GCA" vector="Eas" hasStandardMapping="true"/>
+		<entry codon="GCG" vector="Eas" hasStandardMapping="true"/>
+		<entry codon="GAT" vector="Sws" hasStandardMapping="true"/>
+		<entry codon="GAC" vector="Sws" hasStandardMapping="true"/>
+		<entry codon="GAA" vector="Sws" hasStandardMapping="true"/>
+		<entry codon="GAG" vector="Sws" hasStandardMapping="true"/>
+		<entry codon="GGT" vector="Wes" hasStandardMapping="true"/>
+		<entry codon="GGC" vector="Wes" hasStandardMapping="true"/>
+		<entry codon="GGA" vector="Wes" hasStandardMapping="true"/>
+		<entry codon="GGG" vector="Wes" hasStandardMapping="true"/>
 	</codonTable>
 	<bases>ATGATTATTACAATTATTATTATTATTTTAATTATTATTTTAATTTTAATTAGAACAACAAGAACAACAAGAACAACAAGAACAACAAGAACAACAAGAACAACAAGAACAACAAGAACAACATGCTCCTCGCGTCCGTCTTGTTCTACATCTTCTTCTTCTTCTTCTCATTCTTCTCATTCTTGTTCTACAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGATCTTGTTGTACAAGAAGAACAAGAAATATTAATCATAATAATAATAATAATAATAATAATAATAATAATAATACAACAATTACAACAACAACAACAATTACAACAACAACAACAATTACAACAACAAGAACATCTTGTTCTTGTTGTTCTTGTTGTTCTTGTTGTTCTTGTTGTTCTTGTTGTTCTTGTTGTTCTTCTTCTTCTTCTTCTTCTCATTCTCATTCTTGTTCTACAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAACAAGAAGAATTAATAATACAAGAAGAATTAATAATACAAGAAGAATTAATAATACAAGAAGAACAACAACAACAACAACAACAACAACAACATCTCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATAGATGTAGATGTAGACATTTATTACATTTATTACATTTATTACATTTATTATCTTGTTGTCATTTATTATCTTGTTGTCATTTATTATCTTGTTGTCATTTATTATCTTGTTGTCATTTATTATCTTGTTGTCATTTATTATCTTGTTGTCATTTATTATCTTGTTGTCATTTATTATCTTGTTGTTCTACATCTTCTCATTCTCATATTAATAATATTAATAATTTACATCATATTAATAATTTACATCATATTAATAATTTACATCATATTAATAATACAATTACAATTATTACAATTATTACAATTATTATTAATATTATTAATATTATTAATATTATTCATTTATTAAATATTATTCATTTATTAAATATTATTCATTTATTAAATATTATTCATTTATTAAATATTATTCATTTATTACATTTAACAAGAACAACAACAACAACAACAACAACAACAACATCTCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATAGATGTAGATGTAGACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTATCTTGTTGTCATTTATTATCTTGTTGTCATTTATTATCTTGTTGTCATTTATTATCTTGTTGTCATTTATTATCTTGTTGTCATTTATTATCTTGTTGTCATTTATTATCTTGTTGTTCTTCTTCTTCTTCTCATTCTATTAATAATATTAATAATATTAATAATATTAATAATATTAATAATATTAATAATATTAATAATTTACATCATTTACATACAAGAACAATTACAATTACAATTATTACAATTATTACAATTATTCATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTAAATATTATTCATTTATTAAATATTATTCATTTATTAAATATTATTCATTTATTAAATATTATTCATTTATTACATTTAACAAGAACAACAACAACAACAACAACAACAACAACAACAACAACATCTCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATAATCATCATAATAATAATAGAAGATGTTGTTGTCATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTACATTTATTATCTTGTTGTCAACTTCTCCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATAATCATCATCATCATAATCATCATCATAATCATAATCATAATCATAATAATCATAATAATAATTAA</bases>
 	<genes>

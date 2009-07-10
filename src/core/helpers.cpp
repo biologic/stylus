@@ -2,7 +2,7 @@
  * \file	helpers.cpp
  * \brief	Stylus Helper classes
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,24 +56,14 @@ Range::toString(bool fAsPair) const
 //
 //--------------------------------------------------------------------------------
 
-UNIT Unit::s_nMaxRelativeError = 10000;
-UNIT Unit::s_nEpsilon = numeric_limits<UNIT>::epsilon();
-UNIT Unit::s_nNegativeZero = 0 - (Unit::s_nMaxRelativeError * Unit::s_nEpsilon);
-UNIT Unit::s_nPositiveZero = 0 + (Unit::s_nMaxRelativeError * Unit::s_nEpsilon);
-UNIT Unit::s_nLargeUnity = 1 + (Unit::s_nMaxRelativeError * Unit::s_nEpsilon);
-UNIT Unit::s_nSmallUnity = 1 - (Unit::s_nMaxRelativeError * Unit::s_nEpsilon);
-UNIT Unit::s_nMax = numeric_limits<UNIT>::max();
-UNIT Unit::s_nMin = numeric_limits<UNIT>::min();
+UNIT Unit::s_nNegativeZero = -Constants::s_nERROR_MARGIN;
+UNIT Unit::s_nPositiveZero = Constants::s_nERROR_MARGIN;
 
 void Unit::logConstants()
 {
 	LOGINFO((LLINFO, "Unit constants"));
-	LOGINFO((LLINFO, " - MaxRelativeError: %0.16f\n", s_nMaxRelativeError));
-	LOGINFO((LLINFO, " - Epsilon         : %0.16f\n", s_nEpsilon));
-	LOGINFO((LLINFO, " - LargeUnity      : %0.16f\n", s_nLargeUnity));
-	LOGINFO((LLINFO, " - SmallUnity      : %0.16f\n", s_nSmallUnity));
-	LOGINFO((LLINFO, " - Max             : %0.16f\n", s_nMax));
-	LOGINFO((LLINFO, " - Min             : %0.16f\n", s_nMin));
+	LOGINFO((LLINFO, " - PositiveZero    : %0.16f", s_nPositiveZero));
+	LOGINFO((LLINFO, " - NegativeZero    : %0.16f", s_nNegativeZero));
 }
 
 //--------------------------------------------------------------------------------
@@ -178,7 +168,9 @@ Line::set(const Point& ptStart, const Point& ptEnd, bool fCanonical)
 	_dy = _ptEnd.y() - _ptStart.y();
 
 	_nSlope = _dy / _dx;
-	if (_nSlope.isZero())
+
+	// Check for equality to zero with respect to the error margin and explicitly zero _nSlope if within error range
+	if (_nSlope == static_cast<UNIT>(0.0))
 		_nSlope = static_cast<UNIT>(0.0);
 
 	_yIntercept = _ptStart.y() - (_nSlope * _ptStart.x());

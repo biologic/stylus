@@ -2,7 +2,7 @@
  * \file	genome.inl
  * \brief	Stylus Genome class inline methods
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,6 +157,8 @@ inline bool Genome::isLoaded() { return (_tLoaded != 0); }
 inline bool Genome::isRecording() { return (_grfRecordDetail != STRD_NONE && _strRecordDirectory.length() > 0); }
 inline bool Genome::isRecordingTrial() { return (_fReady && _cRecordRate && (getTrial() % _cRecordRate) == 0); }
 inline bool Genome::isRecordingHistory() { return (_fReady && _fRecordHistory); }
+
+inline size_t Genome::recordingRate() { return _cRecordRate; }
 
 inline size_t Genome::indexToGene(size_t iBase)
 {

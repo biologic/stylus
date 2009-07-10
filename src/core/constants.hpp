@@ -5,7 +5,7 @@
  * All constants should be defined within this file unless they are tightly
  * associated with the object.
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ namespace org_biologicinstitute_stylus
 		static const UNIT s_nVECTOR_LONG = M_E;
 		static const UNIT s_nSHORT_DIAGONALSTEP = M_SQRT1_2;
 		static const UNIT s_nMEDIUM_DIAGONALSTEP = 1.165821990798562;
+		static const UNIT s_nERROR_MARGIN = 0.0000000001;
 
 		static const size_t s_nMAXIMUMGENERATEDLENGTH = (3 * 3);	///< Maximum generated length (up to 3 trivectors)
 

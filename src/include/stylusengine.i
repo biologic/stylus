@@ -4,7 +4,7 @@
  * This file is the SWIG interface definition file that guides building the StylusEngine module.
  * See SWIG (http://www.swig.org/) for more details.
  * 
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,6 +72,7 @@ bool g_fStylusInitialized = false;
 %ignore stGetLastError;
 %ignore stInitialize;
 %ignore stTerminate;
+%ignore stSetUUIDSeeds;
 %ignore stSetScope;
 %ignore stGetVersion;
 
@@ -360,20 +361,20 @@ bool g_fStylusInitialized = false;
 %inline %{
 	const char* errorToString(unsigned long rc)
 	{
-	    static const char* aryERRORS[ST_RCCODE(ST_RCDEAD)+1] =
-	    {
-	        "Success",
-	        "Internal Error",
-	        "Stylus is not initialized",
-	        "Supplied buffer was too small",
-	        "Stylus ran out of memory",
-	        "Invalid arguments were passed to Stylus",
-	        "Illegal call while Stylus is executing a plan",
-	        "An error occurred in XML processing",
-	        "Call is illegal for current Stylus state",
+		static const char* aryERRORS[ST_RCCODE(ST_RCDEAD)+1] =
+		{
+			"Success",
+			"Internal Error",
+			"Stylus is not initialized",
+			"Supplied buffer was too small",
+			"Stylus ran out of memory",
+			"Invalid arguments were passed to Stylus",
+			"Illegal call while Stylus is executing a plan",
+			"An error occurred in XML processing",
+			"Call is illegal for current Stylus state",
 			"Plan ended execution after reaching one or more conditions",
-	        "Genome is dead"
-	    };
+			"Genome is dead"
+		};
 
 		rc = ST_RCCODE(rc);
 		return (rc >= 0 && rc <= ARRAY_LENGTH(aryERRORS)
@@ -542,6 +543,14 @@ bool g_fStylusInitialized = false;
 		return pszGenome;
 	}
 
+	unsigned long setUUIDSeeds(const char* pszSeeds)
+	{
+		ST_RETCODE rc = ::ensureStylus();
+		return (!ST_ISSUCCESS(rc)
+				? rc
+				: ::stSetUUIDSeeds(pszSeeds));
+	}
+	
 	const char* getGenomeBases()
 	{
 		char* pszBases = ::new char[DEFAULT_BUFFERSIZE];

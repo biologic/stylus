@@ -5,7 +5,7 @@
  * Each instance of a Plan class encapsulates an executable plan. (See stylus.xsd
  * for more details.)
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -526,6 +526,8 @@ namespace org_biologicinstitute_stylus
 		
 		void load(const char* pxmlPlan);
 		void toXML(XMLStream& xs);
+
+		size_t getActualTrialCount(size_t cTrials, size_t iTrialFirst);
 
 	private:
 		bool _fExecuting;					///< Plan is actively executing

@@ -2,7 +2,7 @@
  * \file	helpers.inl
  * \brief	Stylus helper classes inline methods
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -197,132 +197,40 @@ inline Unit Unit::operator-() const { return Unit(-1*_n); }
 inline Unit& Unit::operator++() { ++_n; return *this; }
 inline Unit& Unit::operator--() { --_n; return *this; }
 
-inline bool Unit::isZero() const { return Unit::isApproximateZero(_n); }
-inline bool Unit::isBelowZero() const { return (_n < s_nNegativeZero); }
 inline bool Unit::isAboveZero() const { return (_n > s_nPositiveZero); }
-
-inline bool Unit::isApproximateZero(const UNIT n) { return (n >= s_nNegativeZero && n <= s_nPositiveZero); }
-inline bool Unit::isTrueZero(const UNIT n) { return (n == static_cast<UNIT>(0.0)); }
-inline bool Unit::isBothZero(const UNIT n1, const UNIT n2) { return (Unit::isApproximateZero(n1) && Unit::isApproximateZero(n2)); }
-inline bool Unit::isNegativeAndPositive(const UNIT n1, const UNIT n2) { return ((n1 < 0.0) && (n2 > 0.0)); }
-inline bool Unit::isOverflow(const UNIT n1, const UNIT n2) { return (((n2 > 0.0) && (n2 < 1.0) && (n1 > (n2 * s_nMax))) || ((n2 < 0.0) && (n2 > -1.0) && (n1 < (n2 * s_nMax)))); }
-inline bool Unit::isUnderflow(const UNIT n1, const UNIT n2) { return (((n2 > 1.0) && (n1 < (n2 * s_nMin))) || ((n2 < -1.0) && (n1 > (n2 * s_nMin)))); }
+inline bool Unit::isBelowZero() const { return (_n < s_nNegativeZero); }
 
 inline bool Unit::operator==(UNIT n) const
 {
-	// First, handle equality of both positive and negative zero
-	if (Unit::isBothZero(_n, n))
+	// Equality iff equal within the error margin
+	if (std::abs(static_cast<UNIT>(_n) - static_cast<UNIT>(n)) < s_nPositiveZero)
 		return true;
-	// Check for opposing signs
-	if (Unit::isNegativeAndPositive(_n, n) || Unit::isNegativeAndPositive(n, _n))
-		return false;
-	// Check for overflow of _n/n, return false if it occurs
-	if (Unit::isOverflow(_n, n))
-		return false;
-	// Check for underflow of _n/n, return false if it occurs
-	if (Unit::isUnderflow(_n, n))
-		return false;
-	// Otherwise, consider the values equal if their ratio is within an acceptable error range
-	UNIT ratio = (static_cast<UNIT>(_n) / static_cast<UNIT>(n));
-	return (s_nSmallUnity <= ratio) && (ratio <= s_nLargeUnity);
+
+	return false;
 }
+
 inline bool Unit::operator!=(UNIT n) const { return !operator==(n); }
+
 inline bool Unit::operator<(UNIT n) const
 {
-	// First, handle both positive and negative zero
-	if (Unit::isBothZero(_n, n))
-		return false;
-	if (Unit::isApproximateZero(_n))
-		return (n > static_cast<UNIT>(0.0));
-	if (Unit::isApproximateZero(n))
-		return (_n < static_cast<UNIT>(0.0));
-	// Check for opposing signs
-	if (Unit::isNegativeAndPositive(_n, n))
+	// Less than iff less than value plus the error margin
+	if (static_cast<UNIT>(_n) + s_nPositiveZero < static_cast<UNIT>(n))
 		return true;
-	if (Unit::isNegativeAndPositive(n, _n))
-		return false;
-	// Check for overflow of _n/n, return false if it occurs
-	if (Unit::isOverflow(_n, n))
-		return false;
-	// Check for underflow of _n/n, return true if it occurs
-	if (Unit::isUnderflow(_n, n))
-		return true;
-	// Otherwise, consider this value smaller if the ratio is below an acceptable boundary
-	UNIT ratio = (static_cast<UNIT>(_n) / static_cast<UNIT>(n));
-	return ((_n > 0.0) && (ratio < s_nSmallUnity)) || ((_n < 0.0) && (ratio > s_nLargeUnity));
+
+    return false;
 }
+
 inline bool Unit::operator<=(UNIT n) const
 {
-	// First, handle both positive and negative zero
-	if (Unit::isBothZero(_n, n))
+	// Less or equal than iff less than value minus the error margin
+	if (static_cast<UNIT>(_n) - s_nPositiveZero < static_cast<UNIT>(n))
 		return true;
-	if (Unit::isApproximateZero(_n))
-		return (n > static_cast<UNIT>(0.0));
-	if (Unit::isApproximateZero(n))
-		return (_n < static_cast<UNIT>(0.0));
-	// Check for opposing signs
-	if (Unit::isNegativeAndPositive(_n, n))
-		return true;
-	if (Unit::isNegativeAndPositive(n, _n))
-		return false;
-	// Check for overflow of _n/n, return false if it occurs
-	if (Unit::isOverflow(_n, n))
-		return false;
-	// Check for underflow of _n/n, return true if it occurs
-	if (Unit::isUnderflow(_n, n))
-		return true;
-	// Otherwise, consider this value smaller or equal if the ratio is below an acceptable boundary
-	UNIT ratio = (static_cast<UNIT>(_n) / static_cast<UNIT>(n));
-	return ((_n > 0.0) && (ratio <= s_nLargeUnity)) || ((_n < 0.0) && (ratio >= s_nSmallUnity));
+
+	return false;
 }
-inline bool Unit::operator>(UNIT n) const
-{
-	// First, handle both positive and negative zero
-	if (Unit::isBothZero(_n, n))
-		return false;
-	if (Unit::isApproximateZero(_n))
-		return (n < static_cast<UNIT>(0.0));
-	if (Unit::isApproximateZero(n))
-		return (_n > static_cast<UNIT>(0.0));
-	// Check for opposing signs
-	if (Unit::isNegativeAndPositive(_n, n))
-		return false;
-	if (Unit::isNegativeAndPositive(n, _n))
-		return true;
-	// Check for overflow of _n/n, return true if it occurs
-	if (Unit::isOverflow(_n, n))
-		return true;
-	// Check for underflow of _n/n, return false if it occurs
-	if (Unit::isUnderflow(_n, n))
-		return false;
-	// Otherwise, consider this value greater if the ratio is above an acceptable boundary
-	UNIT ratio = (static_cast<UNIT>(_n) / static_cast<UNIT>(n));
-	return ((_n > 0.0) && (ratio > s_nLargeUnity)) || ((_n < 0.0) && (ratio < s_nSmallUnity));
-}
-inline bool Unit::operator>=(UNIT n) const
-{
-	// First, handle equality of both positive and negative zero
-	if (Unit::isBothZero(_n, n))
-		return true;
-	if (Unit::isApproximateZero(_n))
-		return (n < static_cast<UNIT>(0.0));
-	if (Unit::isApproximateZero(n))
-		return (_n > static_cast<UNIT>(0.0));
-	// Check for opposing signs
-	if (Unit::isNegativeAndPositive(_n, n))
-		return false;
-	if (Unit::isNegativeAndPositive(n, _n))
-		return true;
-	// Check for overflow of _n/n, return true if it occurs
-	if (Unit::isOverflow(_n, n))
-		return true;
-	// Check for underflow of _n/n, return false if it occurs
-	if (Unit::isUnderflow(_n, n))
-		return false;
-	// Otherwise, consider this value greater or equal if the ratio is above an acceptable boundary
-	UNIT ratio = (static_cast<UNIT>(_n) / static_cast<UNIT>(n));
-	return ((_n > 0.0) && (ratio >= s_nSmallUnity)) || ((_n < 0.0) && (ratio <= s_nLargeUnity));
-}
+
+inline bool Unit::operator>(UNIT n) const { return !operator<=(n); }
+inline bool Unit::operator>=(UNIT n) const { return !operator<(n); }
 
 inline Unit& Unit::operator+=(UNIT n) { _n += n; return *this; }
 inline Unit& Unit::operator-=(UNIT n) { _n -= n; return *this; }

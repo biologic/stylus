@@ -2,7 +2,7 @@
  * \file    xml.cpp
  * \brief	XML helper routines (see xml.hpp for details)
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -276,23 +276,17 @@ const char* XMLDocument::s_aryXMLXPATH[XP_MAX] =
 	"/st:globals/st:weights/st:group"
 };
 
+const char XMLDocument::s_szStylusPrefix[] = "st";
 const char XMLDocument::s_szStylusNamespacePrerelease[] = "http://biologicinstitute.org/schemas/stylus/0.1";
-const char XMLDocument::s_szStylusNamespace[] = "http://biologicinstitute.org/schemas/stylus/1.0";
-
-const Namespace XMLDocument::s_aryPrereleaseNamespaces[] =
-{
-	{ "st", XMLDocument::s_szStylusNamespacePrerelease }
-};
-
-const Namespace XMLDocument::s_aryDefaultNamespaces[] =
-{
-	{ "st", XMLDocument::s_szStylusNamespace }
-};
+const char XMLDocument::s_szStylusNamespace1_0[] = "http://biologicinstitute.org/schemas/stylus/1.0";
+const char XMLDocument::s_szStylusNamespace1_3[] = "http://biologicinstitute.org/schemas/stylus/1.3";
+const char* XMLDocument::s_szStylusNamespace = XMLDocument::s_szStylusNamespace1_3;
 
 SCHEMA XMLDocument::s_arySCHEMAS[] =
 {
 	{ XMLDocument::s_szStylusNamespacePrerelease, "stylus-0.1.xsd", NULL, false },
-	{ XMLDocument::s_szStylusNamespace, "stylus-1.0.xsd", NULL, true }
+	{ XMLDocument::s_szStylusNamespace1_0, "stylus-1.0.xsd", NULL, true },
+	{ XMLDocument::s_szStylusNamespace1_3, "stylus-1.3.xsd", NULL, true }
 };
 
 string XMLDocument::s_strScope;
@@ -630,8 +624,22 @@ XMLDocument::XMLDocument(xmlDocPtr pxd) : _spxd(pxd)
 	ENTER(XML,XMLDocument);
 	ASSERT(VALIDSP(_spxd));
 	
-	// Use prerelease namespaces if the released version is not found in the document
-	_fUsePrereleaseNamespaces = (::xmlSearchNsByHref(pxd, ::xmlDocGetRootElement(pxd), (xmlChar *)s_szStylusNamespace) == NULL);
+	xmlNodePtr pxnRoot = ::xmlDocGetRootElement(pxd);
+	
+	// Determine the Stylus namespace in use by the document
+	for (size_t i=0; i < ARRAY_LENGTH(s_arySCHEMAS); ++i)
+	{
+		ASSERT(VALID(s_arySCHEMAS[i]._pszURI));
+		
+		if (::xmlSearchNsByHref(pxd, pxnRoot, (xmlChar *)s_arySCHEMAS[i]._pszURI) != NULL)
+		{
+			_pszStylusNamespace = s_arySCHEMAS[i]._pszURI;
+			return;
+		}
+	}
+	
+	// Throw an error if no supported namespace was found
+	THROWRC((RC(XMLERROR), "Document does not contain any supported Stylus namespaces"));
 }
 
 /*
@@ -913,7 +921,7 @@ XMLDocument::countSiblings(xmlNodePtr pxn, const char* pszSiblingTag, const char
  *
  */
 xmlXPathContextPtr
-XMLDocument::createXPathContext(const Namespace* aryNS, int cNS)
+XMLDocument::createXPathContext()
 {
 	ENTER(XML,createXPathContext);
 	
@@ -925,18 +933,8 @@ XMLDocument::createXPathContext(const Namespace* aryNS, int cNS)
 	if (!VALIDSP(spxpc))
 		THROWXML();
 
-	if (!VALID(aryNS) || cNS <= 0)
-	{
-		aryNS = (_fUsePrereleaseNamespaces ? s_aryPrereleaseNamespaces : s_aryDefaultNamespaces);
-		cNS = ARRAY_LENGTH((_fUsePrereleaseNamespaces ? s_aryPrereleaseNamespaces : s_aryDefaultNamespaces));
-	}
-
-	const Namespace* pns = aryNS;
-	for (int iNS=0; iNS < cNS; iNS++, pns++)
-	{
-		if (::xmlXPathRegisterNs(spxpc.get(), (const xmlChar *)pns->_pszPrefix, (const xmlChar *)pns->_pszURI))
-			THROWXML();
-	}
+	if (::xmlXPathRegisterNs(spxpc.get(), (const xmlChar *)s_szStylusPrefix, (const xmlChar *)_pszStylusNamespace))
+		THROWXML();
 
 	return spxpc.release();
 }
@@ -959,14 +957,14 @@ XMLDocument::evalXPath(xmlXPathContextPtr pxpc, const char* pszExpression)
 }
 
 xmlXPathObjectPtr
-XMLDocument::evalXPath(const char* pszExpression, const Namespace* aryNS, int cNS)
+XMLDocument::evalXPath(const char* pszExpression)
 {
 	ENTER(XML,evalXPath);
 	
 	ASSERT(VALIDSP(_spxd));
 	ASSERT(VALID(pszExpression));
 
-	xmlXPathContextSPtr spxpc(createXPathContext(aryNS, cNS));
+	xmlXPathContextSPtr spxpc(createXPathContext());
 	xmlXPathObjectSPtr spxpo(evalXPath(spxpc.get(), pszExpression));
 
 	return spxpo.release();

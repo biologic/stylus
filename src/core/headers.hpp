@@ -6,7 +6,7 @@
  *  Files may judiciously include additional headers not generally used by other
  *  .CPP files.
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,33 +65,33 @@ namespace org_biologicinstitute_stylus
 	{
 		ACID_STP = 0,
 
-		ACID_NoS,
-		ACID_NoM,
-		ACID_NoL,
+		ACID_Nos,
+		ACID_Nom,
+		ACID_Nol,
 
-		ACID_NeS,
-		ACID_NeM,
+		ACID_Nes,
+		ACID_Nem,
 
-		ACID_EaS,
-		ACID_EaM,
-		ACID_EaL,
+		ACID_Eas,
+		ACID_Eam,
+		ACID_Eal,
 
-		ACID_SeS,
-		ACID_SeM,
+		ACID_Ses,
+		ACID_Sem,
 
-		ACID_SoS,
-		ACID_SoM,
-		ACID_SoL,
+		ACID_Sos,
+		ACID_Som,
+		ACID_Sol,
 
-		ACID_SwS,
-		ACID_SwM,
+		ACID_Sws,
+		ACID_Swm,
 
-		ACID_WeS,
-		ACID_WeM,
-		ACID_WeL,
+		ACID_Wes,
+		ACID_Wem,
+		ACID_Wel,
 
-		ACID_NwS,
-		ACID_NwM,
+		ACID_Nws,
+		ACID_Nwm,
 
 		ACID_MAX
 	};
@@ -167,6 +167,8 @@ namespace org_biologicinstitute_stylus
 	typedef std::vector<unsigned int> UINTARRAY;
 	typedef std::vector<size_t> NUMERICMAP;
 	typedef std::vector<size_t> NUMERICARRAY;
+
+	typedef std::vector<std::string> STRINGARRAY;
 
 	typedef std::pair<size_t,size_t> NUMERICPAIR;
 	typedef std::vector<NUMERICPAIR> NUMERICPAIRARRAY;

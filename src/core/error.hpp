@@ -5,7 +5,7 @@
  * Error is a top-level class in Stylus. Unlike the standard library exceptions,
  * Stylus exceptions are not distinguished by type, but by content.
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

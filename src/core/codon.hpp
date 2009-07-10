@@ -7,7 +7,7 @@
  * the specific codon table, leaving open the possibility of using other
  * codon tables.
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ namespace org_biologicinstitute_stylus
 		 *
 		 * This routine converts a three character vector name into the corresponding acid.
 		 * 
-		 * \param[in] pszVector Pointer to first of three characters forming the vector name (e.g., NoL)
+		 * \param[in] pszVector Pointer to first of three characters forming the vector name (e.g., Nol)
 		 */
 		static ACIDTYPE vectorToType(const char* pszVector);
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 # 
-# Stylus, Copyright 2006-2008 Biologic Institute
+# Stylus, Copyright 2006-2009 Biologic Institute
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ stbackup.py
 
 This script creates a compressed archive of Stylus working data
 
-Stylus, Copyright 2006-2008 Biologic Institute.
+Stylus, Copyright 2006-2009 Biologic Institute.
 '''
 
 import datetime

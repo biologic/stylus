@@ -2,7 +2,7 @@
  * \file	plan.inl
  * \brief	Stylus Plan and helper classes inline methods
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -395,6 +395,13 @@ inline size_t Plan::getMutationsPerAttempt() const
 
 inline void Plan::beginExecution() { _fExecuting = true; }
 inline void Plan::endExecution() { _fExecuting = false; }
+
+inline size_t Plan::getActualTrialCount(size_t cTrials, size_t iTrialFirst)
+{
+	return cTrials == 0
+		? _cTrials
+		: min<size_t>(cTrials, (_cTrials - (Genome::getTrial()+1) + iTrialFirst));
+}
 
 //--------------------------------------------------------------------------------
 //

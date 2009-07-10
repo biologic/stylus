@@ -2,7 +2,7 @@
  * \file	codon.inl
  * \brief	Stylus Codon class inline methods
  *
- * Stylus, Copyright 2006-2008 Biologic Institute
+ * Stylus, Copyright 2006-2009 Biologic Institute
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ inline ACIDTYPE Acid::vectorToType(const char* pszVector)
 
 	for (size_t at=ACID_STP; at < ACID_MAX; ++at)
 	{
-		if (!::strncmp(pszVector, s_aryACIDS[at]._pszName, Codon::s_cchCODON))
+		if (!::strnicmp(pszVector, s_aryACIDS[at]._pszName, Codon::s_cchCODON))
 			return (ACIDTYPE)at;
 	}
 

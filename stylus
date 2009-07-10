@@ -42,7 +42,7 @@
 # DYLD_LIBRARY_PATH - Mac OS X path to dynamically loaded libraries
 # LD_LIBRARY_PATH   - Linux path to dynamically loaded libraries
 # 
-# Stylus, Copyright 2006-2008 Biologic Institute
+# Stylus, Copyright 2006-2009 Biologic Institute
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
