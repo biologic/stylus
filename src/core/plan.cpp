@@ -856,9 +856,7 @@ IndexRange::getRange() const
 	Range rg;
 
 	if (_grfSupplied == FS_NONE)
-	{
 		rg.set(Codon::s_cchCODON, (Genome::getBases().length() - 1) - Codon::s_cchCODON);
-	}
 	else if (ST_ISALLSET(_grfSupplied, FS_INDEXRANGE))
 	{
 		if (_fPercentageIndex)
@@ -1213,31 +1211,23 @@ Step::getMutation(Mutation& m, STFLAGS grfOptions, size_t iTrialInStep) const
 		long shift = (_dIndex * iTrialInStep) % range;
 
 		if (rg.getLength() >= static_cast<size_t>(range))
-		{
 			rg.set(codon, codon + range - 1);
-		}
 		else
 		{
 			long offset = (rg.getStart() - codon);
 
 			if (offset >= range)
-			{
 				rg.move((offset % range) - offset);
-			}
 
 			ASSERT((rg.getStart() >= codon) &&
 				   (rg.getStart() < (codon + range)));
 
-			if (((rg.getEnd() + shift) < (codon + range)) &&
-				((rg.getEnd() + shift) >= rg.getEnd()))
-			{
+			if (	((rg.getEnd() + shift) < (codon + range))
+				&&	((rg.getEnd() + shift) >= rg.getEnd()))
 				rg.move(shift);
-			}
-			else if (((rg.getStart() + shift) >= (codon + range)) ||
-					 ((rg.getStart() + shift) < rg.getStart()))
-			{
+			else if (	((rg.getStart() + shift) >= (codon + range))
+					 ||	((rg.getStart() + shift) < rg.getStart()))
 				rg.move(shift - range);
-			}
 			else
 			{
 				long oldlen = rg.getLength();
@@ -1245,11 +1235,9 @@ Step::getMutation(Mutation& m, STFLAGS grfOptions, size_t iTrialInStep) const
 
 				long random = RGenerator::getUniform(0L, oldlen - 1);
 
-				if (((rg.getStart() + random) >= (codon + range)) ||
-					((rg.getStart() + random) < rg.getStart()))
-				{
+				if (	((rg.getStart() + random) >= (codon + range))
+					||	((rg.getStart() + random) < rg.getStart()))
 					rg.set(codon, codon + (oldlen - rg.getLength()) - 1);
-				}
 			}
 		}
 	}
