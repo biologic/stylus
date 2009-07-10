@@ -163,10 +163,10 @@ namespace org_biologicinstitute_stylus
 
 		enum STROKEINVALID
 		{
-			STI_DIMENSIONS = 0x0001,		///< Invalidate dimension values
-			STI_SEGMENTS   = 0x0002,		///< Invalidate segment related values
-			STI_LOCATION   = 0x0004,		///< Invalidate location related values
-			STI_SCORE      = 0x0008,		///< Invalidate score related values
+			STI_DIMENSIONS	= 0x0001,			///< Invalidate dimension values
+			STI_SEGMENTS	= 0x0002,			///< Invalidate segment related values
+			STI_LOCATION	= 0x0004,			///< Invalidate location related values
+			STI_SCORE		= 0x0008,			///< Invalidate score related values
 
 			STI_ALL = STI_DIMENSIONS | STI_SEGMENTS | STI_LOCATION | STI_SCORE
 		};
@@ -442,23 +442,23 @@ namespace org_biologicinstitute_stylus
 		 */
 		enum GENEINVALID
 		{
-			GI_NONE       = 0x0000,				///< All parts are valid
+			GI_NONE			= 0x0000,			///< All parts are valid
 
-			GI_ACIDS      = 0x0001,				///< Acid array is invalid
-			GI_POINTS     = 0x0002,				///< Points array is invalid
-			GI_COHERENCE  = 0x0004,				///< Coherence array is invalid
-			GI_SEGMENTS   = 0x0008,				///< Segments are invalid
-			GI_COMPILED   = GI_ACIDS | GI_POINTS | GI_COHERENCE | GI_SEGMENTS,
+			GI_ACIDS		= 0x0001,			///< Acid array is invalid
+			GI_POINTS		= 0x0002,			///< Points array is invalid
+			GI_COHERENCE	= 0x0004,			///< Coherence array is invalid
+			GI_SEGMENTS		= 0x0008,			///< Segments are invalid
+			GI_COMPILED		= GI_ACIDS | GI_POINTS | GI_COHERENCE | GI_SEGMENTS,
 
-			GI_STROKES    = 0x0010,				///< Strokes-to-segment assignments are invalid
-			GI_DIMENSIONS = 0x0020,				///< Dimensions (all) are invalid
-			GI_OVERLAPS   = 0x0040,				///< Overlaps are invalid
-			GI_VALIDATED  = GI_STROKES | GI_DIMENSIONS | GI_OVERLAPS,
+			GI_STROKES		= 0x0010,			///< Strokes-to-segment assignments are invalid
+			GI_DIMENSIONS	= 0x0020,			///< Dimensions (all) are invalid
+			GI_OVERLAPS		= 0x0040,			///< Overlaps are invalid
+			GI_VALIDATED	= GI_STROKES | GI_DIMENSIONS | GI_OVERLAPS,
 
-			GI_SCORE      = 0x0100,				///< Scores are invalid
-			GI_SCORED     = GI_SCORE,
+			GI_SCORE		= 0x0100,			///< Scores are invalid
+			GI_SCORED		= GI_SCORE,
 
-			GI_ALL        = GI_COMPILED | GI_VALIDATED | GI_SCORED
+			GI_ALL			= GI_COMPILED | GI_VALIDATED | GI_SCORED
 		};
 		STFLAGS _grfInvalid;					///< Set of GENEINVALID flags
 

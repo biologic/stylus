@@ -24,7 +24,7 @@ namespace org_biologicinstitute_stylus
 {
 #define ISEQUALXMLSTR(s1,s2) (::xmlStrlen((const xmlChar*)s1) == ::xmlStrlen((const xmlChar*)s2) && !::xmlStrcmp((const xmlChar*)s1,(const xmlChar*)s2))
 	
-    /**
+	/**
 	 * \brief Wrapper around ::xmlNanoHTTPClose (to hide dealing with void*)
 	 * \param _pv Pointer to HTTP context to close
 	 */
@@ -69,7 +69,7 @@ namespace org_biologicinstitute_stylus
 	struct Namespace
 	{
 		const char* _pszPrefix;		///< XML Namespace identifier
-		const char* _pszURI;        ///< XML Namespace URI
+		const char* _pszURI;		///< XML Namespace URI
 	};
 
 	/**

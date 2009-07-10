@@ -25,34 +25,34 @@ using namespace stylus;
 
 static const char* s_aryXMLDomains[] =
 {
-    "NONE",
-    "PARSER",
-    "TREE",
-    "NAMESPACE",
-    "DTD",
-    "HTML",
-    "MEMORY",
-    "OUTPUT",
-    "IO",
-    "FTP",
-    "HTTP",
-    "XINCLUDE",
-    "XPATH",
-    "XPOINTER",
-    "REGEXP",
-    "DATATYPE",
-    "SCHEMASP",
-    "SCHEMASV",
-    "RELAXNGP",
-    "RELAXNGV",
-    "CATALOG",
-    "C14N",
-    "XSLT",
-    "VALID",
-    "CHECK",
-    "WRITER",
-    "MODULE",
-    "I18N"
+	"NONE",
+	"PARSER",
+	"TREE",
+	"NAMESPACE",
+	"DTD",
+	"HTML",
+	"MEMORY",
+	"OUTPUT",
+	"IO",
+	"FTP",
+	"HTTP",
+	"XINCLUDE",
+	"XPATH",
+	"XPOINTER",
+	"REGEXP",
+	"DATATYPE",
+	"SCHEMASP",
+	"SCHEMASV",
+	"RELAXNGP",
+	"RELAXNGV",
+	"CATALOG",
+	"C14N",
+	"XSLT",
+	"VALID",
+	"CHECK",
+	"WRITER",
+	"MODULE",
+	"I18N"
 };
 
 const char* XMLDocument::s_aryXMLTAG[XT_MAX] =
@@ -298,7 +298,7 @@ char XMLDocument::s_szXMLError[Constants::s_cbmaxBUFFER];
  */
 void stylus::xmlFreeChar(xmlChar* _pv) throw()
 {
-    ::xmlFree(_pv);
+	::xmlFree(_pv);
 }
 
 /*
@@ -308,7 +308,7 @@ void stylus::xmlFreeChar(xmlChar* _pv) throw()
 void
 stylus::xmlHTTPClose(unsigned char* _pv) throw()
 {
-    ::xmlNanoHTTPClose((void*)_pv);
+	::xmlNanoHTTPClose((void*)_pv);
 }
 
 //--------------------------------------------------------------------------------

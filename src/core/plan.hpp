@@ -332,10 +332,10 @@ namespace org_biologicinstitute_stylus
 	private:
 		enum FIELDSUPPLIED
 		{
-			FS_NONE       = 0x0000,			///< No values were supplied
-			FS_INDEXRANGE = 0x0001,			///< indexRange was supplied
-			FS_GENERANGE  = 0x0002,			///< geneRange was supplied
-			FS_HANSTROKE  = 0x0004			///< hanStrokeRange was supplied
+			FS_NONE			= 0x0000,		///< No values were supplied
+			FS_INDEXRANGE	= 0x0001,		///< indexRange was supplied
+			FS_GENERANGE	= 0x0002,		///< geneRange was supplied
+			FS_HANSTROKE	= 0x0004		///< hanStrokeRange was supplied
 		};
 		STFLAGS _grfSupplied;				///< Flags noting which fields were supplied (vs generated)
 		
@@ -471,9 +471,9 @@ namespace org_biologicinstitute_stylus
 	public:
 		enum STEPOPTIONS
 		{
-			SO_NONE              = 0x0000,
-			SO_ENSUREINFRAME     = 0x0001,
-			SO_ENSUREWHOLECODONS = 0x0002
+			SO_NONE					= 0x0000,
+			SO_ENSUREINFRAME		= 0x0001,
+			SO_ENSUREWHOLECODONS	= 0x0002
 		};
 
 		Step();

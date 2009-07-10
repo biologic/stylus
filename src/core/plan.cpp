@@ -869,7 +869,7 @@ IndexRange::getRange() const
 		else
 			rg.set(_rgIndex);
 
-		ASSERT(Codon::onCodonBoundary(rg.getStart()));
+		DASSERT(Codon::onCodonBoundary(rg.getStart()));
 	}
 	else if (ST_ISALLSET(_grfSupplied, FS_HANSTROKE))
 	{
@@ -1219,7 +1219,7 @@ Step::getMutation(Mutation& m, STFLAGS grfOptions, size_t iTrialInStep) const
 			if (offset >= range)
 				rg.move((offset % range) - offset);
 
-			ASSERT(		(rg.getStart() >= codon)
+			DASSERT(	(rg.getStart() >= codon)
 					&&	(rg.getStart() < (codon + range)));
 
 			if (	((rg.getEnd() + shift) < (codon + range))

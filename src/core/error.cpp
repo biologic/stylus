@@ -45,7 +45,7 @@ Error::setNextError(const char* pszFileline, ST_RETCODE rc, const char* pszForma
 	Error* pe = ::new (&s_aryErrors[s_iError]) Error(rc);
 
 	if (VALID(pszFileline))
-    {
+	{
 		size_t cchFileline = ::strlen(pszFileline);
 		const char* psz;
 		size_t cb;
@@ -56,7 +56,7 @@ Error::setNextError(const char* pszFileline, ST_RETCODE rc, const char* pszForma
 		cb = min<size_t>(cchFileline, ARRAY_LENGTH(pe->_szFileline));
 		psz = pszFileline + cchFileline - cb;
 		copyBytes(pe->_szFileline, &cb, psz, cb);
-    }
+	}
 
 	va_list ap;
 	va_start(ap, pszFormat);
@@ -123,7 +123,7 @@ Error::Error(ST_RETCODE rc) throw()
 
 Error::Error(const Error& e) throw()
 {
-    *this = e;
+	*this = e;
 }
 
 /*
@@ -133,7 +133,7 @@ Error::Error(const Error& e) throw()
 Error&
 Error::operator=(const Error& e) throw()
 {
-    _tError = e._tError;
+	_tError = e._tError;
 	_rc = e._rc;
 
 	size_t cch = CCH_OF(_szFileline);

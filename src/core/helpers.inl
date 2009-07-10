@@ -217,7 +217,7 @@ inline bool Unit::operator<(UNIT n) const
 	if (static_cast<UNIT>(_n) + s_nPositiveZero < static_cast<UNIT>(n))
 		return true;
 
-    return false;
+	return false;
 }
 
 inline bool Unit::operator<=(UNIT n) const

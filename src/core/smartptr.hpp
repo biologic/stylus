@@ -28,7 +28,7 @@ namespace org_biologicinstitute_stylus
 	 */
 	template<typename _Tp> void __delete(_Tp* p) throw() { ::delete p; }
 	
-    /**
+	/**
 	 * \brief A smart pointer that allows user-selected free routines
 	 * \param[in] _Tp Object type to protect
 	 * \param[in] _Fpt Routine used to free the object (defaults to \c delete)
@@ -44,7 +44,7 @@ namespace org_biologicinstitute_stylus
 	{
 	private:
 		_Tp* _M_ptr;
-      
+
 	public:
 		explicit
 		smart_ptr(_Tp* __p = 0) : _M_ptr(__p) {}
@@ -65,13 +65,13 @@ namespace org_biologicinstitute_stylus
 		}
 
 		~smart_ptr() { reset(); }
-      
+
 		_Tp& operator*() const { return *_M_ptr; }
 		_Tp* operator->() const { return _M_ptr; }
 		_Tp** operator&() { release(); return &_M_ptr; }
-      
+
 		_Tp* get() const { return _M_ptr; }
-      
+
 		_Tp*
 		release()
 		{
@@ -79,7 +79,7 @@ namespace org_biologicinstitute_stylus
 			_M_ptr = 0;
 			return __tmp;
 		}
-      
+
 		void
 		reset(_Tp* __p = 0)
 		{
@@ -92,7 +92,7 @@ namespace org_biologicinstitute_stylus
 		}
 	};
 
-    /**
+	/**
 	 * \brief A referenced-counted smart pointer that allows user-selected free routines
 	 * \param[in] _Tp Object type to protect
 	 * \param[in] _Fpt Routine used to free the object (defaults to \c delete)
@@ -111,7 +111,7 @@ namespace org_biologicinstitute_stylus
 	private:
 		_Tp* _M_ptr;
 		long* _pcReferences;
-    
+
 		void
 		reset(_Tp* __p=0, long* __pcReferences=0)
 		{
@@ -123,7 +123,7 @@ namespace org_biologicinstitute_stylus
 			_M_ptr = __p;
 			_pcReferences = __pcReferences;
 		}
-      
+
 	public:
 		explicit
 		smartref_ptr(_Tp* __p = 0) : _M_ptr(0), _pcReferences(0) { operator=(__p); }
@@ -152,7 +152,7 @@ namespace org_biologicinstitute_stylus
 		~smartref_ptr()	{ reset(); }
 		
 		operator _Tp* () const { return _M_ptr; }
-      
+
 		_Tp& operator*() const { return *_M_ptr; }
 		_Tp* operator->() const { return _M_ptr; }
 

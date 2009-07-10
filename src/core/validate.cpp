@@ -711,29 +711,29 @@ Gene::ensureStrokes()
 
 		// Adjoining segments can never have the same coherency
 		ASSERT(		iSegment >= _vecSegments.size()-1
-			  ||	_vecSegments[iSegment+1].isCoherent() != sg.isCoherent());
+				||	_vecSegments[iSegment+1].isCoherent() != sg.isCoherent());
 
 		// Coherent segments can never be smaller than a trivector
 		ASSERT(		!sg.isCoherent()
-			  ||	sg.getRange().getLength() >= Codon::s_nTRIVECTOR);
+				||	sg.getRange().getLength() >= Codon::s_nTRIVECTOR);
 
 		// Determine endpoint relationships (see comments above)
-		bool fStartBefore = (st.getStart() - sg.getStart()) > 0;
-		bool fStartAfter  = (sg.getStart() - st.getEnd()) > 0;
+		bool fStartBefore	= (st.getStart() - sg.getStart()) > 0;
+		bool fStartAfter	= (sg.getStart() - st.getEnd()) > 0;
 
-		bool fEndBefore   = (st.getStart() - sg.getEnd()) > 0;
-		bool fEndAfter    = (sg.getEnd() - st.getEnd()) > 0;
+		bool fEndBefore		= (st.getStart() - sg.getEnd()) > 0;
+		bool fEndAfter		= (sg.getEnd() - st.getEnd()) > 0;
 
 		ASSERT(!(fStartBefore && fStartAfter));
 		ASSERT(!(fEndBefore && fEndAfter));
 		ASSERT(!fEndBefore || fStartBefore);
 		ASSERT(!fStartAfter || fEndAfter);
 
-		bool fStartContained = (!fStartBefore && !fStartAfter);
-		bool fEndContained   = (!fEndBefore && !fEndAfter);
+		bool fStartContained	= (!fStartBefore && !fStartAfter);
+		bool fEndContained		= (!fEndBefore && !fEndAfter);
 
-		bool fAdvanceSegment = true;
-		bool fAdvanceStroke = false;
+		bool fAdvanceSegment	= true;
+		bool fAdvanceStroke		= false;
 		
 		// Handle each segment/stroke case (see above), adjusting the stroke boundaries as needed
 		// - For coherent segments, stroke boundaries are extend to co-extensive with the segment
