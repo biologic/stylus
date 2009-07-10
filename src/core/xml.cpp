@@ -860,8 +860,8 @@ XMLDocument::findDescendent(xmlNodePtr pxn, const std::vector<QNAME>& vecQNames)
 		
 		// The element matches if the names match and the namespaces (if any) match
 		if (	pxn->type == XML_ELEMENT_NODE
-		   &&	!::strcmp((const char*)pxn->name, qname._pszName)
-		   &&	(	(	!VALID(qname._pszURI)
+			&&	!::strcmp((const char*)pxn->name, qname._pszName)
+			&&	(	(	!VALID(qname._pszURI)
 					&&	!VALID(pxn->ns))
 				||	(	VALID(qname._pszURI)
 					&&	!::strcmp((const char*)pxn->ns->href, qname._pszURI))))
@@ -991,6 +991,6 @@ XMLStream::initialize(bool fInitialize)
 		
 	if (fInitialize)
 		_ostr
-			<< Constants::s_strXMLDOCTYPE
-			<< endl;
+			<<	Constants::s_strXMLDOCTYPE
+			<< e`ndl;
 }

@@ -764,7 +764,7 @@ Genome::handleChange(const Mutation& mt, bool fPreserveGenes, bool fRejectSilent
 		{
 			const Range& rgGene = _vecGenes[iGene].getRange();
 			if (	(rgGene.getStart()+Codon::s_cchCODON) > iTarget
-			   ||	(rgGene.getEnd()-Codon::s_cchCODON) < (iTarget + cbBases - 1))
+				||	(rgGene.getEnd()-Codon::s_cchCODON) < (iTarget + cbBases - 1))
 				goto REJECT2;
 		}
 
@@ -939,7 +939,7 @@ Genome::handleDelete(const Mutation& mt, bool fPreserveGenes)
 		{
 			const Range& rgGene = _vecGenes[iGeneFirst].getRange();
 			if (	(rgGene.getStart()+Codon::s_cchCODON) > iTarget
-			   ||	(rgGene.getEnd()-Codon::s_cchCODON) < (iTarget + cbBases - 1))
+				||	(rgGene.getEnd()-Codon::s_cchCODON) < (iTarget + cbBases - 1))
 				goto REJECT3;
 		}
 	}

@@ -1201,12 +1201,12 @@ Genome::advanceTrial(bool fRestore)
 		StateGuard sg(STGS_INVALID, STGS_DEAD);
 
 		if (	fRestore
-		   &&	(	!enterState(STGS_RESTORING)
+			&&	(	!enterState(STGS_RESTORING)
 				||	!exitState(doRestore)))
 			THROWRC((RC(ERROR), "Unable to remove accumulated changes prior to spawning"));
 
 		if (	!enterState(STGS_SPAWNING)
-		   ||	!exitState(doSpawn))
+			||	!exitState(doSpawn))
 			THROWRC((RC(ERROR), "Unable to spawn a new working copy of the genome prior to mutation"));
 	}
 	ASSERT(isState(STGS_INVALID));

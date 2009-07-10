@@ -917,7 +917,7 @@ Gene::ensureStrokes()
 
 	// Gene is invalid if not all strokes received at least one coherent segment
 	if (	iStroke < _vecStrokes.size()-1
-	   ||	(	iStroke == _vecStrokes.size()-1
+		||	(	iStroke == _vecStrokes.size()-1
 			&&	_vecStrokes[iStroke].getSegments() <= 0))
 	{
 		Genome::recordAttempt(ST_FILELINE, STTR_VALIDATION, "Unable to assign segments to all strokes");
@@ -930,7 +930,7 @@ Gene::ensureStrokes()
 	//   segment exceeding the dropout length; if it exhausted segments before
 	//   strokes, the last stroke will require termination
 	ASSERT(		iStroke >= _vecStrokes.size()
-		  ||	(	iStroke == _vecStrokes.size()-1
+			||	(	iStroke == _vecStrokes.size()-1
 				&&	iSegment >= _vecSegments.size()
 				&&	(	_vecSegments.back().isCoherent()
 					||	_vecSegments.back().getRange().getLength() <= static_cast<long>(s_cDROPOUT))));

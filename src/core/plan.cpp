@@ -1219,14 +1219,14 @@ Step::getMutation(Mutation& m, STFLAGS grfOptions, size_t iTrialInStep) const
 			if (offset >= range)
 				rg.move((offset % range) - offset);
 
-			ASSERT((rg.getStart() >= codon) &&
-				   (rg.getStart() < (codon + range)));
+			ASSERT(		(rg.getStart() >= codon)
+					&&	(rg.getStart() < (codon + range)));
 
 			if (	((rg.getEnd() + shift) < (codon + range))
 				&&	((rg.getEnd() + shift) >= rg.getEnd()))
 				rg.move(shift);
 			else if (	((rg.getStart() + shift) >= (codon + range))
-					 ||	((rg.getStart() + shift) < rg.getStart()))
+					||	((rg.getStart() + shift) < rg.getStart()))
 				rg.move(shift - range);
 			else
 			{

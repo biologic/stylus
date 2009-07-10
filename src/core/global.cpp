@@ -171,8 +171,7 @@ extern "C"
 	{
 		ENTERPUBLIC(GLOBAL,stSetScope);
 
-		if (	!VALID(pszURLHan)
-		   ||	!VALID(pszURLXMLSchema))
+		if (!VALID(pszURLHan) || !VALID(pszURLXMLSchema))
 			RETURN_BADARGS();
 			
 		if (EMPTYSZ(pszURLHan))

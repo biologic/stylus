@@ -151,8 +151,8 @@ Line::set(const Point& ptStart, const Point& ptEnd, bool fCanonical)
 
 	_fCanonical = fCanonical;
 	if (	!_fCanonical
-	   ||	ptStart.x() < ptEnd.x()
-	   ||	(	ptStart.x() == ptEnd.x()
+		||	ptStart.x() < ptEnd.x()
+		||	(	ptStart.x() == ptEnd.x()
 			&&	ptStart.y() > ptEnd.y()))
 	{
 		_ptStart = ptStart;
