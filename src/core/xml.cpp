@@ -903,7 +903,7 @@ XMLDocument::countSiblings(xmlNodePtr pxn, const char* pszSiblingTag, const char
 		//	   -- And the name matches (or no name was given)
 		//	   -- And the namespace matches (or no namespace was given)
 		if (	pxn->type == XML_ELEMENT_NODE
-		   &&	(	!VALID(pszSiblingTag)
+			&&	(	!VALID(pszSiblingTag)
 				||	(	!::strcmp((const char*)pxn->name, pszSiblingTag)
 					&&	(	!VALID(pszSiblingNS)
 						||	(	VALID(pxn->ns)
