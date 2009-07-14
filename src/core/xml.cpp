@@ -991,6 +991,6 @@ XMLStream::initialize(bool fInitialize)
 		
 	if (fInitialize)
 		_ostr
-			<<	Constants::s_strXMLDOCTYPE
-			<< e`ndl;
+			<< Constants::s_strXMLDOCTYPE
+			<< endl;
 }

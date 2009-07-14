@@ -827,8 +827,8 @@ Genome::toXML(XMLStream& xs, STFLAGS grfRecordDetail, bool fUseTrialStatistics)
 	timeToString(szTime, &_tLoaded, false, true);
 
 	// Get a new UUID for the new XML file
-	_strUUID = _vecUUIDs.front();
-	_vecUUIDs.pop_front();
+	_strUUID = _vecUUIDs.back();
+	_vecUUIDs.pop_back();
 
 	// Add the genome element and attributes
 	xs.openStart(xmlTag(XT_GENOME));
