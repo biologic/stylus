@@ -864,7 +864,7 @@ IndexRange::getRange() const
 			size_t cbCodons = (Genome::getBases().length() / Codon::s_cchCODON) - 2;
 
 			rg.set((((((cbCodons * _rgIndex.getStart()) + 50) / 100) + 1) * Codon::s_cchCODON),
-				   (((((cbCodons * _rgIndex.getEnd()) + 50) / 100) + 2) * Codon::s_cchCODON) - 1);
+				   (((((cbCodons * _rgIndex.getEnd()) + 50) / 100) + 1) * Codon::s_cchCODON) - 1);
 		}
 		else
 			rg.set(_rgIndex);
