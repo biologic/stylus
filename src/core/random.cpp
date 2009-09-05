@@ -84,7 +84,7 @@ RGenerator::getUUIDv4()
 	bytes[9] |= 0x40;
 
 	// Format UUID string
-	ostr << hex;
+	ostr << uppercase << hex << setfill('0') << setw(2);
 	ostr << bytes[15] << bytes[14] << bytes[13] << bytes[12] << '-';
 	ostr << bytes[11] << bytes[10] << '-';
 	ostr << bytes[9] << bytes[8]<< '-';
