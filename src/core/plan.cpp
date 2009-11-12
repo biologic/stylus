@@ -1339,7 +1339,7 @@ Step::load(XMLDocument* pxd, xmlNodePtr pxnStep)
 	
 	size_t range = rgGenomeBases.getLength() - (2 * Codon::s_cchCODON);
 
-	if (::abs(nDelta) >= static_cast<size_t>(range))
+	if (static_cast<size_t>(::abs(nDelta)) >= range)
 		THROWRC((RC(XMLERROR), "Step has an illegal deltaIndex of %ld - it must be range from %ld to %ld",
 								nDelta, -(range-1), (range-1)));
 

@@ -341,7 +341,7 @@ namespace org_biologicinstitute_stylus
 		friend const char* xmlXPath(XMLXPATH xp);
 		
 	public:
-		static const char XMLDocument::s_szStylusPrefix[];
+		static const char s_szStylusPrefix[];
 		static const char s_szStylusNamespacePrerelease[];
 		static const char s_szStylusNamespace1_0[];
 		static const char s_szStylusNamespace1_3[];
