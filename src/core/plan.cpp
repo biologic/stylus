@@ -119,7 +119,10 @@ TrialCondition::evaluate(UNIT nValue)
 		switch (_tcm)
 		{
 		case TCM_MAINTAIN:
-			fSuccess = (Unit(nValue) >= tv.getValue());
+			if (tv.getValue() >= 0.0)
+				fSuccess = (Unit(nValue) >= tv.getValue());
+			else
+				fSuccess = (Unit(nValue) <= -tv.getValue());
 			break;
 
 		case TCM_INCREASE:
@@ -225,7 +228,14 @@ TrialCondition::load(XMLDocument* pxd, xmlNodePtr pxnTrialCondition)
 	
 	Unit cTotalLikelihood = 0.0;
 	for (size_t iValue=0; iValue < _vecValues.size(); ++iValue)
-		cTotalLikelihood += _vecValues[iValue].getLikelihood();
+	{
+ 		cTotalLikelihood += _vecValues[iValue].getLikelihood();
+		if ((_tcm != TCM_MAINTAIN) && (_vecValues[iValue].getValue() < 0.0))
+			THROWRC((RC(XMLERROR),
+					"The value (%6.4f) is illegal - it must be positive",
+					_vecValues[iValue].getValue()));
+	}
+
 	if (cTotalLikelihood != 1.0)
 		THROWRC((RC(XMLERROR),
 				"The sum of all value likelihoods (%6.4f) is illegal - it must equal 1.0",
@@ -1339,7 +1349,7 @@ Step::load(XMLDocument* pxd, xmlNodePtr pxnStep)
 	
 	size_t range = rgGenomeBases.getLength() - (2 * Codon::s_cchCODON);
 
-	if (static_cast<size_t>(::abs(nDelta)) >= range)
+	if (static_cast<size_t>(std::abs(nDelta)) >= range)
 		THROWRC((RC(XMLERROR), "Step has an illegal deltaIndex of %ld - it must be range from %ld to %ld",
 								nDelta, -(range-1), (range-1)));
 
