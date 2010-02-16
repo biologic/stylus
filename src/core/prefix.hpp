@@ -34,6 +34,7 @@
 #include <bitset>
 #include <cctype>
 #include <cmath>
+#include <climits>
 #include <cstdarg>
 #include <cstdlib>
 #include <cstring>
