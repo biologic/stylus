@@ -92,7 +92,7 @@ extern "C"
 		
 		Han::initialize();
 		XMLDocument::initialize();
-		RGenerator::initialize(Randlib::s_strUUID);
+		RGenerator::initialize(RandomC::s_strUUID);
 		Genome::initialize();
 
 		Globals::setInitialized(true);

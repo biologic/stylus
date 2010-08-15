@@ -85,8 +85,6 @@ extern "C"
 #include <stdbool.h>
 #endif
 
-#include <randlib.h>
-
 #ifdef __cplusplus
 }
 #endif

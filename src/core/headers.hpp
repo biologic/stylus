@@ -136,7 +136,7 @@ namespace org_biologicinstitute_stylus
 	class PlanScope;
 	class Point;
 	class PointDistance;
-	class Randlib;
+	class RandomC;
 	class Range;
 	class Rectangle;
 	class RGenerator;
@@ -207,6 +207,8 @@ namespace org_biologicinstitute_stylus
 }
 #include "stylus.h"
 
+#include "randomc/randomc.h"
+
 #include "constants.hpp"
 #include "error.hpp"
 #include "global.hpp"
@@ -220,6 +222,7 @@ namespace org_biologicinstitute_stylus
 #include "overlap.hpp"
 #include "plan.hpp"
 #include "random.hpp"
+#include "randomc.hpp"
 
 #include "global.inl"
 #include "codon.inl"

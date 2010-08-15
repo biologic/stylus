@@ -23,7 +23,12 @@ perllibSOURCES = $(perllibDIR)/com.c $(perllibDIR)/linpack.c $(perllibDIR)/randl
 perllibHEADERS = $(perllibDIR)/randlib.h
 perllibINCLUDE = -I$(perllibDIR)
 
-AM_CPPFLAGS = -I@builddir@ $(ST_INCLUDE) $(perllibINCLUDE) $(XML_CPPFLAGS)
+randomcDIR     = @srcdir@/randomc
+randomcSOURCES = $(randomcDIR)/mersenne.cpp $(randomcDIR)/mother.cpp
+randomcHEADERS = $(randomcDIR)\randomc.h
+randomcINCLUDE = -I$(randomcDIR)
+
+AM_CPPFLAGS = -I@builddir@ $(ST_INCLUDE) $(randomcINCLUDE) $(XML_CPPFLAGS)
 if DEBUG
 AM_CFLAGS   = $(ST_DEBUG_CFLAGS)
 AM_CXXFLAGS = $(AM_CFLAGS) $(ST_DEBUG_CXXFLAGS)
@@ -45,6 +50,7 @@ endif
 EXTRA_DIST = ./Math-Random-0.69/
 
 my_sources = \
+  $(randomcSOURCES) \
 	constants.cpp \
 	codon.cpp \
 	error.cpp \
@@ -57,14 +63,15 @@ my_sources = \
 	overlap.cpp \
 	plan.cpp \
 	random.cpp \
+	randomc.cpp \
 	scoring.cpp \
 	validate.cpp \
 	version.cpp \
-	xml.cpp \
-	$(perllibSOURCES)
+	xml.cpp
 
 my_headers = \
 	@top_builddir@/config.h \
+	$(randomcHEADERS) \
 	prefix.hpp headers.hpp \
 	constants.hpp \
 	codon.hpp \
@@ -87,10 +94,10 @@ my_headers = \
 	plan.inl \
 	random.hpp \
 	random.inl \
+	randomc.hpp \
 	smartptr.hpp \
 	xml.hpp \
-	xml.inl \
-	$(perllibHEADERS)
+	xml.inl
 
 lib_LTLIBRARIES      = libstylus.la
 libstylus_la_SOURCES = $(my_sources) $(my_headers)

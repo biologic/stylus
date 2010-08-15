@@ -71,13 +71,6 @@ namespace org_biologicinstitute_stylus
 		virtual void getSeed(XMLStream& xs, STFLAGS grfRecordDetail) const = 0;
 
 		/**
-		 * \brief Generate a uniformly distributed real random number within the range
-		 * \param[in] nLow Low end of the range (exclusive)
-		 * \param[in] nHigh High end of the range (exclusive)
-		 */
-		virtual UNIT getUniform(UNIT nLow, UNIT nHigh) = 0;
-
-		/**
 		 * \brief Generate a uniformly distributed integer random number within the range
 		 * \param[in] nLow Low end of the range (inclusive)
 		 * \param[in] nHigh High end of the range (inclusive)
@@ -137,42 +130,6 @@ namespace org_biologicinstitute_stylus
 
 	private:
 		static IRandom* s_prgen;				///< Active random generator
-	};
-
-	/**
-	 * \brief Randlib-based implementation of IRandom
-	 *
-	 * This class depends on Randlib being linked into Stylus. Since Randlib maintains
-	 * all its own state, this class provides an IRandom-compatible interface only
-	 * and maintains no private state of its own.
-	 */
-	class Randlib : public IRandom
-	{
-		friend class RGenerator;
-
-	private:
-		Randlib();
-		
-	public:
-		static const std::string s_strUUID;		///< UUID used to request Randlib
-
-		inline virtual ~Randlib() {};
-
-		/**
-		 * \brief Implementation of IRandom (see IRandom for details)
-		 *
-		 */
-		//{@
-		virtual const std::string& getUUID() throw();
-
-		virtual void setSeed(const std::string& strSeed);
-		virtual std::string getSeed() const;
-		virtual void getSeed(XMLStream& xs, STFLAGS grfRecordDetail) const;
-
-		virtual UNIT getUniform(UNIT nLow, UNIT nHigh);
-		virtual long getUniform(long nLow, long nHigh);
-		virtual UNIT getUniform();
-		//@}
 	};
 
 }	// namespace org_biologicinstitute_stylus
