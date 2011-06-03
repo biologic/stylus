@@ -1,0 +1,10 @@
+# The following is a list of gene-plan combinations which should
+# not be run
+BLACKLIST = [
+    ('8C58', 'performance') # performance.xml make specific references to 52DC
+]
+
+IGNORE = {
+        'history' : ['uuid', 'creationTool', 'creationDate'],
+        'genome' : ['uuid', 'creationTool', 'creationDate']
+}

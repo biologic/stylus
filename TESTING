@@ -1,0 +1,9 @@
+There are no unit tests on this project. However, I've implemented a quick and dirty testing scheme to ensure that nothing breaks as I work on this project.
+
+The script tests/collect.py will create a test_data directory containing the results of running stylus against the sample plans and genes. This should be run while the code is in a known working condition. 
+
+The script tests/verify.py will run the plans and genes checking them against the data stored in test_data to make sure nothing has changed. This should be run after making changes to make sure that the behavior of Stylus has not changed.
+
+The test_data is deliberately not included in the repository because I don't think I can be sure that the behavior of floating point (and possible other items) will be consistent across different computers or platforms. For that reason, any working copy needs to generate it own copy of test_data
+
+The scheme also doubles as a quick and dirty performance testing scheme by timing the runtime of tests/verify.py. 
