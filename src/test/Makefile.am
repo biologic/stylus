@@ -18,5 +18,18 @@
 
 include $(top_srcdir)/Makerules.in
 
-SUBDIRS = core include test
+AM_CPPFLAGS = -I@builddir@ $(ST_INCLUDE) $(randomcINCLUDE) $(XML_CPPFLAGS)
+
+my_sources = \
+  test_main.cpp 
+
+my_headers =  \
+	@top_builddir@/config.h \
+	verify.hpp
+	
+
+bin_PROGRAMS = run_tests
+run_tests_SOURCES = $(my_sources)
+run_tests_LDADD  = $(ST_LIB)
+	
 

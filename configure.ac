@@ -62,6 +62,7 @@ AC_CONFIG_FILES([Makefile
         src/Makefile
         src/core/Makefile
         src/include/Makefile
+        src/test/Makefile
 				])
 
 AC_ARG_ENABLE(debug,
