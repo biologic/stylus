@@ -1,6 +1,6 @@
 /*******************************************************************************
- * \file	test_main.cpp
- * \brief	Main unit test driver
+ * \file	test_eventstack.cpp
+ * \brief	Unit tests for the event stack class
  *
  * Stylus, Copyright 2006-2009 Biologic Institute
  * 
@@ -16,18 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-#include <iostream>
 
-void test_EventStack();
+#include <headers.hpp>
+#include "verify.hpp"
 
-int main()
+void test_empty_EventStack()
 {
-    std::cout << "Stylus Test Program" << std::endl;
+    // Event stack should validate when empty
+    EventStack event_stack;
+    VERIFY_EQUAL( true, event_stack.validate() );
+}
 
-    test_EventStack();
 
-
-    std::cout << std::endl;
-
-    return 0;
+void test_EventStack()
+{
+    test_empty_EventStack();
 }

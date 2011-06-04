@@ -19,9 +19,28 @@
 include $(top_srcdir)/Makerules.in
 
 AM_CPPFLAGS = -I@builddir@ $(ST_INCLUDE) $(randomcINCLUDE) $(XML_CPPFLAGS)
+if DEBUG
+AM_CFLAGS   = $(ST_DEBUG_CFLAGS)
+AM_CXXFLAGS = $(AM_CFLAGS) $(ST_DEBUG_CXXFLAGS)
+else
+if PROFILE
+AM_CFLAGS   = $(ST_PROF_CFLAGS)
+AM_CXXFLAGS = $(AM_CFLAGS) $(ST_CXXFLAGS)
+if MACOSX
+ST_PROF_LIB = -lSaturn
+else
+ST_PROF_LIB = 
+endif
+else
+AM_CFLAGS   = $(ST_CFLAGS)
+AM_CXXFLAGS = $(AM_CFLAGS) $(ST_CXXFLAGS)
+endif
+endif
+
 
 my_sources = \
-  test_main.cpp 
+  test_main.cpp  \
+  test_eventstack.cpp
 
 my_headers =  \
 	@top_builddir@/config.h \

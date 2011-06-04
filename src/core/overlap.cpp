@@ -141,6 +141,7 @@ EventStack::traceStack() const
 bool
 EventStack::validate() const
 {
+    if( _llEvents.empty() ) return true;
 	list<LineEvent>::const_iterator itFirst = _llEvents.begin();
 	list<LineEvent>::const_iterator itSecond = ++itFirst;
 	while (itSecond != _llEvents.end())

@@ -91,7 +91,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am__objects_1 = test_main.$(OBJEXT)
+am__objects_1 = test_main.$(OBJEXT) test_eventstack.$(OBJEXT)
 am_run_tests_OBJECTS = $(am__objects_1)
 run_tests_OBJECTS = $(am_run_tests_OBJECTS)
 run_tests_DEPENDENCIES = $(ST_LIB)
@@ -266,8 +266,17 @@ ST_CORE = @top_srcdir@/src/core
 ST_INCLUDE = -I. -I${ST_PUBLIC} -I${ST_CORE} -I@includedir@ -I@top_builddir@
 ST_LIB = @top_builddir@/src/core/libstylus.la
 AM_CPPFLAGS = -I@builddir@ $(ST_INCLUDE) $(randomcINCLUDE) $(XML_CPPFLAGS)
+@DEBUG_FALSE@@PROFILE_FALSE@AM_CFLAGS = $(ST_CFLAGS)
+@DEBUG_FALSE@@PROFILE_TRUE@AM_CFLAGS = $(ST_PROF_CFLAGS)
+@DEBUG_TRUE@AM_CFLAGS = $(ST_DEBUG_CFLAGS)
+@DEBUG_FALSE@@PROFILE_FALSE@AM_CXXFLAGS = $(AM_CFLAGS) $(ST_CXXFLAGS)
+@DEBUG_FALSE@@PROFILE_TRUE@AM_CXXFLAGS = $(AM_CFLAGS) $(ST_CXXFLAGS)
+@DEBUG_TRUE@AM_CXXFLAGS = $(AM_CFLAGS) $(ST_DEBUG_CXXFLAGS)
+@DEBUG_FALSE@@MACOSX_FALSE@@PROFILE_TRUE@ST_PROF_LIB = 
+@DEBUG_FALSE@@MACOSX_TRUE@@PROFILE_TRUE@ST_PROF_LIB = -lSaturn
 my_sources = \
-  test_main.cpp 
+  test_main.cpp  \
+  test_eventstack.cpp
 
 my_headers = \
 	@top_builddir@/config.h \
@@ -362,6 +371,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_eventstack.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_main.Po@am__quote@
 
 .cpp.o:
