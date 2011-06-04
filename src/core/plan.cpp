@@ -1535,6 +1535,8 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 											  ? Genome::handleCopy(m, _fPreserveGenes)
 											  : Genome::handleTranspose(m, _fPreserveGenes)))));
 
+                            if(fSuccess) Genome::validate();
+
                             Genome::recordAttempt(ST_FILELINE, STTR_SCORING,
 								"foobar");
                             Genome::rollback(); 
