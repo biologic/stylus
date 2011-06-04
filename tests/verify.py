@@ -70,8 +70,7 @@ def verify_result(plan, gene):
             os.path.join(data_dir, drop_extension(gene) )
         )
     finally:
-        #shutil.rmtree(data_dir)
-        pass
+        shutil.rmtree(data_dir)
 
 
 

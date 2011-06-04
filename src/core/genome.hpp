@@ -321,7 +321,7 @@ namespace org_biologicinstitute_stylus
 
         static void setRollbackType(ROLLBACKTYPE rollback_type);
 
-//	private:
+  	private:
 		static const char* s_aryGENOMESTATES[STGS_MAX];
 		
 		//--------------------------------------------------------------------------------
