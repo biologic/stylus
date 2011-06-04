@@ -6,5 +6,6 @@ BLACKLIST = [
 
 IGNORE = {
         'history' : ['uuid', 'creationTool', 'creationDate'],
-        'genome' : ['uuid', 'creationTool', 'creationDate']
+        'genome' : ['uuid', 'creationTool', 'creationDate'],
+        'attempt' : ['description']
 }

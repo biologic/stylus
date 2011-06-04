@@ -581,6 +581,7 @@ extern "C" {
 	 */
 	typedef struct
 	{
+        size_t _cConsidered;        ///< Number of considerations
 		size_t _cAttempted;			///< Number of attempts
 		size_t _cAccepted;			///< Number of accepted attempts
 		size_t _cbBases;			///< Number of bases affected
@@ -627,6 +628,7 @@ extern "C" {
 
 		size_t _cSilent;			///< Number of silent mutations
 		size_t _cAttempted;			///< Total number of attempted mutations
+		size_t _cConsidered;		///< Total number of considered mutations
 		size_t _cAccepted;			///< Total number of accepted mutations
 		ST_ATTEMPTS _atChanged;		///< Number of attempted/accepted changes
 		ST_ATTEMPTS _atCopied;		///< Number of attempted/accepted copies
@@ -668,7 +670,7 @@ extern "C" {
 		STGS_MUTATING,		///< Genome is undergoing a change
 		STGS_RECORDING,		///< Recording (to log files) current state
 		STGS_ROLLBACK,		///< Removing the effects of a bad change
-		STGS_RESTORING,		///< Remvoing non-accumulated mutations
+		STGS_RESTORING,		///< Removing non-accumulated mutations
 		STGS_SCORED,		///< Scoring is complete
 		STGS_SCORING,		///< Scoring current trial
 		STGS_SPAWNING,		///< Spawning a new trial

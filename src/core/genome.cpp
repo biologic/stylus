@@ -339,6 +339,7 @@ std::string Genome::_strUUIDSeeds;
 STRINGARRAY Genome::_vecUUIDs;
 
 bool Genome::_fReady;
+ROLLBACKTYPE Genome::_rollbackType;
 
 Plan Genome::_plan;
 
@@ -356,6 +357,7 @@ std::bitset<Genome::s_maxGENES> Genome::_grfGenesInvalid;
 
 ModificationStack Genome::_msModifications;
 MODIFICATIONSTACKARRAY Genome::_vecAttempts;
+MODIFICATIONSTACKARRAY Genome::_vecConsiderations;
 
 ST_GENOMESTATE Genome::_gsCurrent;
 
@@ -404,6 +406,8 @@ Genome::initialize()
 	_gaTermination = STGT_NONE;
 	_grTermination = STGR_NONE;
 	_strTermination.clear();
+
+    _rollbackType = RT_ATTEMPT;
 
 	Globals::enableTracing(getTrial(), getTrialAttempts());
 	
@@ -1283,7 +1287,7 @@ Genome::doRestore()
 {
 	ENTER(MUTATION,doRestore);
 	ASSERT(isState(STGS_ROLLBACK) || isState(STGS_RESTORING));
-	
+
 	// Remove each recorded change
 	_msModifications.undo();
 
@@ -1304,13 +1308,15 @@ Genome::doRollback()
 	ASSERT(isState(STGS_ROLLBACK));
 	
 	bool fSuccess = false;
-
 	if (_fReady)
 	{
-		++_statsRecordRate._cRollbacks;
-		++_statsRecordRate._cTotalRollbacks;
-		++_stats._cRollbacks;
-		++_stats._cTotalRollbacks;
+        if(_rollbackType == RT_ATTEMPT)
+        {
+            ++_statsRecordRate._cRollbacks;
+            ++_statsRecordRate._cTotalRollbacks;
+            ++_stats._cRollbacks;
+            ++_stats._cTotalRollbacks;
+        }
 
 		fSuccess = doRestore();
 
@@ -1322,6 +1328,17 @@ Genome::doRollback()
 	
 	return fSuccess;
 }
+
+/**
+ * \brief performs a rollback, but doesn't record stats about it
+ */
+bool
+Genome::rollback()
+{
+    return (	Genome::enterState(STGS_ROLLBACK)
+            &&	Genome::exitState(Genome::doRollback));
+}
+
 
 /*
  * Function: doScoring
@@ -1368,86 +1385,6 @@ Genome::doScoring()
 					&&	_plan.evaluateCondition(PC_TRIALSCORE, _stats._nScore);
 		}
 
-		if (fSuccess)
-		{
-			if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tsMax._iTrial
-				||	_statsRecordRate._nScore > _statsRecordRate._tsMax._nValue)
-			{
-				_statsRecordRate._tsMax._iTrial = _statsRecordRate._iTrialCurrent;
-				_statsRecordRate._tsMax._nValue = _statsRecordRate._nScore;
-				if (_statsRecordRate._tsMax._nValue > _stats._tsMax._nValue)
-					_stats._tsMax = _statsRecordRate._tsMax;
-			}
-			if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tsMin._iTrial
-				||	_statsRecordRate._nScore < _statsRecordRate._tsMin._nValue)
-			{
-				_statsRecordRate._tsMin._iTrial = _statsRecordRate._iTrialCurrent;
-				_statsRecordRate._tsMin._nValue = _statsRecordRate._nScore;
-				if (_statsRecordRate._tsMin._nValue < _stats._tsMin._nValue)
-					_stats._tsMin = _statsRecordRate._tsMin;
-			}
-
-			if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tuMax._iTrial
-				||	_statsRecordRate._nUnits > _statsRecordRate._tuMax._nValue)
-			{
-				_statsRecordRate._tuMax._iTrial = _statsRecordRate._iTrialCurrent;
-				_statsRecordRate._tuMax._nValue = _statsRecordRate._nUnits;
-				if (_statsRecordRate._tuMax._nValue > _stats._tuMax._nValue)
-					_stats._tuMax = _statsRecordRate._tuMax;
-			}
-			if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tuMin._iTrial
-				||	_statsRecordRate._nUnits < _statsRecordRate._tuMin._nValue)
-			{
-				_statsRecordRate._tuMin._iTrial = _statsRecordRate._iTrialCurrent;
-				_statsRecordRate._tuMin._nValue = _statsRecordRate._nUnits;
-				if (_statsRecordRate._tuMin._nValue < _stats._tuMin._nValue)
-					_stats._tuMin = _statsRecordRate._tuMin;
-			}
-
-			if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tcMax._iTrial
-				||	_statsRecordRate._nCost > _statsRecordRate._tcMax._nValue)
-			{
-				_statsRecordRate._tcMax._iTrial = _statsRecordRate._iTrialCurrent;
-				_statsRecordRate._tcMax._nValue = _statsRecordRate._nCost;
-				if (_statsRecordRate._tcMax._nValue > _stats._tcMax._nValue)
-					_stats._tcMax = _statsRecordRate._tcMax;
-			}
-			if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tcMin._iTrial
-				||	_statsRecordRate._nCost < _statsRecordRate._tcMin._nValue)
-			{
-				_statsRecordRate._tcMin._iTrial = _statsRecordRate._iTrialCurrent;
-				_statsRecordRate._tcMin._nValue = _statsRecordRate._nCost;
-				if (_statsRecordRate._tcMin._nValue < _stats._tcMin._nValue)
-					_stats._tcMin = _statsRecordRate._tcMin;
-			}
-
-			if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tfMax._iTrial
-				||	_statsRecordRate._nFitness > _statsRecordRate._tfMax._nValue)
-			{
-				_statsRecordRate._tfMax._iTrial = _statsRecordRate._iTrialCurrent;
-				_statsRecordRate._tfMax._nValue = _statsRecordRate._nFitness;
-				if (_statsRecordRate._tfMax._nValue > _stats._tfMax._nValue)
-					_stats._tfMax = _statsRecordRate._tfMax;
-			}
-			if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tfMin._iTrial
-				||	_statsRecordRate._nFitness < _statsRecordRate._tfMin._nValue)
-			{
-				_statsRecordRate._tfMin._iTrial = _statsRecordRate._iTrialCurrent;
-				_statsRecordRate._tfMin._nValue = _statsRecordRate._nFitness;
-				if (_statsRecordRate._tfMin._nValue < _stats._tfMin._nValue)
-					_stats._tfMin = _statsRecordRate._tfMin;
-			}
-
-			LOGATRATE((LLRATE,
-					   "TRIAL %ld: Fitness is %0.15f",
-					   _statsRecordRate._iTrialCurrent,
-					   static_cast<UNIT>(_statsRecordRate._nFitness)),
-					  _statsRecordRate._iTrialCurrent);
-
-#ifdef ST_DEBUG
-			_nFitnessPassing = _statsRecordRate._nFitness;
-#endif
-		}
 	}
 	else
 	{
@@ -1459,6 +1396,132 @@ Genome::doScoring()
 	}
 	
 	return fSuccess;
+}
+
+bool Genome::recordStatistics(bool fPreserveErrors)
+{
+    if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tsMax._iTrial
+        ||	_statsRecordRate._nScore > _statsRecordRate._tsMax._nValue)
+    {
+        _statsRecordRate._tsMax._iTrial = _statsRecordRate._iTrialCurrent;
+        _statsRecordRate._tsMax._nValue = _statsRecordRate._nScore;
+        if (_statsRecordRate._tsMax._nValue > _stats._tsMax._nValue)
+            _stats._tsMax = _statsRecordRate._tsMax;
+    }
+    if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tsMin._iTrial
+        ||	_statsRecordRate._nScore < _statsRecordRate._tsMin._nValue)
+    {
+        _statsRecordRate._tsMin._iTrial = _statsRecordRate._iTrialCurrent;
+        _statsRecordRate._tsMin._nValue = _statsRecordRate._nScore;
+        if (_statsRecordRate._tsMin._nValue < _stats._tsMin._nValue)
+            _stats._tsMin = _statsRecordRate._tsMin;
+    }
+
+    if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tuMax._iTrial
+        ||	_statsRecordRate._nUnits > _statsRecordRate._tuMax._nValue)
+    {
+        _statsRecordRate._tuMax._iTrial = _statsRecordRate._iTrialCurrent;
+        _statsRecordRate._tuMax._nValue = _statsRecordRate._nUnits;
+        if (_statsRecordRate._tuMax._nValue > _stats._tuMax._nValue)
+            _stats._tuMax = _statsRecordRate._tuMax;
+    }
+    if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tuMin._iTrial
+        ||	_statsRecordRate._nUnits < _statsRecordRate._tuMin._nValue)
+    {
+        _statsRecordRate._tuMin._iTrial = _statsRecordRate._iTrialCurrent;
+        _statsRecordRate._tuMin._nValue = _statsRecordRate._nUnits;
+        if (_statsRecordRate._tuMin._nValue < _stats._tuMin._nValue)
+            _stats._tuMin = _statsRecordRate._tuMin;
+    }
+
+    if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tcMax._iTrial
+        ||	_statsRecordRate._nCost > _statsRecordRate._tcMax._nValue)
+    {
+        _statsRecordRate._tcMax._iTrial = _statsRecordRate._iTrialCurrent;
+        _statsRecordRate._tcMax._nValue = _statsRecordRate._nCost;
+        if (_statsRecordRate._tcMax._nValue > _stats._tcMax._nValue)
+            _stats._tcMax = _statsRecordRate._tcMax;
+    }
+    if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tcMin._iTrial
+        ||	_statsRecordRate._nCost < _statsRecordRate._tcMin._nValue)
+    {
+        _statsRecordRate._tcMin._iTrial = _statsRecordRate._iTrialCurrent;
+        _statsRecordRate._tcMin._nValue = _statsRecordRate._nCost;
+        if (_statsRecordRate._tcMin._nValue < _stats._tcMin._nValue)
+            _stats._tcMin = _statsRecordRate._tcMin;
+    }
+
+    if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tfMax._iTrial
+        ||	_statsRecordRate._nFitness > _statsRecordRate._tfMax._nValue)
+    {
+        _statsRecordRate._tfMax._iTrial = _statsRecordRate._iTrialCurrent;
+        _statsRecordRate._tfMax._nValue = _statsRecordRate._nFitness;
+        if (_statsRecordRate._tfMax._nValue > _stats._tfMax._nValue)
+            _stats._tfMax = _statsRecordRate._tfMax;
+    }
+    if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tfMin._iTrial
+        ||	_statsRecordRate._nFitness < _statsRecordRate._tfMin._nValue)
+    {
+        _statsRecordRate._tfMin._iTrial = _statsRecordRate._iTrialCurrent;
+        _statsRecordRate._tfMin._nValue = _statsRecordRate._nFitness;
+        if (_statsRecordRate._tfMin._nValue < _stats._tfMin._nValue)
+            _stats._tfMin = _statsRecordRate._tfMin;
+    }
+
+    LOGATRATE((LLRATE,
+               "TRIAL %ld: Fitness is %0.15f",
+               _statsRecordRate._iTrialCurrent,
+               static_cast<UNIT>(_statsRecordRate._nFitness)),
+              _statsRecordRate._iTrialCurrent);
+
+#ifdef ST_DEBUG
+    _nFitnessPassing = _statsRecordRate._nFitness;
+#endif
+
+    if (!fPreserveErrors)
+    {
+        _gaTermination = STGT_NONE;
+        _grTermination = STGR_NONE;
+        _strTermination.clear();
+    }
+    
+    if (	_statsRecordRate._iTrialInitial > _statsRecordRate._trMax._iTrial
+        ||	_statsRecordRate._cRollbacks > _statsRecordRate._trMax._cRollbacks)
+    {
+        _statsRecordRate._trMax._iTrial = _statsRecordRate._iTrialCurrent;
+        _statsRecordRate._trMax._cRollbacks = _statsRecordRate._cRollbacks;
+        if (_statsRecordRate._trMax._cRollbacks > _stats._trMax._cRollbacks)
+            _stats._trMax = _statsRecordRate._trMax;
+    }
+    if (	_statsRecordRate._iTrialInitial > _statsRecordRate._trMin._iTrial
+        ||	_statsRecordRate._cRollbacks < _statsRecordRate._trMin._cRollbacks)
+    {
+        _statsRecordRate._trMin._iTrial = _statsRecordRate._iTrialCurrent;
+        _statsRecordRate._trMin._cRollbacks = _statsRecordRate._cRollbacks;
+        if (_statsRecordRate._trMin._cRollbacks < _stats._trMin._cRollbacks)
+            _stats._trMin = _statsRecordRate._trMin;
+    }
+
+    if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tzMax._iTrial
+        ||	_strBases.length() > _statsRecordRate._tzMax._cbBases)
+    {
+        _statsRecordRate._tzMax._iTrial = _statsRecordRate._iTrialCurrent;
+        _statsRecordRate._tzMax._cbBases = _strBases.length();
+        if (_statsRecordRate._tzMax._cbBases > _stats._tzMax._cbBases)
+            _stats._tzMax = _statsRecordRate._tzMax;
+    }
+    if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tzMin._iTrial
+        ||	_strBases.length() < _statsRecordRate._tzMin._cbBases)
+    {
+        _statsRecordRate._tzMin._iTrial = _statsRecordRate._iTrialCurrent;
+        _statsRecordRate._tzMin._cbBases = _strBases.length();
+        if (_statsRecordRate._tzMin._cbBases < _stats._tzMin._cbBases)
+            _stats._tzMin = _statsRecordRate._tzMin;
+    }
+
+    return enterState(STGS_RECORDING) && exitState(doRecording);
+
+
 }
 
 /*
@@ -1652,49 +1715,8 @@ Genome::validate(bool fPreserveErrors)
 		// If successful, track the rollback and size counters
 		if (fSuccess)
 		{
-			if (!fPreserveErrors)
-			{
-				_gaTermination = STGT_NONE;
-				_grTermination = STGR_NONE;
-				_strTermination.clear();
-			}
-			
-			if (	_statsRecordRate._iTrialInitial > _statsRecordRate._trMax._iTrial
-				||	_statsRecordRate._cRollbacks > _statsRecordRate._trMax._cRollbacks)
-			{
-				_statsRecordRate._trMax._iTrial = _statsRecordRate._iTrialCurrent;
-				_statsRecordRate._trMax._cRollbacks = _statsRecordRate._cRollbacks;
-				if (_statsRecordRate._trMax._cRollbacks > _stats._trMax._cRollbacks)
-					_stats._trMax = _statsRecordRate._trMax;
-			}
-			if (	_statsRecordRate._iTrialInitial > _statsRecordRate._trMin._iTrial
-				||	_statsRecordRate._cRollbacks < _statsRecordRate._trMin._cRollbacks)
-			{
-				_statsRecordRate._trMin._iTrial = _statsRecordRate._iTrialCurrent;
-				_statsRecordRate._trMin._cRollbacks = _statsRecordRate._cRollbacks;
-				if (_statsRecordRate._trMin._cRollbacks < _stats._trMin._cRollbacks)
-					_stats._trMin = _statsRecordRate._trMin;
-			}
-
-			if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tzMax._iTrial
-				||	_strBases.length() > _statsRecordRate._tzMax._cbBases)
-			{
-				_statsRecordRate._tzMax._iTrial = _statsRecordRate._iTrialCurrent;
-				_statsRecordRate._tzMax._cbBases = _strBases.length();
-				if (_statsRecordRate._tzMax._cbBases > _stats._tzMax._cbBases)
-					_stats._tzMax = _statsRecordRate._tzMax;
-			}
-			if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tzMin._iTrial
-				||	_strBases.length() < _statsRecordRate._tzMin._cbBases)
-			{
-				_statsRecordRate._tzMin._iTrial = _statsRecordRate._iTrialCurrent;
-				_statsRecordRate._tzMin._cbBases = _strBases.length();
-				if (_statsRecordRate._tzMin._cbBases < _stats._tzMin._cbBases)
-					_stats._tzMin = _statsRecordRate._tzMin;
-			}
-
-			fSuccess = enterState(STGS_RECORDING) && exitState(doRecording);
-		}
+            recordStatistics(fPreserveErrors);
+        }
 	}
 
 	return fSuccess;
@@ -1714,7 +1736,18 @@ Genome::purgeModifications(bool fPreserveAttempts)
 	{
 		TFLOW(GENOME,L3,(LLTRACE, "Saving %ld changes to failed change history", _msModifications.length()));
 		ASSERT(_msModifications.length() <= 0 || !EMPTYSTR(_msModifications.toString()))
-		_vecAttempts.push_back(_msModifications);
+        switch( _rollbackType)
+        {
+            case RT_ATTEMPT:
+                _vecAttempts.push_back(_msModifications);
+                break;
+            case RT_CONSIDERATION:
+                _vecConsiderations.push_back(_msModifications);
+                break;
+            default:
+                ASSERT(false);
+                break;
+        }
 	}
 
 	// Otherwise, delete all history

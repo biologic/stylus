@@ -1508,7 +1508,6 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 					// Advance the number of trial attempts
 					Genome::advanceTrialAttempts();
 					TFLOW(PLAN,L3,(LLTRACE, "Executing trial attempt %d", Genome::getTrialAttempts()));
-
 					// Apply the selected number of mutations for this attempt
 					for (size_t cMutationsApplied=0; fSuccess && cMutationsApplied < cMutationsPerAttempt; ++cMutationsApplied)
 					{
@@ -1518,6 +1517,30 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 						fRollbackPossible = fRollbackPossible || !m.allFieldsSupplied();
 						TFLOW(PLAN,L2,(LLTRACE, "Executing a %s mutation for mutation %lu of %lu in trial %lu (using step %lu)",
 												m.toString(true).c_str(), (cMutationsApplied+1), cMutationsPerAttempt, Genome::getTrial(), (_iStep+1)));
+
+                        // Make sure that when performing changes in "consideration" mode
+                        // the attempt stats are not modified
+                        if(cMutationsPerAttempt == 1)
+                        {
+                            Genome::setRollbackType(RT_CONSIDERATION);
+
+    						// Apply the mutation
+                            fSuccess = (m.isChange()
+									? Genome::handleChange(m, _fPreserveGenes, _fRejectSilent)
+									: (m.isInsert()
+										? Genome::handleInsert(m, _fPreserveGenes)
+										: (m.isDelete()
+										   ? Genome::handleDelete(m, _fPreserveGenes)
+										   : (m.isCopy()
+											  ? Genome::handleCopy(m, _fPreserveGenes)
+											  : Genome::handleTranspose(m, _fPreserveGenes)))));
+
+                            Genome::recordAttempt(ST_FILELINE, STTR_SCORING,
+								"foobar");
+                            Genome::rollback(); 
+
+                            Genome::setRollbackType(RT_ATTEMPT);
+                        }
 
 						// Apply the mutation
 						fSuccess = (m.isChange()
@@ -1529,6 +1552,8 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 										   : (m.isCopy()
 											  ? Genome::handleCopy(m, _fPreserveGenes)
 											  : Genome::handleTranspose(m, _fPreserveGenes)))));
+
+
 					}
 
 					// If all mutations applied, validate and score the genome

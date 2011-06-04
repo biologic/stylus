@@ -146,6 +146,7 @@ inline UNIT Genome::getGeneScore(size_t iGene) { return _stats._nScore; }
 inline UNIT Genome::getGeneUnits(size_t iGene) { return _stats._nUnits; }
 inline UNIT Genome::getCost() { return _stats._nCost; }
 inline UNIT Genome::getFitness() { return _stats._nFitness; }
+inline UNIT Genome::getScore() { return _stats._nFitness; }
 inline void Genome::getStatistics(ST_STATISTICS* pStatistics) { ASSERT(VALID(pStatistics)); ::memcpy(pStatistics, &_stats, sizeof(ST_STATISTICS)); }
 inline size_t Genome::getTrial() { return _stats._iTrialCurrent; }
 inline size_t Genome::getTrialAttempts() { return _stats._cTrialAttempts; }
@@ -153,6 +154,7 @@ inline size_t Genome::getTrialAttempts() { return _stats._cTrialAttempts; }
 inline const Plan& Genome::getPlan() { return _plan; }
 		
 inline bool Genome::isLoaded() { return (_tLoaded != 0); }
+inline void Genome::setRollbackType(ROLLBACKTYPE rt) { _rollbackType = rt; }
 
 inline bool Genome::isRecording() { return (_grfRecordDetail != STRD_NONE && _strRecordDirectory.length() > 0); }
 inline bool Genome::isRecordingTrial() { return (_fReady && _cRecordRate && (getTrial() % _cRecordRate) == 0); }
