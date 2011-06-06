@@ -652,7 +652,10 @@ extern "C" {
 	 * caller with the Genome in an internal state. Methods that interrogate structure
 	 * and score require that the Genome be ALIVE; other methods only require that the
 	 * Genome not be DEAD. stTerminate and stLoadDefinition may be called at any time.
-	 *
+	 * Calling validate() in a genome moves it into the SCORED state. 
+     * Client code should then call either rollback() to throw away changes
+     * or recordStatistics if it wants to keep them.
+     *
 	 * \remarks
 	 * - The current implementation does not take full advantage of multiple states,
 	 *	 but leaves the infrastructure in place. Future versions may expose more
@@ -671,7 +674,7 @@ extern "C" {
 		STGS_RECORDING,		///< Recording (to log files) current state
 		STGS_ROLLBACK,		///< Removing the effects of a bad change
 		STGS_RESTORING,		///< Removing non-accumulated mutations
-		STGS_SCORED,		///< Scoring is complete
+		STGS_SCORED,		///< Scoring is complete - EXTERNAL
 		STGS_SCORING,		///< Scoring current trial
 		STGS_SPAWNING,		///< Spawning a new trial
 		STGS_VALIDATED,		///< Internal structures are complete

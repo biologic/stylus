@@ -1560,6 +1560,8 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 
 					// If all mutations applied, validate and score the genome
 					fSuccess = fSuccess && Genome::validate();
+                    fSuccess = fSuccess && evaluateConditions();
+                    fSuccess = fSuccess && Genome::recordStatistics();
 
 					// Convert a successful attempt into a successful trial and continue
 					// - Condition or caller termination leaves the success state unchanged
@@ -1608,7 +1610,7 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 
 	// If the genome is not alive, forcibly restore internal state to that which was last stable
 	if (!Genome::isState(STGS_ALIVE))
-		Genome::validate(true);
+		Genome::validate(true) && Genome::recordStatistics(true);
 }
 
 /*
@@ -1771,5 +1773,13 @@ Plan::initialize()
 	_fc.clear();
 
 	_vecSteps.clear();
+}
+
+bool
+Plan::evaluateConditions()
+{
+    return	    evaluateCondition(PC_TRIALCOST, Genome::getCost() )
+            &&	evaluateCondition(PC_TRIALFITNESS, Genome::getFitness() )
+            &&	evaluateCondition(PC_TRIALSCORE, Genome::getScore() );
 }
 

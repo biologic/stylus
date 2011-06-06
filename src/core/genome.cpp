@@ -617,6 +617,11 @@ Genome::setGenome(const char* pxmlGenome, const char* pszAuthor)
 		enterState(STGS_DEAD);
 		THROWRC((RC(XMLERROR), "Loaded Genome definition failed validation"));
 	}
+    else if (!recordStatistics() )
+    {
+		enterState(STGS_DEAD);
+		THROWRC((RC(XMLERROR), "Loaded Genome definition failed acceptance"));
+    }
 
 	// If validation resulted in any change records, fail the load (since change records at
 	// this point imply disagreements between the XML and calculated values)
@@ -1115,7 +1120,7 @@ Genome::enterState(ST_GENOMESTATE gs)
 		{  true,  false,   false,    true, false,  false,  false,   true,     false,   false,    false,  false,  false,   false,    false      }, // From RECORDING
 		{  false, false,   false,    true, true,   false,  false,   false,    true,    false,    false,  false,  false,   false,    false      }, // From ROLLBACK
 		{  false, false,   false,    true, true,   false,  false,   false,    false,   true,     false,  false,  false,   false,    false      }, // From RESTORING
-		{  false, false,   false,    true, false,  false,  false,   true,     false,   false,    true,   false,  false,   false,    false      }, // From SCORED
+		{  false, false,   false,    true, false,  false,  false,   true,     true,    false,    true,   false,  false,   false,    false      }, // From SCORED
 		{  false, false,   false,    true, true,   false,  false,   false,    false,   false,    true,   true,   false,   false,    false      }, // From SCORING
 		{  false, false,   false,    true, true,   false,  false,   false,    false,   false,    false,  false,  true,    false,    false      }, // From SPAWNING
 		{  false, false,   false,    true, false,  false,  false,   false,    false,   false,    false,  true,   false,   true,     false      }, // From VALIDATED
@@ -1381,13 +1386,6 @@ Genome::doScoring()
 						  "Genome fitness for trial %ld is %f",
 						  _statsRecordRate._iTrialCurrent,
 						  static_cast<UNIT>(_statsRecordRate._nFitness)));
-
-		if (_plan.isExecuting())
-		{
-			fSuccess =	_plan.evaluateCondition(PC_TRIALCOST, _stats._nCost)
-					&&	_plan.evaluateCondition(PC_TRIALFITNESS, _stats._nFitness)
-					&&	_plan.evaluateCondition(PC_TRIALSCORE, _stats._nScore);
-		}
 
 	}
 	else
@@ -1709,7 +1707,7 @@ Genome::validate(bool fPreserveErrors)
 
 	bool fSuccess = false;
 	{
-		StateGuard sg(STGS_ALIVE, STGS_INVALID);
+		StateGuard sg(STGS_SCORED, STGS_INVALID);
 
 		fSuccess = (	enterState(STGS_COMPILING)
 					&&	exitState(doCompilation)
@@ -1717,12 +1715,6 @@ Genome::validate(bool fPreserveErrors)
 					&&	exitState(doValidation)
 					&&	enterState(STGS_SCORING)
 					&&	exitState(doScoring));
-
-		// If successful, track the rollback and size counters
-		if (fSuccess)
-		{
-            recordStatistics(fPreserveErrors);
-        }
 	}
 
 	return fSuccess;

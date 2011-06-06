@@ -523,6 +523,7 @@ namespace org_biologicinstitute_stylus
 		bool isExecuting() const;
 		
 		bool evaluateCondition(PLANCONDITION pc, UNIT nValue);
+        bool evaluateConditions();
 		
 		void load(const char* pxmlPlan);
 		void toXML(XMLStream& xs);
