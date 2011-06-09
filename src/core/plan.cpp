@@ -1518,32 +1518,6 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 						TFLOW(PLAN,L2,(LLTRACE, "Executing a %s mutation for mutation %lu of %lu in trial %lu (using step %lu)",
 												m.toString(true).c_str(), (cMutationsApplied+1), cMutationsPerAttempt, Genome::getTrial(), (_iStep+1)));
 
-                        // Make sure that when performing changes in "consideration" mode
-                        // the attempt stats are not modified
-                        if(cMutationsPerAttempt == 1)
-                        {
-                            Genome::setRollbackType(RT_CONSIDERATION);
-
-    						// Apply the mutation
-                            fSuccess = (m.isChange()
-									? Genome::handleChange(m, _fPreserveGenes, _fRejectSilent)
-									: (m.isInsert()
-										? Genome::handleInsert(m, _fPreserveGenes)
-										: (m.isDelete()
-										   ? Genome::handleDelete(m, _fPreserveGenes)
-										   : (m.isCopy()
-											  ? Genome::handleCopy(m, _fPreserveGenes)
-											  : Genome::handleTranspose(m, _fPreserveGenes)))));
-
-                            if(fSuccess) Genome::validate();
-
-                            Genome::recordAttempt(ST_FILELINE, STTR_SCORING,
-								"foobar");
-                            Genome::rollback(); 
-
-                            Genome::setRollbackType(RT_ATTEMPT);
-                        }
-
 						// Apply the mutation
 						fSuccess = (m.isChange()
 									? Genome::handleChange(m, _fPreserveGenes, _fRejectSilent)
