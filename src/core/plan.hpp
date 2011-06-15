@@ -504,6 +504,37 @@ namespace org_biologicinstitute_stylus
 		
 		void clear();
 	};
+
+    class MutationSelector
+    {
+    public:
+        MutationSelector(Plan & plan);
+        bool addMutation(Mutation & mutation);
+        bool mutationFinalize(bool fAccept);
+        bool selectMutation();
+        
+
+        bool getRollbackPossible();
+
+        void replay();
+
+    private:
+        Plan & _plan;
+        typedef std::vector<Mutation> MUTATIONVECTOR;
+        struct ConsiderationResult
+        {
+            Unit value;
+            bool fGood;
+            MUTATIONVECTOR mutations;
+        };
+        typedef std::vector< ConsiderationResult > CONSIDERATIONVECTOR;
+
+        MUTATIONVECTOR _mutations;
+        CONSIDERATIONVECTOR _considerations;
+        bool _fFieldsMissing;
+        bool _fGood;
+        bool _fAcceptedMutation;
+    };
 	
 	/**
 	 * \brief An executable plan
@@ -524,6 +555,7 @@ namespace org_biologicinstitute_stylus
 		
 		bool evaluateCondition(PLANCONDITION pc, UNIT nValue);
         bool evaluateConditions();
+        bool applyMutation(Mutation & mutation);
 		
 		void load(const char* pxmlPlan);
 		void toXML(XMLStream& xs);

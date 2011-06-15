@@ -417,3 +417,23 @@ inline PlanScope::~PlanScope()
 {
 	_plan.endExecution();
 }
+
+//--------------------------------------------------------------------------------
+//
+//  MutationSelector
+//--------------------------------------------------------------------------------
+
+inline MutationSelector::MutationSelector(Plan & plan) :
+    _plan(plan),
+    _fFieldsMissing(false),
+    _fGood(true),
+    _fAcceptedMutation(false)
+{
+}
+
+inline bool MutationSelector::getRollbackPossible()
+{
+    // - Rollbacks are possible only if one or more values was randomly determined (i.e., not specified by the plan)
+    // Simply don't allow rollbacks if multiple mutations were considered
+    return _fFieldsMissing && _considerations.size() < 2;
+}

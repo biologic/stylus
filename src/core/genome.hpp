@@ -253,6 +253,7 @@ namespace org_biologicinstitute_stylus
 		friend class TransposeModification;
 		
 		friend class Plan;
+        friend class MutationSelector;
 		friend class Step;
 		
 		friend class StateGuard;

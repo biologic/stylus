@@ -21,6 +21,8 @@ from data import BLACKLIST, IGNORE
 from util import drop_extension
 import xml.parsers.expat
 
+DATA_DIR = './test_data/current/'
+
 def find_plans():
     for filename in os.listdir('test_data'):
         try:
@@ -75,21 +77,20 @@ def xml_directory_compare(correct, current):
             xml_file_compare(correct_file, current_file)
 
 def verify_result(plan, gene):
-    data_dir = tempfile.mkdtemp()
-    try:
-        print "Testing", plan, gene
-        execute_stylus_plan(gene, plan, './test_data', './sample',
-            './sample', './sample/plans', data_dir)
-        xml_directory_compare( 
-            os.path.join('test_data', drop_extension(plan), drop_extension(gene) ),
-            os.path.join(data_dir, drop_extension(gene) )
-        )
-    finally:
-        shutil.rmtree(data_dir)
+    print "Testing", plan, gene
+    data_dir = os.path.join(DATA_DIR, drop_extension(plan))
+    execute_stylus_plan(gene, plan, './test_data', './sample',
+        './sample', './sample/plans', data_dir)
+    xml_directory_compare( 
+        os.path.join('test_data', drop_extension(plan), drop_extension(gene) ),
+        os.path.join(data_dir, drop_extension(gene) )
+    )
 
 
 
 def main():
+    shutil.rmtree(DATA_DIR)
+
     plans = list(find_plans())
     genes = list(find_genes())
 

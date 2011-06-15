@@ -1501,41 +1501,33 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 				// - The number of mutations to apply varies with each *attempt* (rather than each trial)
 				while (!fPlanTerminated && !fTrialCompleted)
 				{
+                    Genome::setRollbackType(RT_CONSIDERATION);
 					size_t cMutationsPerAttempt = getMutationsPerAttempt();
-					bool fRollbackPossible = false;
 					bool fSuccess = true;
 
 					// Advance the number of trial attempts
 					Genome::advanceTrialAttempts();
+
+                    MutationSelector mutationSelector(*this);
 					TFLOW(PLAN,L3,(LLTRACE, "Executing trial attempt %d", Genome::getTrialAttempts()));
 					// Apply the selected number of mutations for this attempt
 					for (size_t cMutationsApplied=0; fSuccess && cMutationsApplied < cMutationsPerAttempt; ++cMutationsApplied)
 					{
 						// Get the next mutation from the step and note if a rollback is possible
-						// - Rollbacks are possible only if one or more values was randomly determined (i.e., not specified by the plan)
 						st.getMutation(m, grfOptions, Genome::getTrial()-cTrialsInCompletedSteps-iTrialFirst);
-						fRollbackPossible = fRollbackPossible || !m.allFieldsSupplied();
-						TFLOW(PLAN,L2,(LLTRACE, "Executing a %s mutation for mutation %lu of %lu in trial %lu (using step %lu)",
-												m.toString(true).c_str(), (cMutationsApplied+1), cMutationsPerAttempt, Genome::getTrial(), (_iStep+1)));
+//						TFLOW(PLAN,L2,(LLTRACE, "Executing a %s mutation for mutation %lu of %lu in trial %lu (using step %lu)",
+												//m.toString(true).c_str(), (cMutationsApplied+1), cMutationsPerAttempt, Genome::getTrial(), (_iStep+1)));
 
 						// Apply the mutation
-						fSuccess = (m.isChange()
-									? Genome::handleChange(m, _fPreserveGenes, _fRejectSilent)
-									: (m.isInsert()
-										? Genome::handleInsert(m, _fPreserveGenes)
-										: (m.isDelete()
-										   ? Genome::handleDelete(m, _fPreserveGenes)
-										   : (m.isCopy()
-											  ? Genome::handleCopy(m, _fPreserveGenes)
-											  : Genome::handleTranspose(m, _fPreserveGenes)))));
-
-
+                        fSuccess = mutationSelector.addMutation(m);
 					}
 
+                    Genome::rollback();
+
+                    Genome::setRollbackType(RT_ATTEMPT);
+                    mutationSelector.replay();
 					// If all mutations applied, validate and score the genome
-					fSuccess = fSuccess && Genome::validate();
-                    fSuccess = fSuccess && evaluateConditions();
-                    fSuccess = fSuccess && Genome::recordStatistics();
+					fSuccess = mutationSelector.mutationFinalize(fSuccess);
 
 					// Convert a successful attempt into a successful trial and continue
 					// - Condition or caller termination leaves the success state unchanged
@@ -1569,7 +1561,7 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 						TFLOW(PLAN,L5,(LLTRACE, "Plan %s removed changes", (fSuccess ? "successfully" : "unsuccessfully")));
 
 						// If rollbacks are not possible and or exhausted, terminate the plan
-						if (!fRollbackPossible || !_rc.evaluate(++cRollbackAttempts))
+						if (!mutationSelector.getRollbackPossible() || !_rc.evaluate(++cRollbackAttempts))
 							fPlanTerminated = true;
 					}
 					TFLOW(PLAN,L2,(LLTRACE, "Attempt %d completed %s", Genome::getTrialAttempts(), (fTrialCompleted ? "successfully" : "unsuccessfully")));
@@ -1757,3 +1749,45 @@ Plan::evaluateConditions()
             &&	evaluateCondition(PC_TRIALSCORE, Genome::getScore() );
 }
 
+bool Plan::applyMutation(Mutation & m)
+{
+    return (m.isChange()
+                ? Genome::handleChange(m, _fPreserveGenes, _fRejectSilent)
+                : (m.isInsert()
+                    ? Genome::handleInsert(m, _fPreserveGenes)
+                    : (m.isDelete()
+                       ? Genome::handleDelete(m, _fPreserveGenes)
+                       : (m.isCopy()
+                          ? Genome::handleCopy(m, _fPreserveGenes)
+                          : Genome::handleTranspose(m, _fPreserveGenes)))));
+}
+
+bool
+MutationSelector::addMutation(Mutation & mutation)
+{
+    bool fSuccess = _plan.applyMutation(mutation);
+    _fFieldsMissing = _fFieldsMissing || !mutation.allFieldsSupplied();
+    _mutations.push_back(mutation);
+    return fSuccess;
+}
+
+bool
+MutationSelector::mutationFinalize(bool fAccept)
+{
+    bool fSuccess = fAccept && Genome::validate();
+    fSuccess = fSuccess && _plan.evaluateConditions();
+    fSuccess = fSuccess && Genome::recordStatistics();
+    _fGood = true;
+    _mutations.clear();
+    return fSuccess;
+}
+
+void
+MutationSelector::replay()
+{
+    for(MUTATIONVECTOR::iterator m = _mutations.begin(); m != _mutations.end();
+            m++)
+    {
+        _plan.applyMutation(*m);
+    }
+}
