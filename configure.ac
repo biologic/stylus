@@ -19,9 +19,9 @@
 AC_PREREQ(2.59)
 
 
-AC_INIT([Stylus], [1.4.0], [info@biologicinstitute.org], [stylus])
+AC_INIT([Stylus], [1.5.0], [info@biologicinstitute.org], [stylus])
 STYLUS_MAJOR_VERSION=1
-STYLUS_MINOR_VERSION=4
+STYLUS_MINOR_VERSION=5
 STYLUS_MICRO_VERSION=0
 
 STYLUS_VERSION=$STYLUS_MAJOR_VERSION.$STYLUS_MINOR_VERSION.$STYLUS_MICRO_VERSION
@@ -62,6 +62,7 @@ AC_CONFIG_FILES([Makefile
         src/Makefile
         src/core/Makefile
         src/include/Makefile
+        src/test/Makefile
 				])
 
 AC_ARG_ENABLE(debug,

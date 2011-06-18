@@ -43,6 +43,12 @@ namespace org_biologicinstitute_stylus
 		MT_MAX
 	};
 
+    enum ROLLBACKTYPE
+    {
+        RT_ATTEMPT,
+        RT_CONSIDERATION
+    };
+
 	/**
 	 * \brief A stack of modification records
 	 *
@@ -247,6 +253,7 @@ namespace org_biologicinstitute_stylus
 		friend class TransposeModification;
 		
 		friend class Plan;
+        friend class MutationSelector;
 		friend class Step;
 		
 		friend class StateGuard;
@@ -303,6 +310,7 @@ namespace org_biologicinstitute_stylus
 		static UNIT getGeneUnits(size_t iGene = 1);
 		static UNIT getCost();
 		static UNIT getFitness();
+		static UNIT getScore();
 		static void getStatistics(ST_STATISTICS* pStatistics);
 		static size_t getTrial();
 		static size_t getTrialAttempts();
@@ -312,7 +320,9 @@ namespace org_biologicinstitute_stylus
 		static std::string toString();
 		static void toXML(XMLStream& xs, STFLAGS grfRecordDetail, bool fUseTrialStatistics = false);
 
-	private:
+        static void setRollbackType(ROLLBACKTYPE rollback_type);
+
+  	private:
 		static const char* s_aryGENOMESTATES[STGS_MAX];
 		
 		//--------------------------------------------------------------------------------
@@ -331,6 +341,7 @@ namespace org_biologicinstitute_stylus
 		static STRINGARRAY _vecUUIDs;			///< Array of unique IDs to use when recording
 
 		static bool _fReady;					///< Genome is ready for use
+        static ROLLBACKTYPE _rollbackType;      ///< Current rollback type
 		
 		static Plan _plan;						///< Current plan
 
@@ -349,6 +360,7 @@ namespace org_biologicinstitute_stylus
 
 		static ModificationStack _msModifications;	///< Stack of modifications
 		static MODIFICATIONSTACKARRAY _vecAttempts;	///< Stack of failed attempts (each as a ModificationStack)
+		static MODIFICATIONSTACKARRAY _vecConsiderations;	///< Stack of considerations (each as a ModificationStack)
 
 		static ST_GENOMESTATE _gsCurrent;			///< Current genome state
 		
@@ -387,6 +399,8 @@ namespace org_biologicinstitute_stylus
 		static void record(RECORDTYPE rt);
 		static void recordHistory(RECORDTYPE rt);
 		static bool validate(bool fPreserveErrors = false);
+        static bool rollback();
+        static bool recordStatistics(bool fPreserveErrors = false);
 		
 		static bool isRecording();
 		static bool isRecordingTrial();
@@ -397,7 +411,11 @@ namespace org_biologicinstitute_stylus
 		static size_t indexToGene(size_t iBase);
 		
 		static void recordStatistics(MUTATIONTYPE mt, size_t cbBases, bool fSilent);
+		static void recordStatistics(ST_STATISTICS & stats, MUTATIONTYPE mt, size_t cbBases, bool fSilent);
+		static void recordStatistics(ST_ATTEMPTS & attempts, size_t bases);
 		static void undoStatistics(MUTATIONTYPE mt, size_t cbBases, bool fSilent);
+		static void undoStatistics(ST_STATISTICS & stats, MUTATIONTYPE mt, size_t cbBases, bool fSilent);
+        static void undoAttempts(ST_ATTEMPTS & attempts, size_t cbBases);
 
 		static bool handleChange(const Mutation& mt, bool fPreserveGenes, bool fRejectSilent);
 		static bool handleCopy(const Mutation& mt, bool fPreserveGenes);

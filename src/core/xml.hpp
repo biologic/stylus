@@ -140,6 +140,7 @@ namespace org_biologicinstitute_stylus
 		XT_ENSUREINFRAME,
 		XT_ENSUREWHOLECODONS,
 		XT_ENTRY,
+        XT_EXHAUSTIVE,
 		XT_FACTOR,
 		XT_FIRSTSTROKE,
 		XT_FITNESS,
@@ -345,6 +346,7 @@ namespace org_biologicinstitute_stylus
 		static const char s_szStylusNamespacePrerelease[];
 		static const char s_szStylusNamespace1_0[];
 		static const char s_szStylusNamespace1_3[];
+		static const char s_szStylusNamespace1_5[];
 		static const char* s_szStylusNamespace;
 
 		static bool isXMLTrue(const std::string& str);

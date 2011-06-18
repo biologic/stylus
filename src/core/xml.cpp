@@ -109,6 +109,7 @@ const char* XMLDocument::s_aryXMLTAG[XT_MAX] =
 	"ensureInFrame",
 	"ensureWholeCodons",
 	"entry",
+    "exhaustive",
 	"factor",
 	"firstStroke",
 	"fitness",
@@ -280,13 +281,15 @@ const char XMLDocument::s_szStylusPrefix[] = "st";
 const char XMLDocument::s_szStylusNamespacePrerelease[] = "http://biologicinstitute.org/schemas/stylus/0.1";
 const char XMLDocument::s_szStylusNamespace1_0[] = "http://biologicinstitute.org/schemas/stylus/1.0";
 const char XMLDocument::s_szStylusNamespace1_3[] = "http://biologicinstitute.org/schemas/stylus/1.3";
+const char XMLDocument::s_szStylusNamespace1_5[] = "http://biologicinstitute.org/schemas/stylus/1.5";
 const char* XMLDocument::s_szStylusNamespace = XMLDocument::s_szStylusNamespace1_3;
 
 SCHEMA XMLDocument::s_arySCHEMAS[] =
 {
 	{ XMLDocument::s_szStylusNamespacePrerelease, "stylus-0.1.xsd", NULL, false },
 	{ XMLDocument::s_szStylusNamespace1_0, "stylus-1.0.xsd", NULL, true },
-	{ XMLDocument::s_szStylusNamespace1_3, "stylus-1.3.xsd", NULL, true }
+	{ XMLDocument::s_szStylusNamespace1_3, "stylus-1.3.xsd", NULL, true },
+	{ XMLDocument::s_szStylusNamespace1_5, "stylus-1.5.xsd", NULL, true }
 };
 
 string XMLDocument::s_strScope;
@@ -540,7 +543,8 @@ XMLDocument::createInstance(const char* pszXML)
 		}
 	}
 	if (iSchema >= ARRAY_LENGTH(s_arySCHEMAS))
-		THROWRC((RC(XMLERROR), "XML document failed validation with all schemas"));
+        THROWXML();
+//		THROWRC((RC(XMLERROR), "XML document failed validation with all schemas"));
 
 	return ::new XMLDocument(spxd.release());
 }
