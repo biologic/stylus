@@ -88,6 +88,36 @@ const char* TrialCondition::s_aryTRIALCONDITIONMODE[TCM_MAX] =
 };
 
 /*
+ * Function: evaluatePerformance
+ * 
+ */
+UNIT
+TrialCondition::evaluatePerformance(UNIT nValue)
+{
+	ENTER(VALIDATION,evaluatePerformance);
+	
+    switch (_tcm)
+    {
+    case TCM_INCREASE:
+        return nValue;
+
+    case TCM_DECREASE:
+        return -nValue;
+    
+    default:
+        return 0.0;
+    }
+}
+
+UNIT
+TrialCondition::getPerformancePrecision()
+{
+    ASSERT( _vecValues.size() == 1 );
+    return _vecValues[0].getFactor();
+}
+
+
+/*
  * Function: evaluate
  * 
  */
@@ -345,6 +375,8 @@ MutationTrialCondition::getMutationsPerAttempt() const
 	return cMutationsPerAttempt;
 }
 
+
+
 /*
  * Function: load
  * 
@@ -361,12 +393,14 @@ MutationTrialCondition::load(XMLDocument* pxd, xmlNodePtr pxnMutationTrialCondit
 
 	// Set the context to the mutationCondition
 	spxpc->node = pxnMutationTrialCondition;
+    _vecMutationsPerAttempt.clear();
 	
 	spxpo = pxd->evalXPath(spxpc.get(), xmlXPath(XP_MUTATIONSPERATTEMPT));
 	if (XMLDocument::isXPathSuccess(spxpo.get()))
 		loadFromXML<MUTATIONSPERATTEMPTARRAY>(_vecMutationsPerAttempt, pxd, spxpo->nodesetval->nodeNr, spxpo->nodesetval->nodeTab);
-	else
-		_vecMutationsPerAttempt.push_back(MutationsPerAttempt());
+
+    if( _vecMutationsPerAttempt.empty() )
+        clear();
 	
 	Unit cTotalLikelihood = 0.0;
 	for (size_t iMutationsPerAttempt=0; iMutationsPerAttempt < _vecMutationsPerAttempt.size(); ++iMutationsPerAttempt)
@@ -375,6 +409,43 @@ MutationTrialCondition::load(XMLDocument* pxd, xmlNodePtr pxnMutationTrialCondit
 		THROWRC((RC(XMLERROR),
 				"The sum of all mutationsPerAttempt likelihoods (%6.4f) is illegal - it must equal 1.0",
 				static_cast<UNIT>(cTotalLikelihood)));
+
+    std::string mode_string;
+    pxd->getAttribute(pxnMutationTrialCondition, xmlTag(XT_MODE), mode_string );
+    _fExhaustive = (mode_string == xmlTag(XT_EXHAUSTIVE));
+}
+
+void
+MutationTrialCondition::produceMutations(MutationSource & source, MutationSelector & selector)
+{
+    Mutation m;
+    bool fSuccess = true;
+    size_t cMutationsPerAttempt = getMutationsPerAttempt();
+    ASSERT( cMutationsPerAttempt == 1 || !_fExhaustive );
+    if( _fExhaustive )
+    {
+        source.produceMutations(selector);
+    }
+    else
+    {
+        // Apply the selected number of mutations for this attempt
+        for (size_t cMutationsApplied=0; fSuccess && cMutationsApplied < cMutationsPerAttempt; ++cMutationsApplied)
+        {
+            // Get the next mutation from the step and note if a rollback is possible
+            source.getMutation(m);
+            TFLOW(PLAN,L2,(LLTRACE, "Executing a %s mutation for mutation %lu of %lu in trial %lu",
+                m.toString(true).c_str(), (cMutationsApplied+1), cMutationsPerAttempt, Genome::getTrial()));
+
+            // Apply the mutation
+            fSuccess = selector.addMutation(m);
+
+            if(!fSuccess)
+            {
+                TDATA(PLAN,L3,(LLTRACE, "Mutation %s failed", m.toString().c_str()));
+            }
+        }
+        selector.mutationFinalize();
+    }
 }
 
 /*
@@ -387,7 +458,8 @@ MutationTrialCondition::toXML(XMLStream& xs)
 	ENTER(PLAN,toXML);
 	
 	xs.writeStart(xmlTag(XT_MUTATIONCONDITION));
-	
+
+    // TODO: write out mode
 	for (size_t iMutationsPerAttempt=0; iMutationsPerAttempt < _vecMutationsPerAttempt.size(); ++iMutationsPerAttempt)
 		_vecMutationsPerAttempt[iMutationsPerAttempt].toXML(xs);
 	
@@ -1267,7 +1339,7 @@ Step::getMutation(Mutation& m, STFLAGS grfOptions, size_t iTrialInStep) const
 		m._nTransversionLikelihood = Mutation::s_nTRANSVERSIONLIKELIHOOD;
 	}
 
-	if ((m.isCopy() || m.isTranspose()) && !m.hasSourceIndex())
+	if (m.needsSourceIndex() && !m.hasSourceIndex())
 	{
 		size_t iRandomTrial = 0;
 		do
@@ -1301,7 +1373,7 @@ Step::getMutation(Mutation& m, STFLAGS grfOptions, size_t iTrialInStep) const
 					 			m.toString().c_str()));
 	}
 	
-	if ((m.isChange() || m.isInsert()) && !m.hasBases())
+	if (m.needsBases() && !m.hasBases())
 	{
 		if (m.isChange() && m._cbBases == 1)
 			Genome::rgenTransversion(m._iTarget, m._strBases, m._nTransversionLikelihood);
@@ -1313,6 +1385,87 @@ Step::getMutation(Mutation& m, STFLAGS grfOptions, size_t iTrialInStep) const
 		}
 	}
 }
+
+void
+Step::produceMutations(MutationSelector & selector, STFLAGS grfOptions, size_t iTrialInStep) 
+{
+	ENTER(PLAN,getMutation);
+
+    ASSERT( _vecMutations.size() == 1 );
+	Mutation m = _vecMutations[0];
+	bool fWillInsert = (m.isCopy() || m.isInsert() || m.isTranspose());
+	Range rg;
+
+	const IndexRange& ir = (m.hasRange() ? m.range() : _ir);
+	rg.set(ir.getRange());
+
+    ASSERT( _dIndex == 0 );
+    if( !m.hasCountBases() )
+    {
+        ASSERT( m.isChange() );
+        m._cbBases = 1;
+    }
+    ASSERT( !m.needsSourceIndex() );
+
+    ASSERT( !m.hasTandemIndex() );
+    bool fEnsureInFrame = ST_ISALLSET(grfOptions, SO_ENSUREINFRAME) && (!m.isChange() || Codon::hasWholeCodons(m._cbBases));
+    if (fWillInsert)
+        ir.adjustRangeForInsert(rg);
+
+    ASSERT( !m.hasTargetIndex() );
+
+    TFLOW(MUTATION,L2,(LLTRACE, "Sampling mutation positions from %d to %d",
+            rg.getStart(), rg.getEnd()));
+    for(long iTarget = rg.getStart(); iTarget < rg.getEnd(); iTarget++)
+   {
+        if( !fEnsureInFrame || Codon::onCodonBoundary(iTarget) )
+        {
+
+            TFLOW(MUTATION,L2,(LLTRACE, "Starting target position %d", iTarget));
+            m._iTarget = iTarget;
+            ASSERT(!m.isCopy());
+            ASSERT(!m.isTranspose());
+            ASSERT(m.needsBases() && !m.hasBases());
+
+            ASSERT(Constants::s_strBASES.length() == 4);
+            size_t counts[m._cbBases+1];
+            memset(counts, 0, sizeof(counts));
+            m._strBases.resize(m._cbBases);
+            while(!counts[m._cbBases])
+            {
+                for(size_t idx = 0; idx < m._cbBases;idx++)
+                {
+                    m._strBases[idx] = Constants::s_strBASES[counts[idx]];
+                }
+                // skip silent changes
+                if( Genome::_strBases.compare(m._iTarget, m._cbBases, m._strBases) )
+                {
+                    TFLOW(MUTATION,L2,(LLTRACE, "Mutation with bases %s", m._strBases.c_str()));
+                    selector.addMutation(m);
+                    selector.mutationFinalize();
+                }
+                size_t increment_pos = 0;
+                while(true)
+                {
+                    counts[increment_pos]++;
+                    if( counts[increment_pos] == 4 )
+                    {
+                        counts[increment_pos] = 0;
+                        increment_pos++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                }
+
+            }
+
+        }
+    }
+}
+
 
 /*
  * Function: load
@@ -1502,7 +1655,6 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 				while (!fPlanTerminated && !fTrialCompleted)
 				{
                     Genome::setRollbackType(RT_CONSIDERATION);
-					size_t cMutationsPerAttempt = getMutationsPerAttempt();
 					bool fSuccess = true;
 
 					// Advance the number of trial attempts
@@ -1510,29 +1662,19 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 
                     MutationSelector mutationSelector(*this);
 					TFLOW(PLAN,L3,(LLTRACE, "Executing trial attempt %d", Genome::getTrialAttempts()));
-					// Apply the selected number of mutations for this attempt
-					for (size_t cMutationsApplied=0; fSuccess && cMutationsApplied < cMutationsPerAttempt; ++cMutationsApplied)
-					{
-						// Get the next mutation from the step and note if a rollback is possible
-						st.getMutation(m, grfOptions, Genome::getTrial()-cTrialsInCompletedSteps-iTrialFirst);
-//						TFLOW(PLAN,L2,(LLTRACE, "Executing a %s mutation for mutation %lu of %lu in trial %lu (using step %lu)",
-												//m.toString(true).c_str(), (cMutationsApplied+1), cMutationsPerAttempt, Genome::getTrial(), (_iStep+1)));
 
-						// Apply the mutation
-                        fSuccess = mutationSelector.addMutation(m);
-					}
-
-                    Genome::rollback();
-
+                    MutationSource source(st, grfOptions, Genome::getTrial()-cTrialsInCompletedSteps-iTrialFirst);
+                    produceMutations(source, mutationSelector);
+					
                     Genome::setRollbackType(RT_ATTEMPT);
-                    mutationSelector.replay();
 					// If all mutations applied, validate and score the genome
-					fSuccess = mutationSelector.mutationFinalize(fSuccess);
+                    fSuccess = mutationSelector.selectMutation();
 
 					// Convert a successful attempt into a successful trial and continue
 					// - Condition or caller termination leaves the success state unchanged
 					if (fSuccess)
 					{
+                        Genome::recordStatistics();
 						fTrialCompleted = true;
 						cTrials -= 1;
 						
@@ -1551,13 +1693,11 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 					// If unable to apply the mutations or validation/scoring failed, rollback changes (if allowed) and try again
 					else
 					{
-						TDATA(PLAN,L3,(LLTRACE, "Mutation %s failed", m.toString().c_str()));
 
 						// Always leave the genome in the last stable state
 						// - The genome should never be "alive" at this point since something has failed
 						ASSERT(!Genome::isState(STGS_ALIVE));
-						fSuccess = (	Genome::enterState(STGS_ROLLBACK)
-						   			&&	Genome::exitState(Genome::doRollback));
+						fSuccess = Genome::rollback();
 						TFLOW(PLAN,L5,(LLTRACE, "Plan %s removed changes", (fSuccess ? "successfully" : "unsuccessfully")));
 
 						// If rollbacks are not possible and or exhausted, terminate the plan
@@ -1749,6 +1889,30 @@ Plan::evaluateConditions()
             &&	evaluateCondition(PC_TRIALSCORE, Genome::getScore() );
 }
 
+UNIT
+Plan::evaluatePerformance()
+{
+    TrialCondition * primary = getPrimaryTrialCondition();
+    if( primary == getTrialCondition(PC_TRIALCOST) )
+        return primary->evaluatePerformance(Genome::getCost());
+    else if(primary == getTrialCondition(PC_TRIALFITNESS) )
+        return primary->evaluatePerformance(Genome::getFitness());
+    else if(primary == getTrialCondition(PC_TRIALSCORE) )
+        return primary->evaluatePerformance(Genome::getScore());
+    else
+    {
+        ASSERT(false);
+        return 0.0;
+    }
+}
+
+UNIT
+Plan::getPerformancePrecision()
+{
+    return getPrimaryTrialCondition()->getPerformancePrecision();
+}
+
+
 bool Plan::applyMutation(Mutation & m)
 {
     return (m.isChange()
@@ -1767,27 +1931,84 @@ MutationSelector::addMutation(Mutation & mutation)
 {
     bool fSuccess = _plan.applyMutation(mutation);
     _fFieldsMissing = _fFieldsMissing || !mutation.allFieldsSupplied();
-    _mutations.push_back(mutation);
+    _current().mutations.push_back(mutation);
+    _current().fValidMutations = _current().fValidMutations && fSuccess;
     return fSuccess;
 }
 
 bool
-MutationSelector::mutationFinalize(bool fAccept)
+MutationSelector::selectMutation()
 {
-    bool fSuccess = fAccept && Genome::validate();
-    fSuccess = fSuccess && _plan.evaluateConditions();
-    fSuccess = fSuccess && Genome::recordStatistics();
-    _fGood = true;
-    _mutations.clear();
+
+    // throw away current consideration which should be empty
+    ASSERT(_considerations.back().mutations.empty());
+    _considerations.pop_back();
+    Consideration & consideration = _pickMutation();
+    for(MUTATIONVECTOR::iterator m = consideration.mutations.begin(); m != consideration.mutations.end();
+            m++)
+    {
+        _plan.applyMutation(*m);
+    }
+	TFLOW(PLAN,L2,(LLTRACE, "Mutation reapplied: %d", consideration.fValidMutations));
+
+    bool fSuccess = consideration.fValidMutations && Genome::validate();
+    if(fSuccess && !_fAcceptedMutation)
+    {
+        _plan.evaluateConditions();
+        return false;
+    }
     return fSuccess;
 }
 
 void
-MutationSelector::replay()
+MutationSelector::mutationFinalize()
 {
-    for(MUTATIONVECTOR::iterator m = _mutations.begin(); m != _mutations.end();
-            m++)
+    _current().fValidated = Genome::validate();
+    if( _current().fValidMutations && _current().fValidated )
     {
-        _plan.applyMutation(*m);
+        _fAcceptedMutation = _fAcceptedMutation || _plan.evaluateConditions();
+        _current().value = _plan.evaluatePerformance();
+        if( _considerations.size() == 1 || _current().value > _best)
+        {
+            _best = _current().value;
+        }
+    }
+    TFLOW(PLAN,L2,(LLTRACE, "Mutation has been added to considerations, performance: %f", static_cast<UNIT>(_current().value)));
+    Genome::recordAttempt(ST_FILELINE, STTR_PLAN, "Only considered");
+    Genome::rollback();
+    _considerations.push_back( Consideration() );
+
+}
+
+MutationSelector::Consideration &
+MutationSelector::_pickMutation()
+{
+    TFLOW(PLAN,L2,(LLTRACE, "Deciding which mutation to apply, best mutation performance: %f", _best));
+    size_t acceptable_count = 0;
+    UNIT threshold = _best - _plan.getPerformancePrecision();
+    for( CONSIDERATIONVECTOR::iterator consideration = _considerations.begin();
+            consideration != _considerations.end(); consideration++)
+    {
+        if( consideration->value >= threshold )
+        {
+            acceptable_count++;
+        }
+    }
+    TFLOW(PLAN,L2,(LLTRACE, "%d of %d were better then %f", acceptable_count, _considerations.size(), threshold));
+    long choice = RGenerator::getUniform(0L, acceptable_count - 1);
+    for( CONSIDERATIONVECTOR::iterator consideration = _considerations.begin();
+            consideration != _considerations.end(); consideration++)
+    {
+        if( consideration->value >= threshold )
+        {
+            if(choice == 0)
+            {
+                return *consideration;
+            }
+            else
+            {
+                choice--;
+            }
+        }
     }
 }

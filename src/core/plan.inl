@@ -76,6 +76,11 @@ inline void TrialCondition::clear()
 	_vecValues.clear();
 }
 
+inline bool TrialCondition::active()
+{
+    return _tcm != TCM_NONE;
+}
+
 //--------------------------------------------------------------------------------
 //
 // CostTrialCondition
@@ -178,7 +183,20 @@ inline bool TrialConditions::evaluate(PLANCONDITION pc, UNIT nValue)
 	default: ASSERT(false); return false;
 	}
 }
+
+inline TrialCondition * TrialConditions::getTrialCondition(PLANCONDITION pc) 
+{ 
+	switch (pc)
+	{
+	case PC_TRIALCOST: return &_cc;
+	case PC_TRIALFITNESS: return &_fc;
+	case PC_TRIALSCORE: return &_sc;
+	default: ASSERT(false); return 0;
+	}
+}
+
 inline size_t TrialConditions::getMutationsPerAttempt() const { return _mc.getMutationsPerAttempt(); }
+inline void TrialConditions::produceMutations(MutationSource & source, MutationSelector & selector) { _mc.produceMutations(source, selector); }
 
 //--------------------------------------------------------------------------------
 //
@@ -296,6 +314,8 @@ inline bool Mutation::isChange() const { return (_mt == MT_CHANGE); }
 inline bool Mutation::isDelete() const { return (_mt == MT_DELETE); }
 inline bool Mutation::isInsert() const { return (_mt == MT_INSERT); }
 inline bool Mutation::isTranspose() const { return (_mt == MT_TRANSPOSE); }
+inline bool Mutation::needsSourceIndex() const { return isCopy() || isTranspose(); }
+inline bool Mutation::needsBases() const { return isChange() || isInsert(); }
 
 inline bool Mutation::allFieldsSupplied() const
 {
@@ -368,6 +388,8 @@ inline size_t Step::getTrials() const { return _cTrials; }
 inline bool Step::hasConditions(STFLAGS grfConditions) const { return _tc.hasConditions(grfConditions); }
 inline bool Step::evaluateCondition(PLANCONDITION pc, UNIT nValue) { return _tc.evaluate(pc, nValue); }
 inline size_t Step::getMutationsPerAttempt() const { return _tc.getMutationsPerAttempt(); }
+inline void Step::produceMutations(MutationSource & source, MutationSelector & selector) { _tc.produceMutations(source, selector); }
+inline TrialCondition * Step::getTrialCondition(PLANCONDITION pc) { return _tc.getTrialCondition(pc); }
 
 //--------------------------------------------------------------------------------
 //
@@ -380,12 +402,40 @@ inline void Plan::clear() { initialize(); }
 
 inline bool Plan::isExecuting() const { return _fExecuting; }
 
+// TODO: refactor the duplication here
+
+inline TrialCondition * Plan::getTrialCondition(PLANCONDITION pc)
+{
+    if(!_vecSteps.empty() && _vecSteps[_iStep].hasConditions(pc) )
+        return _vecSteps[_iStep].getTrialCondition(pc);
+    else
+        return _tc.getTrialCondition(pc);
+}
+
+inline TrialCondition * Plan::getPrimaryTrialCondition()
+{
+    PLANCONDITION condition_types[] = {PC_TRIALCOST, PC_TRIALFITNESS, PC_TRIALSCORE};
+    for(int idx = 0; idx < 3; idx++)
+    {
+        TrialCondition * condition = getTrialCondition(condition_types[idx]);
+        if(condition->active() )
+            return condition;
+    }
+    ASSERT(false);
+    return NULL;
+}
+
 inline bool Plan::evaluateCondition(PLANCONDITION pc, UNIT nValue)
 {
-	return (_vecSteps.size() && _vecSteps[_iStep].hasConditions(pc)
-		? _vecSteps[_iStep].evaluateCondition(pc, nValue)
-		: _tc.evaluate(pc, nValue));
+    return getTrialCondition(pc)->evaluate(nValue);
 }
+
+inline UNIT Plan::getPerformancePrecision(PLANCONDITION pc)
+{
+    return getTrialCondition(pc)->getPerformancePrecision();
+}
+
+
 inline size_t Plan::getMutationsPerAttempt() const
 {
 	return (_vecSteps.size() && _vecSteps[_iStep].hasConditions(PC_TRIALMUTATION)
@@ -393,8 +443,16 @@ inline size_t Plan::getMutationsPerAttempt() const
 		: _tc.getMutationsPerAttempt());
 }
 
+inline void Plan::produceMutations(MutationSource & source, MutationSelector & selector)
+{
+	return (_vecSteps.size() && _vecSteps[_iStep].hasConditions(PC_TRIALMUTATION)
+		? _vecSteps[_iStep].produceMutations(source, selector)
+		: _tc.produceMutations(source, selector));
+}
+
 inline void Plan::beginExecution() { _fExecuting = true; }
 inline void Plan::endExecution() { _fExecuting = false; }
+
 
 inline size_t Plan::getActualTrialCount(size_t cTrials, size_t iTrialFirst)
 {
@@ -420,14 +478,46 @@ inline PlanScope::~PlanScope()
 
 //--------------------------------------------------------------------------------
 //
+//  MutationSource
+//--------------------------------------------------------------------------------
+
+inline MutationSource::MutationSource( Step & step, STFLAGS grfConditions, size_t iTrialInStep):
+    _step(step),
+    _grfConditions(grfConditions),
+    _iTrialInStep(iTrialInStep)
+{
+}
+
+inline void MutationSource::getMutation(Mutation & mutation)
+{
+    _step.getMutation(mutation, _grfConditions, _iTrialInStep);
+}
+
+inline void MutationSource::produceMutations( MutationSelector & selector)
+{
+    _step.produceMutations(selector, _grfConditions, _iTrialInStep);
+}
+
+//--------------------------------------------------------------------------------
+//
 //  MutationSelector
 //--------------------------------------------------------------------------------
 
 inline MutationSelector::MutationSelector(Plan & plan) :
     _plan(plan),
     _fFieldsMissing(false),
-    _fGood(true),
     _fAcceptedMutation(false)
+{
+    _considerations.push_back( Consideration() );
+}
+
+inline MutationSelector::Consideration & MutationSelector::_current()
+{
+    return _considerations.back();
+}
+
+inline MutationSelector::Consideration::Consideration():
+    fValidMutations(true)
 {
 }
 

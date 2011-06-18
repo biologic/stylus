@@ -129,6 +129,8 @@ namespace org_biologicinstitute_stylus
 	class MutationModification;
 	class MutationTrialCondition;
 	class MutationModification;
+    class MutationSelector;
+    class MutationSource;
 	class MutationsPerAttempt;
 	template <class Type> class Overlap;
 	class Overlaps;
