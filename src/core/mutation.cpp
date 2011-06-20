@@ -623,10 +623,6 @@ Genome::executePlan(const char* pxmlPlan, size_t iTrialFirst, size_t cTrials, ST
 		//  need to be determined)
 		long uuidCount = (_plan.getActualTrialCount(cTrials, iTrialFirst) + (Genome::recordingRate() - 1)) / Genome::recordingRate();
 
-        // WINSTON: hack to increase the amount of UUIds for now
-        // TODO: do something more reasonable
-        uuidCount *= 8;
-
 		// Generate UUIDs for the start and final XML files
 		uuidCount += 2;
 
