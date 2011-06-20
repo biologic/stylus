@@ -109,6 +109,8 @@ namespace org_biologicinstitute_stylus
 		XT_CODON,
 		XT_CODONTABLE,
 		XT_COHERENT,
+        XT_COMPARED,
+        XT_COMPAREDMUTATIONS,
 		XT_CONTAINEDSTROKES,
 		XT_COPIED,
 		XT_COPIES,

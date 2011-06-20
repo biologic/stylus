@@ -319,6 +319,7 @@ namespace org_biologicinstitute_stylus
 
 		static std::string toString();
 		static void toXML(XMLStream& xs, STFLAGS grfRecordDetail, bool fUseTrialStatistics = false);
+        static void writeConsiderations(XMLStream& xs, STFLAGS grfRecordDetail);
 
         static void setRollbackType(ROLLBACKTYPE rollback_type);
 

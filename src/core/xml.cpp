@@ -78,6 +78,8 @@ const char* XMLDocument::s_aryXMLTAG[XT_MAX] =
 	"codon",
 	"codonTable",
 	"coherent",
+    "compared",
+    "comparedMutations",
 	"containedStrokes",
 	"copied",
 	"copies",

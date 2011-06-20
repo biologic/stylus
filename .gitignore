@@ -1,0 +1,10 @@
+Makefile.in
+*.pyc
+*.swp
+obj
+sample/data
+sample/reports
+aclocal.m4
+configure
+config.h.in
+autom4te.cache

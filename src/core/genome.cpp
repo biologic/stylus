@@ -822,6 +822,31 @@ Genome::toString()
 	return Constants::s_strEMPTY;
 };
 
+
+void 
+Genome::writeConsiderations(XMLStream & xs, STFLAGS grfRecordDetail)
+{
+    if( !_vecConsiderations.empty() )
+    {
+        xs.openStart(xmlTag(XT_COMPAREDMUTATIONS));
+        xs.closeStart();
+
+
+        for (size_t iAttempt=0; iAttempt < _vecConsiderations.size(); ++iAttempt)
+        {
+            const ModificationStack& ms = _vecConsiderations[iAttempt];
+
+            xs.openStart(xmlTag(XT_COMPARED));
+            xs.writeAttribute(xmlTag(XT_DESCRIPTION), ms.toString());
+            xs.closeStart();
+            ms.toXML(xs, grfRecordDetail);
+            xs.writeEnd(xmlTag(XT_COMPARED));
+        }
+
+        xs.writeEnd(xmlTag(XT_COMPAREDMUTATIONS));
+    }
+}
+
 /*
  * Function: toXML
  *
@@ -1063,6 +1088,8 @@ Genome::toXML(XMLStream& xs, STFLAGS grfRecordDetail, bool fUseTrialStatistics)
 			_msModifications.toXML(xs, grfRecordDetail);
 			xs.writeEnd(xmlTag(XT_ACCEPTEDMUTATIONS));
 		}
+
+        writeConsiderations(xs, grfRecordDetail);
 		
 		if (_vecAttempts.size() && ST_ISANYSET(grfRecordDetail, STRD_LINEAGEALL))
 		{

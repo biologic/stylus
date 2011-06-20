@@ -1974,7 +1974,8 @@ MutationSelector::mutationFinalize()
         }
     }
     TFLOW(PLAN,L2,(LLTRACE, "Mutation has been added to considerations, performance: %f", static_cast<UNIT>(_current().value)));
-    Genome::recordAttempt(ST_FILELINE, STTR_PLAN, "Only considered");
+    if( _current().fValidated && _current().fValidMutations )
+        Genome::recordAttempt(ST_FILELINE, STTR_PLAN, "Performance: %f", static_cast<UNIT>(_current().value));
     Genome::rollback();
     _considerations.push_back( Consideration() );
 
@@ -2011,4 +2012,5 @@ MutationSelector::_pickMutation()
             }
         }
     }
+    ASSERT(false);
 }
