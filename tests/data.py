@@ -8,5 +8,7 @@ BLACKLIST = [
 IGNORE = {
         'history' : ['uuid', 'creationTool', 'creationDate'],
         'genome' : ['uuid', 'creationTool', 'creationDate'],
-        'attempt' : ['description']
+# the following two ignored because they contain line numbers
+        'attempt' : ['description'],
+        'compared' : ['description']
 }
