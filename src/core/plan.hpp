@@ -564,7 +564,7 @@ namespace org_biologicinstitute_stylus
         typedef std::vector< Consideration > CONSIDERATIONVECTOR;
 
         Consideration & _current();
-        Consideration & _pickMutation();
+        size_t _pickMutation();
 
         Plan & _plan;
 

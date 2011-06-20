@@ -1868,6 +1868,15 @@ Genome::rgenBases(string& strBases, size_t cbLength)
 	return strBases;
 }
 
+void
+Genome::removeConsideration(size_t iConsideration)
+{
+    ASSERT(iConsideration >= 0 && iConsideration < _vecConsiderations.size() );
+    MODIFICATIONSTACKARRAY::iterator consideration = _vecConsiderations.begin();
+    std::advance(consideration, iConsideration);
+    _vecConsiderations.erase( consideration );
+}
+
 #ifdef ST_DEBUG
 /*
  * Function: testRollback

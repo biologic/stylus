@@ -322,6 +322,7 @@ namespace org_biologicinstitute_stylus
         static void writeConsiderations(XMLStream& xs, STFLAGS grfRecordDetail);
 
         static void setRollbackType(ROLLBACKTYPE rollback_type);
+        static void removeConsideration(size_t iConsideration);
 
   	private:
 		static const char* s_aryGENOMESTATES[STGS_MAX];

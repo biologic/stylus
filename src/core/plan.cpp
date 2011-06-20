@@ -1998,7 +1998,8 @@ MutationSelector::selectMutation()
     // throw away current consideration which should be empty
     ASSERT(_considerations.back().mutations.empty());
     _considerations.pop_back();
-    Consideration & consideration = _pickMutation();
+    size_t iConsideration = _pickMutation();
+    Consideration & consideration = _considerations[iConsideration];
     for(MUTATIONVECTOR::iterator m = consideration.mutations.begin(); m != consideration.mutations.end();
             m++)
     {
@@ -2007,6 +2008,7 @@ MutationSelector::selectMutation()
 	TFLOW(PLAN,L2,(LLTRACE, "Mutation reapplied: %d", consideration.fValidMutations));
 
     bool fSuccess = consideration.fValidMutations && Genome::validate();
+    Genome::removeConsideration(iConsideration);
     if(fSuccess && !_fAcceptedMutation)
     {
         _plan.evaluateConditions();
@@ -2036,7 +2038,7 @@ MutationSelector::mutationFinalize()
 
 }
 
-MutationSelector::Consideration &
+size_t
 MutationSelector::_pickMutation()
 {
     TFLOW(PLAN,L2,(LLTRACE, "Deciding which mutation to apply, best mutation performance: %f", _best));
@@ -2052,6 +2054,7 @@ MutationSelector::_pickMutation()
     }
     TFLOW(PLAN,L2,(LLTRACE, "%d of %d were better then %f", acceptable_count, _considerations.size(), threshold));
     long choice = RGenerator::getUniform(0L, acceptable_count - 1);
+    size_t iConsideration = 0;
     for( CONSIDERATIONVECTOR::iterator consideration = _considerations.begin();
             consideration != _considerations.end(); consideration++)
     {
@@ -2059,13 +2062,14 @@ MutationSelector::_pickMutation()
         {
             if(choice == 0)
             {
-                return *consideration;
+                return iConsideration;
             }
             else
             {
                 choice--;
             }
         }
+        iConsideration++;
     }
     ASSERT(false);
 }
