@@ -81,9 +81,10 @@ namespace org_biologicinstitute_stylus
 		void clear();
 
 		bool evaluate(UNIT nValue);
-		UNIT evaluatePerformance(UNIT nValue);
-        bool active();
-        UNIT getPerformancePrecision();
+		UNIT evaluatePerformance(UNIT nValue) const;
+        bool active() const;
+        UNIT getPerformancePrecision() const;
+        const MutationTrialCondition * getMutationTrialCondition() const;
 		
 	protected:
 		enum TRIALCONDITIONMODE
@@ -191,7 +192,8 @@ namespace org_biologicinstitute_stylus
 		void clear();
 		
 		size_t getMutationsPerAttempt() const;
-        void produceMutations(MutationSource & source, MutationSelector & selector);
+        void produceMutations(MutationSource & source, MutationSelector & selector) const;
+        bool generatesSingleMutation() const;
 		
 		void load(XMLDocument* pxd, xmlNodePtr pxn);
 		void toXML(XMLStream& xs);
@@ -226,6 +228,7 @@ namespace org_biologicinstitute_stylus
 		void toXML(XMLStream& xs);
 
         TrialCondition * getTrialCondition(PLANCONDITION pc);
+        const MutationTrialCondition * getMutationTrialCondition() const;
 		
 	private:
 		STFLAGS _grfConditions;				///< Set of PLANCONDITION flags
@@ -509,6 +512,7 @@ namespace org_biologicinstitute_stylus
 		void toXML(XMLStream& xs);
 		
         TrialCondition * getTrialCondition(PLANCONDITION pc);
+        const MutationTrialCondition * getMutationTrialCondition() const;
 	private:
 		size_t _cTrials;
 		long _dIndex;
@@ -620,13 +624,17 @@ namespace org_biologicinstitute_stylus
 		void initialize();
 		void beginExecution();
 		void endExecution();
+        
+        void verify();
 
-		size_t getMutationsPerAttempt() const;
+		size_t getMutationsPerAttempt() ;
         bool evaluatePerformance(PLANCONDITION pc, UNIT nValue, UNIT & nOutput);
         void produceMutations(MutationSource & source, MutationSelector & selector);
         UNIT getPerformancePrecision(PLANCONDITION pc);
         TrialCondition * getTrialCondition(PLANCONDITION pc);
+        TrialCondition * getTrialCondition(PLANCONDITION pc, size_t iStep);
         TrialCondition * getPrimaryTrialCondition();
+        const MutationTrialCondition * getMutationTrialCondition(size_t iStep);
 	};
 	
 	/**

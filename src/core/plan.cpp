@@ -92,7 +92,7 @@ const char* TrialCondition::s_aryTRIALCONDITIONMODE[TCM_MAX] =
  * 
  */
 UNIT
-TrialCondition::evaluatePerformance(UNIT nValue)
+TrialCondition::evaluatePerformance(UNIT nValue) const
 {
 	ENTER(VALIDATION,evaluatePerformance);
 	
@@ -110,7 +110,7 @@ TrialCondition::evaluatePerformance(UNIT nValue)
 }
 
 UNIT
-TrialCondition::getPerformancePrecision()
+TrialCondition::getPerformancePrecision() const
 {
     ASSERT( _vecValues.size() == 1 );
     return _vecValues[0].getFactor();
@@ -122,7 +122,7 @@ TrialCondition::getPerformancePrecision()
  * 
  */
 bool
-TrialCondition::evaluate(UNIT nValue)
+TrialCondition::evaluate(UNIT nValue) 
 {
 	ENTER(VALIDATION,evaluate);
 	
@@ -416,7 +416,7 @@ MutationTrialCondition::load(XMLDocument* pxd, xmlNodePtr pxnMutationTrialCondit
 }
 
 void
-MutationTrialCondition::produceMutations(MutationSource & source, MutationSelector & selector)
+MutationTrialCondition::produceMutations(MutationSource & source, MutationSelector & selector)  const
 {
     Mutation m;
     bool fSuccess = true;
@@ -1808,6 +1808,35 @@ Plan::load(const char* pxmlPlan)
 	// Determine the full range of trials the plan supports
 	for (size_t iStep=0; iStep < _vecSteps.size(); ++iStep)
 		_cTrials += _vecSteps[iStep].getTrials();
+
+    verify();
+}
+
+
+void
+Plan::verify()
+{
+    for (size_t iStep=0; iStep < _vecSteps.size(); ++iStep)
+    {
+        const MutationTrialCondition * condition = getMutationTrialCondition(iStep);
+        if( !condition->generatesSingleMutation() )
+        {
+            PLANCONDITION condition_types[] = {PC_TRIALCOST, PC_TRIALFITNESS, PC_TRIALSCORE};
+            int condition_count = 0;
+            for(int idx = 0; idx < 3; idx++)
+            {
+                TrialCondition * condition = getTrialCondition(condition_types[idx], iStep);
+                if(condition->active() )
+                    condition_count++;
+            }
+
+            if(condition_count != 1)
+            {
+                THROWRC((RC(XMLERROR), "Illegal plan - When multiple mutations are considered, there must be exactly one selection condition"));
+            }
+            
+        }
+    }
 }
 
 /*
@@ -1891,7 +1920,7 @@ Plan::evaluateConditions()
 }
 
 UNIT
-Plan::evaluatePerformance()
+Plan::evaluatePerformance() 
 {
     TrialCondition * primary = getPrimaryTrialCondition();
     if( primary == getTrialCondition(PC_TRIALCOST) )
