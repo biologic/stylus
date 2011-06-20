@@ -676,7 +676,14 @@
 						<xs:element name="attempt" type="st:mutationsMadeType" minOccurs="1" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
-			</xs:element>
+            </xs:element>
+            <xs:element name="comparedMutations" minOccurs="0" maxOccurs="1">
+				<xs:complexType mixed="false">
+					<xs:sequence minOccurs="1" maxOccurs="1">
+						<xs:element name="compared" type="st:mutationsMadeType" minOccurs="1" maxOccurs="unbounded" />
+					</xs:sequence>
+                </xs:complexType>
+            </xs:element>
 		</xs:sequence>
 
 		<!--

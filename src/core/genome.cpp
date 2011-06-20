@@ -826,7 +826,8 @@ Genome::toString()
 void 
 Genome::writeConsiderations(XMLStream & xs, STFLAGS grfRecordDetail)
 {
-    if( !_vecConsiderations.empty() )
+    if( !_vecConsiderations.empty() && ST_ISANYSET(grfRecordDetail, STRD_LINEAGEALL)
+)
     {
         xs.openStart(xmlTag(XT_COMPAREDMUTATIONS));
         xs.closeStart();
@@ -1089,7 +1090,6 @@ Genome::toXML(XMLStream& xs, STFLAGS grfRecordDetail, bool fUseTrialStatistics)
 			xs.writeEnd(xmlTag(XT_ACCEPTEDMUTATIONS));
 		}
 
-        writeConsiderations(xs, grfRecordDetail);
 		
 		if (_vecAttempts.size() && ST_ISANYSET(grfRecordDetail, STRD_LINEAGEALL))
 		{
@@ -1108,6 +1108,8 @@ Genome::toXML(XMLStream& xs, STFLAGS grfRecordDetail, bool fUseTrialStatistics)
 			}
 			xs.writeEnd(xmlTag(XT_REJECTEDMUTATIONS));
 		}
+
+        writeConsiderations(xs, grfRecordDetail);
 		
 		xs.writeEnd(xmlTag(XT_LINEAGE));
 	}

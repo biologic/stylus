@@ -284,7 +284,7 @@ const char XMLDocument::s_szStylusNamespacePrerelease[] = "http://biologicinstit
 const char XMLDocument::s_szStylusNamespace1_0[] = "http://biologicinstitute.org/schemas/stylus/1.0";
 const char XMLDocument::s_szStylusNamespace1_3[] = "http://biologicinstitute.org/schemas/stylus/1.3";
 const char XMLDocument::s_szStylusNamespace1_5[] = "http://biologicinstitute.org/schemas/stylus/1.5";
-const char* XMLDocument::s_szStylusNamespace = XMLDocument::s_szStylusNamespace1_3;
+const char* XMLDocument::s_szStylusNamespace = XMLDocument::s_szStylusNamespace1_5;
 
 SCHEMA XMLDocument::s_arySCHEMAS[] =
 {
