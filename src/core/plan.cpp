@@ -457,9 +457,10 @@ MutationTrialCondition::toXML(XMLStream& xs)
 {
 	ENTER(PLAN,toXML);
 	
-	xs.writeStart(xmlTag(XT_MUTATIONCONDITION));
+	xs.openStart(xmlTag(XT_MUTATIONCONDITION));
+    xs.writeAttribute( xmlTag(XT_MODE), _fExhaustive ? "exhaustive" : "random" );
+    xs.closeStart();
 
-    // TODO: write out mode
 	for (size_t iMutationsPerAttempt=0; iMutationsPerAttempt < _vecMutationsPerAttempt.size(); ++iMutationsPerAttempt)
 		_vecMutationsPerAttempt[iMutationsPerAttempt].toXML(xs);
 	
