@@ -447,6 +447,11 @@ inline bool MutationTrialCondition::generatesSingleMutation() const
     return !_fExhaustive;
 }
 
+inline bool MutationTrialCondition::isExhaustive() const
+{
+    return _fExhaustive;
+}
+
 inline bool Plan::evaluateCondition(PLANCONDITION pc, UNIT nValue)
 {
     return getTrialCondition(pc)->evaluate(nValue);

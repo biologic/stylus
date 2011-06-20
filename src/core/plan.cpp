@@ -1467,6 +1467,26 @@ Step::produceMutations(MutationSelector & selector, STFLAGS grfOptions, size_t i
     }
 }
 
+void Step::checkSupportsExhaustive()
+{
+    if( _vecMutations.size() != 1 )
+        THROWRC((RC(XMLERROR), "Only one type of mutation supported when exhaustive mode is enabled"));
+
+    Mutation & m = _vecMutations[0];
+    
+    if( !m.isChange() )
+        THROWRC((RC(XMLERROR), "Only change mutations are supported when exhaustive mode is enabled"));
+    
+    if( m.hasTargetIndex() )
+        THROWRC((RC(XMLERROR), "Specifying the target position is not supported when exhaustive mode is enabled"));
+
+    if( m.hasTransversion() )
+        THROWRC((RC(XMLERROR), "Transversion likelihood is not supported when exhaustive mode is enabled"));
+
+    if( m.hasBases() )
+        THROWRC((RC(XMLERROR), "Specifying the bases is not supported when exhaustive mode is enabled"));
+}
+
 
 /*
  * Function: load
@@ -1835,6 +1855,11 @@ Plan::verify()
                 THROWRC((RC(XMLERROR), "Illegal plan - When multiple mutations are considered, there must be exactly one selection condition"));
             }
             
+        }
+
+        if( condition->isExhaustive() )
+        {
+            _vecSteps[iStep].checkSupportsExhaustive();
         }
     }
 }

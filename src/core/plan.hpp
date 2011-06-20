@@ -194,6 +194,7 @@ namespace org_biologicinstitute_stylus
 		size_t getMutationsPerAttempt() const;
         void produceMutations(MutationSource & source, MutationSelector & selector) const;
         bool generatesSingleMutation() const;
+        bool isExhaustive() const;
 		
 		void load(XMLDocument* pxd, xmlNodePtr pxn);
 		void toXML(XMLStream& xs);
@@ -513,6 +514,7 @@ namespace org_biologicinstitute_stylus
 		
         TrialCondition * getTrialCondition(PLANCONDITION pc);
         const MutationTrialCondition * getMutationTrialCondition() const;
+        void checkSupportsExhaustive();
 	private:
 		size_t _cTrials;
 		long _dIndex;

@@ -18,14 +18,14 @@ limitations under the License.
   <options accumulateMutations='false' preserveGenes='true' ensureInFrame='true' ensureWholeCodons='true'>
     <trialConditions>
       <fitnessCondition mode='increase'>
-        <value likelihood='1.0' value='0.3' factor='.001' />
+        <value likelihood='1.0' value='0.3' />
       </fitnessCondition>
       <mutationCondition mode="exhaustive" />
     </trialConditions>
   </options>
   <steps>
 		<step trials='1'>
-			<change/>
+            <change likelihood="1.0" />
         </step>
         <!---
 		<step trials='1'>
