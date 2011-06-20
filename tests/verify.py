@@ -89,7 +89,10 @@ def verify_result(plan, gene):
 
 
 def main():
-    shutil.rmtree(DATA_DIR)
+    try:
+        shutil.rmtree(DATA_DIR)
+    except OSError:
+        pass
 
     plans = list(find_plans())
     genes = list(find_genes())
