@@ -848,6 +848,17 @@ Genome::writeConsiderations(XMLStream & xs, STFLAGS grfRecordDetail)
     }
 }
 
+namespace
+{
+    void write_statistics( XMLStream & xs, ST_ATTEMPTS & attempts)
+    {
+        xs.writeAttribute(xmlTag(XT_ATTEMPTED), attempts._cAttempted);
+        xs.writeAttribute(xmlTag(XT_ACCEPTED), attempts._cAccepted);
+        xs.writeAttribute(xmlTag(XT_COMPARED), attempts._cConsidered);
+        xs.writeAttribute(xmlTag(XT_COUNTBASES), attempts._cbBases);
+    }
+}
+
 /*
  * Function: toXML
  *
@@ -1035,34 +1046,24 @@ Genome::toXML(XMLStream& xs, STFLAGS grfRecordDetail, bool fUseTrialStatistics)
 				xs.writeStart(xmlTag(XT_MUTATIONS));
 
 				xs.openStart(xmlTag(XT_CHANGES));
-				xs.writeAttribute(xmlTag(XT_ATTEMPTED), stats._atChanged._cAttempted);
-				xs.writeAttribute(xmlTag(XT_ACCEPTED), stats._atChanged._cAccepted);
-				xs.writeAttribute(xmlTag(XT_COUNTBASES), stats._atChanged._cbBases);
+                write_statistics(xs, stats._atChanged);
 				xs.writeAttribute(xmlTag(XT_SILENT), stats._cSilent);
 				xs.closeStart(false);
 
 				xs.openStart(xmlTag(XT_COPIES));
-				xs.writeAttribute(xmlTag(XT_ATTEMPTED), stats._atCopied._cAttempted);
-				xs.writeAttribute(xmlTag(XT_ACCEPTED), stats._atCopied._cAccepted);
-				xs.writeAttribute(xmlTag(XT_COUNTBASES), stats._atCopied._cbBases);
+                write_statistics(xs, stats._atCopied);
 				xs.closeStart(false);
 
 				xs.openStart(xmlTag(XT_DELETIONS));
-				xs.writeAttribute(xmlTag(XT_ATTEMPTED), stats._atDeleted._cAttempted);
-				xs.writeAttribute(xmlTag(XT_ACCEPTED), stats._atDeleted._cAccepted);
-				xs.writeAttribute(xmlTag(XT_COUNTBASES), stats._atDeleted._cbBases);
+                write_statistics(xs, stats._atDeleted);
 				xs.closeStart(false);
 
 				xs.openStart(xmlTag(XT_INSERTIONS));
-				xs.writeAttribute(xmlTag(XT_ATTEMPTED), stats._atInserted._cAttempted);
-				xs.writeAttribute(xmlTag(XT_ACCEPTED), stats._atInserted._cAccepted);
-				xs.writeAttribute(xmlTag(XT_COUNTBASES), stats._atInserted._cbBases);
+                write_statistics(xs, stats._atInserted);
 				xs.closeStart(false);
 
 				xs.openStart(xmlTag(XT_TRANSPOSITIONS));
-				xs.writeAttribute(xmlTag(XT_ATTEMPTED), stats._atTransposed._cAttempted);
-				xs.writeAttribute(xmlTag(XT_ACCEPTED), stats._atTransposed._cAccepted);
-				xs.writeAttribute(xmlTag(XT_COUNTBASES), stats._atTransposed._cbBases);
+                write_statistics(xs, stats._atTransposed);
 				xs.closeStart(false);
 			
 				xs.writeEnd(xmlTag(XT_MUTATIONS));

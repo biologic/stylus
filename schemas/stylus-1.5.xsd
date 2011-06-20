@@ -891,6 +891,7 @@
 	-->
 	<xs:complexType mixed="false" name="statisticsMutationCountType">
 		<xs:attribute name="attempted" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="compared" type="xs:nonNegativeInteger" use="required"/>
 		<xs:attribute name="accepted" type="xs:nonNegativeInteger" use="required"/>
 		<xs:attribute name="countBases" type="xs:nonNegativeInteger" use="required" />
 	</xs:complexType>
