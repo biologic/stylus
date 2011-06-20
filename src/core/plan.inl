@@ -402,8 +402,6 @@ inline void Plan::clear() { initialize(); }
 
 inline bool Plan::isExecuting() const { return _fExecuting; }
 
-// TODO: refactor the duplication here
-
 inline TrialCondition * Plan::getTrialCondition(PLANCONDITION pc)
 {
     if(!_vecSteps.empty() && _vecSteps[_iStep].hasConditions(pc) )
