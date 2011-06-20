@@ -545,6 +545,7 @@ namespace org_biologicinstitute_stylus
     public:
         MutationSelector(Plan & plan);
         bool addMutation(Mutation & mutation);
+        void startMutations(bool fSingleMutation);
         void mutationFinalize();
         bool selectMutation();
         bool getRollbackPossible();
@@ -571,6 +572,7 @@ namespace org_biologicinstitute_stylus
         CONSIDERATIONVECTOR _considerations;
         bool _fFieldsMissing;
         bool _fAcceptedMutation;
+        bool _fSingleMutation;
         UNIT _best;
     };
 	

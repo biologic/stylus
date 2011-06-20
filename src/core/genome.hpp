@@ -46,7 +46,8 @@ namespace org_biologicinstitute_stylus
     enum ROLLBACKTYPE
     {
         RT_ATTEMPT = 0x1,
-        RT_CONSIDERATION = 0x2
+        RT_CONSIDERATION = 0x2,
+        RT_COMBINED = RT_ATTEMPT | RT_CONSIDERATION
     };
 
 	/**

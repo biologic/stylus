@@ -424,10 +424,12 @@ MutationTrialCondition::produceMutations(MutationSource & source, MutationSelect
     ASSERT( cMutationsPerAttempt == 1 || !_fExhaustive );
     if( _fExhaustive )
     {
+        selector.startMutations(false);
         source.produceMutations(selector);
     }
     else
     {
+        selector.startMutations(true);
         // Apply the selected number of mutations for this attempt
         for (size_t cMutationsApplied=0; fSuccess && cMutationsApplied < cMutationsPerAttempt; ++cMutationsApplied)
         {
@@ -1675,7 +1677,6 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 				// - The number of mutations to apply varies with each *attempt* (rather than each trial)
 				while (!fPlanTerminated && !fTrialCompleted)
 				{
-                    Genome::setRollbackType(RT_CONSIDERATION);
 					bool fSuccess = true;
 
 					// Advance the number of trial attempts
@@ -1687,7 +1688,6 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
                     MutationSource source(st, grfOptions, Genome::getTrial()-cTrialsInCompletedSteps-iTrialFirst);
                     produceMutations(source, mutationSelector);
 					
-                    Genome::setRollbackType(RT_ATTEMPT);
 					// If all mutations applied, validate and score the genome
                     fSuccess = mutationSelector.selectMutation();
 
@@ -1981,6 +1981,22 @@ bool Plan::applyMutation(Mutation & m)
                           : Genome::handleTranspose(m, _fPreserveGenes)))));
 }
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// MutationSelector
+//
+/////////////////////////////////////////////////////////////////////////////
+
+
+void 
+MutationSelector::startMutations(bool fSingleMutation)
+{
+    if(fSingleMutation)
+        Genome::setRollbackType(RT_COMBINED);
+    else
+        Genome::setRollbackType(RT_CONSIDERATION);
+    _fSingleMutation = fSingleMutation;
+}
 bool
 MutationSelector::addMutation(Mutation & mutation)
 {
@@ -1994,19 +2010,29 @@ MutationSelector::addMutation(Mutation & mutation)
 bool
 MutationSelector::selectMutation()
 {
+    Genome::setRollbackType(RT_ATTEMPT);
 
     // throw away current consideration which should be empty
     ASSERT(_considerations.back().mutations.empty());
     _considerations.pop_back();
     Consideration & consideration = _pickMutation();
-    for(MUTATIONVECTOR::iterator m = consideration.mutations.begin(); m != consideration.mutations.end();
-            m++)
+    bool fSuccess;
+    if( !_fSingleMutation )
     {
-        _plan.applyMutation(*m);
-    }
-	TFLOW(PLAN,L2,(LLTRACE, "Mutation reapplied: %d", consideration.fValidMutations));
+        for(MUTATIONVECTOR::iterator m = consideration.mutations.begin(); m != consideration.mutations.end();
+                m++)
+        {
+            _plan.applyMutation(*m);
+        }
+        TFLOW(PLAN,L2,(LLTRACE, "Mutation reapplied: %d", consideration.fValidMutations));
 
-    bool fSuccess = consideration.fValidMutations && Genome::validate();
+        fSuccess = consideration.fValidMutations && Genome::validate();
+    }
+    else
+    {
+        fSuccess = consideration.fValidMutations && consideration.fValidated;
+    }
+    
     if(fSuccess && !_fAcceptedMutation)
     {
         _plan.evaluateConditions();
@@ -2031,7 +2057,11 @@ MutationSelector::mutationFinalize()
     TFLOW(PLAN,L2,(LLTRACE, "Mutation has been added to considerations, performance: %f", static_cast<UNIT>(_current().value)));
     if( _current().fValidated && _current().fValidMutations )
         Genome::recordAttempt(ST_FILELINE, STTR_PLAN, "Performance: %f", static_cast<UNIT>(_current().value));
-    Genome::rollback();
+
+    // if we are only going to consider a single mutation
+    // we can skip the rollback
+    if( !_fSingleMutation )
+        Genome::rollback();
     _considerations.push_back( Consideration() );
 
 }
