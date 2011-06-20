@@ -444,15 +444,10 @@ TransposeModification::toXML(XMLStream& xs, STFLAGS grfRecordDetail) const
 void
 Genome::recordStatistics(ST_ATTEMPTS & attempts, size_t cbBases)
 {
-    switch(_rollbackType)
-    {
-        case RT_ATTEMPT:
-            attempts._cAttempted += 1;
-            break;
-        case RT_CONSIDERATION:
-            attempts._cConsidered += 1;
-            break;
-    }
+    if( _rollbackType & RT_ATTEMPT )
+        attempts._cAttempted += 1;
+    if( _rollbackType & RT_CONSIDERATION )
+        attempts._cConsidered += 1;
 
     attempts._cAccepted += 1;
     attempts._cbBases += cbBases;
@@ -461,15 +456,11 @@ Genome::recordStatistics(ST_ATTEMPTS & attempts, size_t cbBases)
 void
 Genome::recordStatistics(ST_STATISTICS & stats, MUTATIONTYPE mt, size_t cbBases, bool fSilent)
 {
-    switch(_rollbackType)
-    {
-        case RT_ATTEMPT:
-            stats._cAttempted += 1;
-            break;
-        case RT_CONSIDERATION:
-            stats._cConsidered += 1;
-            break;
-    }
+    if( _rollbackType & RT_ATTEMPT )
+        stats._cAttempted += 1;
+    if( _rollbackType & RT_CONSIDERATION )
+        stats._cConsidered += 1;
+
 	stats._cAccepted += 1;
 
 	switch (mt)

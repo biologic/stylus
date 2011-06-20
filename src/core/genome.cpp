@@ -1299,7 +1299,7 @@ Genome::doRecording()
 	ENTER(GENOME,doRecording);
 	ASSERT(isState(STGS_RECORDING));
 
-    if (_rollbackType != RT_ATTEMPT)
+    if (!(_rollbackType & RT_ATTEMPT))
         return true;
 	
 	if (isRecordingHistory())
@@ -1349,7 +1349,7 @@ Genome::doRollback()
 	bool fSuccess = false;
 	if (_fReady)
 	{
-        if(_rollbackType == RT_ATTEMPT)
+        if(_rollbackType & RT_ATTEMPT)
         {
             ++_statsRecordRate._cRollbacks;
             ++_statsRecordRate._cTotalRollbacks;
@@ -1432,7 +1432,7 @@ Genome::doScoring()
 
 bool Genome::recordStatistics(bool fPreserveErrors)
 {
-    if( _rollbackType == RT_ATTEMPT )
+    if( _rollbackType & RT_ATTEMPT )
     {
         if (	_statsRecordRate._iTrialInitial > _statsRecordRate._tsMax._iTrial
             ||	_statsRecordRate._nScore > _statsRecordRate._tsMax._nValue)
@@ -1764,18 +1764,10 @@ Genome::purgeModifications(bool fPreserveAttempts)
 	{
 		TFLOW(GENOME,L3,(LLTRACE, "Saving %ld changes to failed change history", _msModifications.length()));
 		ASSERT(_msModifications.length() <= 0 || !EMPTYSTR(_msModifications.toString()))
-        switch( _rollbackType)
-        {
-            case RT_ATTEMPT:
-                _vecAttempts.push_back(_msModifications);
-                break;
-            case RT_CONSIDERATION:
-                _vecConsiderations.push_back(_msModifications);
-                break;
-            default:
-                ASSERT(false);
-                break;
-        }
+        if( _rollbackType & RT_ATTEMPT )
+            _vecAttempts.push_back(_msModifications);
+        if( _rollbackType & RT_CONSIDERATION )
+            _vecConsiderations.push_back(_msModifications);
 	}
 
 	// Otherwise, delete all history
