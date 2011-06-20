@@ -543,8 +543,10 @@ namespace org_biologicinstitute_stylus
         bool selectMutation();
         bool getRollbackPossible();
 
+
+    private:
+
         typedef std::vector<Mutation> MUTATIONVECTOR;
-        // TODO: figure out why this wouldn't go where I wanted it
         struct Consideration
         {
             Consideration();
@@ -555,7 +557,6 @@ namespace org_biologicinstitute_stylus
         };
         typedef std::vector< Consideration > CONSIDERATIONVECTOR;
 
-    private:
         Consideration & _current();
         Consideration & _pickMutation();
 
