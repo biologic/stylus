@@ -549,6 +549,7 @@ namespace org_biologicinstitute_stylus
         void mutationFinalize();
         bool selectMutation();
         bool getRollbackPossible();
+        void reset();
 
 
     private:

@@ -527,11 +527,9 @@ inline void MutationSource::produceMutations( MutationSelector & selector)
 //--------------------------------------------------------------------------------
 
 inline MutationSelector::MutationSelector(Plan & plan) :
-    _plan(plan),
-    _fFieldsMissing(false),
-    _fAcceptedMutation(false)
+    _plan(plan)
 {
-    _considerations.push_back( Consideration() );
+    reset();
 }
 
 inline MutationSelector::Consideration & MutationSelector::_current()

@@ -1657,6 +1657,9 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 		if (_fEnsureWholeCodons)
 			grfOptions |= Step::SO_ENSUREWHOLECODONS;
 
+
+        MutationSelector mutationSelector(*this);
+
 		for (; !fPlanTerminated && cTrials && _iStep < _vecSteps.size(); cTrialsInCompletedSteps += _vecSteps[_iStep].getTrials(), ++_iStep)
 		{
 			Step& st = _vecSteps[_iStep];
@@ -1682,7 +1685,8 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 					// Advance the number of trial attempts
 					Genome::advanceTrialAttempts();
 
-                    MutationSelector mutationSelector(*this);
+                    mutationSelector.reset();
+
 					TFLOW(PLAN,L3,(LLTRACE, "Executing trial attempt %d", Genome::getTrialAttempts()));
 
                     MutationSource source(st, grfOptions, Genome::getTrial()-cTrialsInCompletedSteps-iTrialFirst);
@@ -2103,4 +2107,13 @@ MutationSelector::_pickMutation()
         iConsideration++;
     }
     ASSERT(false);
+}
+
+void
+MutationSelector::reset()
+{
+    _considerations.clear();
+    _fFieldsMissing = false;
+    _fAcceptedMutation = false;
+    _considerations.push_back( Consideration() );
 }
