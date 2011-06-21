@@ -22,9 +22,11 @@
 
 void test_empty_EventStack()
 {
+    #ifdef ST_TRACE
     // Event stack should validate when empty
     EventStack event_stack;
     VERIFY_EQUAL( true, event_stack.validate() );
+    #endif
 }
 
 
