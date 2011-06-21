@@ -1774,6 +1774,7 @@ Genome::purgeModifications(bool fPreserveAttempts)
 	else
 	{
 		_vecAttempts.clear();
+        _vecConsiderations.clear();
 	}
 	_msModifications.clear();
 
