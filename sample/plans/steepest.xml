@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <plan xmlns='http://biologicinstitute.org/schemas/stylus/1.5'>
-  <options accumulateMutations='false' preserveGenes='true' ensureInFrame='true' ensureWholeCodons='true'>
+  <options accumulateMutations='true' preserveGenes='true' ensureInFrame='true' ensureWholeCodons='true'>
     <trialConditions>
       <fitnessCondition mode='increase'>
         <value likelihood='1.0' value='0.3' factor=".001"/>
@@ -24,7 +24,7 @@ limitations under the License.
     </trialConditions>
   </options>
   <steps>
-		<step trials='2'>
+		<step trials='2000'>
             <change/>
         </step>
         <!---
