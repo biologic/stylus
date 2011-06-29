@@ -24,7 +24,7 @@ limitations under the License.
     </trialConditions>
   </options>
   <steps>
-		<step trials='2000'>
+		<step trials='2'>
             <change/>
         </step>
         <!---
