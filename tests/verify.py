@@ -16,6 +16,7 @@
 import os
 import tempfile
 import shutil
+import sys
 from stylus import execute_stylus_plan
 from data import BLACKLIST, IGNORE
 from util import drop_extension
@@ -50,8 +51,12 @@ def as_xml_elements(source):
     def char_data(cdata):
         data.append( ('data', cdata) )
     parser.CharacterDataHandler = char_data
-
-    parser.Parse( open(source).read() )
+    try:
+        parser.Parse( open(source).read() )
+    except xml.parsers.expat.ExpatError as error:
+        print >> sys.stderr, "Failed to parse stylus output file: " +  source
+        print >> sys.stderr, error
+        sys.exit(-1)
     return data
 
 class XMLDifferenceError(Exception):
