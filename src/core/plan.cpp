@@ -1419,7 +1419,7 @@ Step::produceMutations(MutationSelector & selector, STFLAGS grfOptions, size_t i
 
     TFLOW(MUTATION,L2,(LLTRACE, "Sampling mutation positions from %d to %d",
             rg.getStart(), rg.getEnd()));
-    for(long iTarget = rg.getStart(); iTarget < rg.getEnd(); iTarget++)
+    for(long iTarget = rg.getStart(); iTarget <= rg.getEnd(); iTarget++)
    {
         if( !fEnsureInFrame || Codon::onCodonBoundary(iTarget) )
         {
@@ -2078,7 +2078,7 @@ MutationSelector::_pickMutation()
 {
     TFLOW(PLAN,L2,(LLTRACE, "Deciding which mutation to apply, best mutation performance: %f", _best));
     size_t acceptable_count = 0;
-    UNIT threshold = _best - _plan.getPerformancePrecision();
+    UNIT threshold = _best * _plan.getPerformancePrecision();
     for( CONSIDERATIONVECTOR::iterator consideration = _considerations.begin();
             consideration != _considerations.end(); consideration++)
     {
