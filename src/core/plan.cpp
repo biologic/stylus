@@ -2078,7 +2078,7 @@ MutationSelector::_pickMutation()
 {
     TFLOW(PLAN,L2,(LLTRACE, "Deciding which mutation to apply, best mutation performance: %f", _best));
     size_t acceptable_count = 0;
-    UNIT threshold = _best * _plan.getPerformancePrecision();
+    UNIT threshold = _best / _plan.getPerformancePrecision();
     for( CONSIDERATIONVECTOR::iterator consideration = _considerations.begin();
             consideration != _considerations.end(); consideration++)
     {
