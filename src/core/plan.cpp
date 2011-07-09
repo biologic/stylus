@@ -113,7 +113,7 @@ UNIT
 TrialCondition::getPerformancePrecision() const
 {
     ASSERT( _vecValues.size() == 1 );
-    return _vecValues[0].getFactor();
+    return 1.0 - fabs( 1.0 - _vecValues[0].getFactor() );
 }
 
 
@@ -1996,7 +1996,7 @@ void
 MutationSelector::startMutations(bool fSingleMutation)
 {
     if(fSingleMutation)
-        Genome::setRollbackType(RT_COMBINED);
+        Genome::setRollbackType(RT_ATTEMPT);
     else
         Genome::setRollbackType(RT_CONSIDERATION);
     _fSingleMutation = fSingleMutation;
@@ -2076,7 +2076,7 @@ MutationSelector::_pickMutation()
 {
     TFLOW(PLAN,L2,(LLTRACE, "Deciding which mutation to apply, best mutation performance: %f", _best));
     size_t acceptable_count = 0;
-    UNIT threshold = _best / _plan.getPerformancePrecision();
+    UNIT threshold = _best * _plan.getPerformancePrecision();
     for( CONSIDERATIONVECTOR::iterator consideration = _considerations.begin();
             consideration != _considerations.end(); consideration++)
     {
