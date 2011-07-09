@@ -2075,8 +2075,10 @@ size_t
 MutationSelector::_pickMutation()
 {
     TFLOW(PLAN,L2,(LLTRACE, "Deciding which mutation to apply, best mutation performance: %f", _best));
-    size_t acceptable_count = 0;
     UNIT threshold = _best * _plan.getPerformancePrecision();
+
+    // first we count the number of solutions which fit
+    size_t acceptable_count = 0;
     for( CONSIDERATIONVECTOR::iterator consideration = _considerations.begin();
             consideration != _considerations.end(); consideration++)
     {
@@ -2086,6 +2088,8 @@ MutationSelector::_pickMutation()
         }
     }
     TFLOW(PLAN,L2,(LLTRACE, "%d of %d were better then %f", acceptable_count, _considerations.size(), threshold));
+    
+    // Randomnly choose from the set of acceptable solutions
     long choice = RGenerator::getUniform(0L, acceptable_count - 1);
     size_t iConsideration = 0;
     for( CONSIDERATIONVECTOR::iterator consideration = _considerations.begin();
@@ -2104,6 +2108,8 @@ MutationSelector::_pickMutation()
         }
         iConsideration++;
     }
+    // Since at least the best should be acceptable we should
+    // never hit this point
     ASSERT(false);
 }
 
