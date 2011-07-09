@@ -2032,8 +2032,6 @@ MutationSelector::selectMutation()
         TFLOW(PLAN,L2,(LLTRACE, "Mutation reapplied: %d", consideration.fValidMutations));
 
         fSuccess = consideration.fValidMutations && Genome::validate();
-
-        Genome::removeConsideration(iConsideration);
     }
     else
     {
