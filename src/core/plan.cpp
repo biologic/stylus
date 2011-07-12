@@ -1726,8 +1726,14 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 						TFLOW(PLAN,L5,(LLTRACE, "Plan %s removed changes", (fSuccess ? "successfully" : "unsuccessfully")));
 
 						// If rollbacks are not possible and or exhausted, terminate the plan
-						if (!mutationSelector.getRollbackPossible() || !_rc.evaluate(++cRollbackAttempts))
+						if (!mutationSelector.getRollbackPossible() )
+                        {
+                            fPlanTerminated = true;
+                            LOGINFO((LLINFO, "Rollbacks not possible in trial %lu - plan ending", Genome::getTrial() ));
+                        }else if(!_rc.evaluate(++cRollbackAttempts))
+                        {
 							fPlanTerminated = true;
+                        }
 					}
 					TFLOW(PLAN,L2,(LLTRACE, "Attempt %d completed %s", Genome::getTrialAttempts(), (fTrialCompleted ? "successfully" : "unsuccessfully")));
 
