@@ -80,7 +80,7 @@ namespace org_biologicinstitute_stylus
 		
 		void clear();
 
-		bool evaluate(UNIT nValue);
+		bool evaluate(UNIT nValue, bool fFinal);
 		UNIT evaluatePerformance(UNIT nValue) const;
         bool active() const;
         UNIT getPerformancePrecision() const;
@@ -221,7 +221,7 @@ namespace org_biologicinstitute_stylus
 		bool hasConditions(STFLAGS grfConditions) const;
 		void initialize();
 		
-		bool evaluate(PLANCONDITION pc, UNIT nValue);
+		bool evaluate(PLANCONDITION pc, UNIT nValue, bool fFinal);
 		size_t getMutationsPerAttempt() const;
         void produceMutations(MutationSource & source, MutationSelector & selector);
 		
@@ -502,7 +502,7 @@ namespace org_biologicinstitute_stylus
 		size_t getTrials() const;
 
 		bool hasConditions(STFLAGS grfConditions) const;
-		bool evaluateCondition(PLANCONDITION pc, UNIT nValue);
+		bool evaluateCondition(PLANCONDITION pc, UNIT nValue, bool fFinal);
         bool evaluatePerformance(PLANCONDITION pc, UNIT nValue, UNIT & nOutput);
 		size_t getMutationsPerAttempt() const;
         void produceMutations(MutationSource & source, MutationSelector & selector);
@@ -594,9 +594,9 @@ namespace org_biologicinstitute_stylus
 		void execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t cStatusRate);
 		bool isExecuting() const;
 		
-		bool evaluateCondition(PLANCONDITION pc, UNIT nValue);
+		bool evaluateCondition(PLANCONDITION pc, UNIT nValue, bool fFinal);
         UNIT evaluatePerformance();
-        bool evaluateConditions();
+        bool evaluateConditions(bool fFinal);
         bool applyMutation(Mutation & mutation);
 		
 		void load(const char* pxmlPlan);

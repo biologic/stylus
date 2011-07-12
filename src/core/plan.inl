@@ -174,13 +174,13 @@ inline void TrialConditions::clear()
 }
 
 inline bool TrialConditions::hasConditions(STFLAGS grfConditions) const { return ST_ISALLSET(_grfConditions, grfConditions); }
-inline bool TrialConditions::evaluate(PLANCONDITION pc, UNIT nValue)
+inline bool TrialConditions::evaluate(PLANCONDITION pc, UNIT nValue, bool fFinal)
 {
 	switch (pc)
 	{
-	case PC_TRIALCOST: return _cc.evaluate(nValue);
-	case PC_TRIALFITNESS: return _fc.evaluate(nValue);
-	case PC_TRIALSCORE: return _sc.evaluate(nValue);
+	case PC_TRIALCOST: return _cc.evaluate(nValue, fFinal);
+	case PC_TRIALFITNESS: return _fc.evaluate(nValue, fFinal);
+	case PC_TRIALSCORE: return _sc.evaluate(nValue, fFinal);
 	default: ASSERT(false); return false;
 	}
 }
@@ -389,7 +389,7 @@ inline void Step::initialize() { _tc.initialize(); }
 inline size_t Step::getTrials() const { return _cTrials; }
 
 inline bool Step::hasConditions(STFLAGS grfConditions) const { return _tc.hasConditions(grfConditions); }
-inline bool Step::evaluateCondition(PLANCONDITION pc, UNIT nValue) { return _tc.evaluate(pc, nValue); }
+inline bool Step::evaluateCondition(PLANCONDITION pc, UNIT nValue, bool fFinal) { return _tc.evaluate(pc, nValue, fFinal); }
 inline size_t Step::getMutationsPerAttempt() const { return _tc.getMutationsPerAttempt(); }
 inline void Step::produceMutations(MutationSource & source, MutationSelector & selector) { _tc.produceMutations(source, selector); }
 inline TrialCondition * Step::getTrialCondition(PLANCONDITION pc) { return _tc.getTrialCondition(pc); }
@@ -452,9 +452,9 @@ inline bool MutationTrialCondition::isExhaustive() const
     return _fExhaustive;
 }
 
-inline bool Plan::evaluateCondition(PLANCONDITION pc, UNIT nValue)
+inline bool Plan::evaluateCondition(PLANCONDITION pc, UNIT nValue, bool fFinal)
 {
-    return getTrialCondition(pc)->evaluate(nValue);
+    return getTrialCondition(pc)->evaluate(nValue, fFinal);
 }
 
 inline UNIT Plan::getPerformancePrecision(PLANCONDITION pc)

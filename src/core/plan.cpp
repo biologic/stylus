@@ -122,7 +122,7 @@ TrialCondition::getPerformancePrecision() const
  * 
  */
 bool
-TrialCondition::evaluate(UNIT nValue) 
+TrialCondition::evaluate(UNIT nValue, bool fFinal) 
 {
 	ENTER(VALIDATION,evaluate);
 	
@@ -157,13 +157,13 @@ TrialCondition::evaluate(UNIT nValue)
 
 		case TCM_INCREASE:
 			fSuccess = (Unit(nValue) > tv.getValue());
-			if (fSuccess)
+			if (fSuccess && fFinal)
 				tv.setValue(nValue);
 			break;
 
 		case TCM_DECREASE:
 			fSuccess = (Unit(nValue) < tv.getValue());
-			if (fSuccess)
+			if (fSuccess && fFinal)
 				tv.setValue(nValue);
 			break;
 		
@@ -1941,11 +1941,11 @@ Plan::initialize()
 }
 
 bool
-Plan::evaluateConditions()
+Plan::evaluateConditions(bool fFinal)
 {
-    return	    evaluateCondition(PC_TRIALCOST, Genome::getCost() )
-            &&	evaluateCondition(PC_TRIALFITNESS, Genome::getFitness() )
-            &&	evaluateCondition(PC_TRIALSCORE, Genome::getScore() );
+    return	    evaluateCondition(PC_TRIALCOST, Genome::getCost(), fFinal)
+            &&	evaluateCondition(PC_TRIALFITNESS, Genome::getFitness(), fFinal)
+            &&	evaluateCondition(PC_TRIALSCORE, Genome::getScore(), fFinal);
 }
 
 UNIT
@@ -2038,9 +2038,9 @@ MutationSelector::selectMutation()
         fSuccess = consideration.fValidMutations && consideration.fValidated;
     }
     
+    _plan.evaluateConditions(true);
     if(fSuccess && !_fAcceptedMutation)
     {
-        _plan.evaluateConditions();
         return false;
     }
     return fSuccess;
@@ -2052,7 +2052,7 @@ MutationSelector::mutationFinalize()
     _current().fValidated = Genome::validate();
     if( _current().fValidMutations && _current().fValidated )
     {
-        _fAcceptedMutation = _fAcceptedMutation || _plan.evaluateConditions();
+        _fAcceptedMutation = _fAcceptedMutation || _plan.evaluateConditions(false);
         _current().value = _plan.evaluatePerformance();
         if( _considerations.size() == 1 || _current().value > _best)
         {
