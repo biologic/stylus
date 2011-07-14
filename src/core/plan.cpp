@@ -2065,7 +2065,10 @@ MutationSelector::mutationFinalize()
             _best = _current().value;
         }
     }
-    TFLOW(PLAN,L2,(LLTRACE, "Mutation has been added to considerations, performance: %f", static_cast<UNIT>(_current().value)));
+    TFLOW(PLAN,L2,(LLTRACE, "Mutation %d as been added to considerations, performance: %f,  best so far is %f", 
+        _considerations.size(),
+        static_cast<UNIT>(_current().value),
+        static_cast<UNIT>(_best)));
     if( _current().fValidated && _current().fValidMutations )
         Genome::recordAttempt(ST_FILELINE, STTR_PLAN, "Performance: %f", static_cast<UNIT>(_current().value));
 
@@ -2088,7 +2091,9 @@ MutationSelector::_pickMutation()
     for( CONSIDERATIONVECTOR::iterator consideration = _considerations.begin();
             consideration != _considerations.end(); consideration++)
     {
-        if( consideration->value >= threshold )
+        if(    consideration->value >= threshold 
+            && consideration->fValidMutations
+            && consideration->fValidated)
         {
             acceptable_count++;
         }
@@ -2101,7 +2106,9 @@ MutationSelector::_pickMutation()
     for( CONSIDERATIONVECTOR::iterator consideration = _considerations.begin();
             consideration != _considerations.end(); consideration++)
     {
-        if( consideration->value >= threshold )
+        if(    consideration->value >= threshold 
+            && consideration->fValidMutations
+            && consideration->fValidated)
         {
             if(choice == 0)
             {
@@ -2114,9 +2121,9 @@ MutationSelector::_pickMutation()
         }
         iConsideration++;
     }
-    // Since at least the best should be acceptable we should
-    // never hit this point
-    ASSERT(false);
+    // If we reach this point, it means that all mutation tried failed
+    // So we have to pick 1, so we pick the first
+    return 0;
 }
 
 void
