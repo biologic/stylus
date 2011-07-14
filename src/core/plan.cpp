@@ -2099,31 +2099,36 @@ MutationSelector::_pickMutation()
         }
     }
     TFLOW(PLAN,L2,(LLTRACE, "%d of %d were better then %f", acceptable_count, _considerations.size(), threshold));
-    
-    // Randomnly choose from the set of acceptable solutions
-    long choice = RGenerator::getUniform(0L, acceptable_count - 1);
-    size_t iConsideration = 0;
-    for( CONSIDERATIONVECTOR::iterator consideration = _considerations.begin();
-            consideration != _considerations.end(); consideration++)
+    if( acceptable_count )
     {
-        if(    consideration->value >= threshold 
-            && consideration->fValidMutations
-            && consideration->fValidated)
+        // Randomnly choose from the set of acceptable solutions
+
+        long choice = RGenerator::getUniform(0L, acceptable_count - 1);
+        size_t iConsideration = 0;
+        for( CONSIDERATIONVECTOR::iterator consideration = _considerations.begin();
+                consideration != _considerations.end(); consideration++)
         {
-            if(choice == 0)
+            if(    consideration->value >= threshold 
+                && consideration->fValidMutations
+                && consideration->fValidated)
             {
-                return iConsideration;
+                if(choice == 0)
+                {
+                    return iConsideration;
+                }
+                else
+                {
+                    choice--;
+                }
             }
-            else
-            {
-                choice--;
-            }
+            iConsideration++;
         }
-        iConsideration++;
+        ASSERT(false);
+    }else{
+        // If we reach this point, it means that all mutation tried failed
+        // So we have to pick 1, so we pick the first
+        return 0;
     }
-    // If we reach this point, it means that all mutation tried failed
-    // So we have to pick 1, so we pick the first
-    return 0;
 }
 
 void
