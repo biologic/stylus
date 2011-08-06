@@ -81,11 +81,12 @@ inline void LineStack::handleEnter(const Line& ln)
 inline void LineStack::handleSwap()
 {
 	DASSERT(_it != _ll.end());
-	const Line* pln = *_it;
-	_it = _ll.erase(_it);
-	if (_it != _ll.end())
-		++_it;
-	_it = _ll.insert(_it, pln);
+    std::list<const Line*>::iterator current = _it;
+    _it++;
+    if(_it != _ll.end())
+        std::swap(*current, *_it);
+    else
+        _it = current;
 }
 inline void LineStack::handleExit()
 {
