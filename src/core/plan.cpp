@@ -2042,7 +2042,11 @@ MutationSelector::selectMutation()
     
     if(fSuccess && !_fAcceptedMutation)
     {
-        _plan.evaluateConditions();
+        // if we are reapplying a mutation
+        // we need to reevaluate the conditions
+        // so that the correct data gets set
+        if(!_fSingleMutation)
+            _plan.evaluateConditions();
         return false;
     }
     return fSuccess;
