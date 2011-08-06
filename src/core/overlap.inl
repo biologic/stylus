@@ -81,7 +81,7 @@ inline void LineStack::handleEnter(const Line& ln)
 inline void LineStack::handleSwap()
 {
 	DASSERT(_it != _ll.end());
-    std::list<const Line*>::iterator current = _it;
+    std::vector<const Line*>::iterator current = _it;
     _it++;
     if(_it != _ll.end())
         std::swap(*current, *_it);

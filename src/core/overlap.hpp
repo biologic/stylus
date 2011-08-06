@@ -149,8 +149,8 @@ namespace org_biologicinstitute_stylus
 #endif
 
 	private:
-		std::list<const Line*> _ll;				///< Stack of lines
-		std::list<const Line*>::iterator _it;	///< Current iterator
+		std::vector<const Line*> _ll;				///< Stack of lines
+		std::vector<const Line*>::iterator _it;	///< Current iterator
 	};
 
 	/**

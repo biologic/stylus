@@ -200,7 +200,7 @@ void
 LineStack::traceStack() const
 {
 	LOGTRACE((LLTRACE, "LineStack contains %ld lines", _ll.size()));
-	for (list<const Line*>::iterator it = (const_cast<LineStack*>(this))->_ll.begin();
+	for (vector<const Line*>::iterator it = (const_cast<LineStack*>(this))->_ll.begin();
 		 it != (const_cast<LineStack*>(this))->_ll.end();
 		 ++it)
 	{
