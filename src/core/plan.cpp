@@ -2045,14 +2045,10 @@ MutationSelector::selectMutation()
         fSuccess = consideration.fValidMutations && consideration.fValidated;
     }
     
+
     _plan.evaluateConditions(true);
     if(fSuccess && !_fAcceptedMutation)
     {
-        // if we are reapplying a mutation
-        // we need to reevaluate the conditions
-        // so that the correct data gets set
-        if(!_fSingleMutation)
-            _plan.evaluateConditions();
         return false;
     }
     return fSuccess;
