@@ -69,7 +69,7 @@ namespace org_biologicinstitute_stylus
 	private:
 		LINEEVENTTYPE _let;						///< LineEvent type (see LINEEVENTTYPE)
 		Point _pt;								///< Point at which the event occurs
-		const Line& _ln;						///< Reference to affected Line
+		const Line* _ln;						///< Reference to affected Line
 
 		int compare(const LineEvent& le) const;	///< Return -1, 0, or 1 for less-than, equal-to, or greater-than
 	};
@@ -98,8 +98,7 @@ namespace org_biologicinstitute_stylus
 #endif
 
 	private:
-		std::list<LineEvent> _llEvents;
-		std::list<LineEvent>::iterator _it;
+		std::deque<LineEvent> _llEvents;
 	};
 
 	/**
@@ -150,8 +149,8 @@ namespace org_biologicinstitute_stylus
 #endif
 
 	private:
-		std::list<const Line*> _ll;				///< Stack of lines
-		std::list<const Line*>::iterator _it;	///< Current iterator
+		std::vector<const Line*> _ll;				///< Stack of lines
+		std::vector<const Line*>::iterator _it;	///< Current iterator
 	};
 
 	/**

@@ -25,8 +25,15 @@ using namespace stylus;
 // LineEvent
 //
 //--------------------------------------------------------------------------------
-inline LineEvent::LineEvent(LINEEVENTTYPE let, const Point& pt, const Line& ln) : _let(let), _pt(pt), _ln(ln) {}
+inline LineEvent::LineEvent(LINEEVENTTYPE let, const Point& pt, const Line& ln) : _let(let), _pt(pt), _ln(&ln) {}
 inline LineEvent::LineEvent(const LineEvent& le) : _let(le._let), _pt(le._pt), _ln(le._ln) {}
+inline LineEvent& LineEvent::operator =(const LineEvent & le)
+{
+    _let = le._let;
+    _pt = le._pt;
+    _ln = le._ln;
+    return *this;
+}
 
 inline bool LineEvent::operator==(const LineEvent& le) const { return (compare(le) == 0); }
 inline bool LineEvent::operator<(const LineEvent& le) const { return (compare(le) < 0); }
@@ -36,7 +43,7 @@ inline bool LineEvent::operator>=(const LineEvent& le) const { return (compare(l
 
 inline LINEEVENTTYPE LineEvent::getType() const { return _let; }
 inline const Point& LineEvent::getPoint() const { return _pt; }
-inline const Line& LineEvent::getLine() const { return _ln; }
+inline const Line& LineEvent::getLine() const { return *_ln; }
 
 //--------------------------------------------------------------------------------
 //
@@ -45,13 +52,12 @@ inline const Line& LineEvent::getLine() const { return _ln; }
 //--------------------------------------------------------------------------------
 inline EventStack::EventStack()
 {
-	_it = _llEvents.begin();
 }
 inline void EventStack::push(const LineEvent& le)
 {
-	list<LineEvent> llEvent;
-	llEvent.push_front(le);
-	_llEvents.merge(llEvent);
+    _llEvents.insert( 
+        std::lower_bound(_llEvents.begin(), _llEvents.end(), le),
+        le);
 }
 inline const LineEvent EventStack::pop()
 {
@@ -82,11 +88,12 @@ inline void LineStack::handleEnter(const Line& ln)
 inline void LineStack::handleSwap()
 {
 	DASSERT(_it != _ll.end());
-	const Line* pln = *_it;
-	_it = _ll.erase(_it);
-	if (_it != _ll.end())
-		++_it;
-	_it = _ll.insert(_it, pln);
+    std::vector<const Line*>::iterator current = _it;
+    _it++;
+    if(_it != _ll.end())
+        std::swap(*current, *_it);
+    else
+        _it = current;
 }
 inline void LineStack::handleExit()
 {

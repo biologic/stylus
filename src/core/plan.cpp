@@ -2022,14 +2022,14 @@ MutationSelector::selectMutation()
 {
     Genome::setRollbackType(RT_ATTEMPT);
 
-    // throw away current consideration which should be empty
-    ASSERT(_considerations.back().mutations.empty());
-    _considerations.pop_back();
     bool fSuccess;
-    size_t iConsideration = _pickMutation();
-    Consideration & consideration = _considerations[iConsideration];
     if( !_fSingleMutation )
     {
+        // throw away current consideration which should be empty
+        ASSERT(_considerations.back().mutations.empty());
+        _considerations.pop_back();
+        size_t iConsideration = _pickMutation();
+        Consideration & consideration = _considerations[iConsideration];
         for(MUTATIONVECTOR::iterator m = consideration.mutations.begin(); m != consideration.mutations.end();
                 m++)
         {
@@ -2041,12 +2041,18 @@ MutationSelector::selectMutation()
     }
     else
     {
+        Consideration & consideration = _considerations[0];
         fSuccess = consideration.fValidMutations && consideration.fValidated;
     }
     
     _plan.evaluateConditions(true);
     if(fSuccess && !_fAcceptedMutation)
     {
+        // if we are reapplying a mutation
+        // we need to reevaluate the conditions
+        // so that the correct data gets set
+        if(!_fSingleMutation)
+            _plan.evaluateConditions();
         return false;
     }
     return fSuccess;
@@ -2055,7 +2061,11 @@ MutationSelector::selectMutation()
 void
 MutationSelector::mutationFinalize()
 {
-    _current().fValidated = Genome::validate();
+    if( _current().fValidMutations )
+        _current().fValidated = Genome::validate();
+    else
+        _current().fValidated = false;
+
     if( _current().fValidMutations && _current().fValidated )
     {
         _fAcceptedMutation = _fAcceptedMutation || _plan.evaluateConditions(false);

@@ -38,8 +38,8 @@ using namespace stylus;
 int
 LineEvent::compare(const LineEvent& le) const
 {
-	DASSERT(_ln.isCanonical());
-	DASSERT(le._ln.isCanonical());
+	DASSERT(_ln->isCanonical());
+	DASSERT(le._ln->isCanonical());
 	
 	// First, sort ascending by the x-coordinate value
 	// - Move left to right with ascending x-coordinate values
@@ -63,9 +63,9 @@ LineEvent::compare(const LineEvent& le) const
 		return 1;
 		
 	// Finally, sort ascending by line IDs
-	if (_ln.getID() < le._ln.getID())
+	if (_ln->getID() < le._ln->getID())
 		return -1;
-	if (_ln.getID() > le._ln.getID())
+	if (_ln->getID() > le._ln->getID())
 		return 1;
 
 	return 0;
@@ -83,7 +83,7 @@ string LineEvent::toString() const
 			 : (_let == LET_SWAP
 				? "SWAP("
 				: "EXIT("))
-		 << _ln.getID() << ") pt"
+		 << _ln->getID() << ") pt"
 		 << _pt.toString();
 	return string(ostr.str());
 }
@@ -112,10 +112,10 @@ EventStack::pushLines(const vector<Line>& vecLines)
 	for (size_t iLine=0; iLine < vecLines.size(); ++iLine)
 	{
 		const Line& ln = vecLines[iLine];
-		_llEvents.push_front(LineEvent(LET_ENTER, ln.getStart(), ln));
-		_llEvents.push_front(LineEvent(LET_EXIT, ln.getEnd(), ln));
+		_llEvents.push_back(LineEvent(LET_ENTER, ln.getStart(), ln));
+		_llEvents.push_back(LineEvent(LET_EXIT, ln.getEnd(), ln));
 	}
-	_llEvents.sort();
+    std::sort(_llEvents.begin(), _llEvents.end());
 }
 
 #ifdef ST_TRACE
@@ -127,7 +127,7 @@ void
 EventStack::traceStack() const
 {
 	LOGTRACE((LLTRACE, "EventStack contains %ld events", _llEvents.size()));
-	for (list<LineEvent>::const_iterator it = _llEvents.begin(); it != _llEvents.end(); ++it)
+	for (deque<LineEvent>::const_iterator it = _llEvents.begin(); it != _llEvents.end(); ++it)
 	{
 		LOGTRACE((LLTRACE, (*it).toString().c_str()));
 	}
@@ -142,8 +142,8 @@ bool
 EventStack::validate() const
 {
     if( _llEvents.empty() ) return true;
-	list<LineEvent>::const_iterator itFirst = _llEvents.begin();
-	list<LineEvent>::const_iterator itSecond = ++itFirst;
+	deque<LineEvent>::const_iterator itFirst = _llEvents.begin();
+	deque<LineEvent>::const_iterator itSecond = ++itFirst;
 	while (itSecond != _llEvents.end())
 	{
 		if ((*itFirst) > (*itSecond))
@@ -168,9 +168,9 @@ EventStack::validate() const
 bool
 EventStack::validateSwap(const LineEvent& leSwap) const
 {
-	list<LineEvent>::const_iterator itSwap = _llEvents.begin();
+	deque<LineEvent>::const_iterator itSwap = _llEvents.begin();
 	for (; itSwap != _llEvents.end() && !((*itSwap) == leSwap); ++itSwap);
-	for (list<LineEvent>::const_iterator it = _llEvents.begin(); it != itSwap; ++it)
+	for (deque<LineEvent>::const_iterator it = _llEvents.begin(); it != itSwap; ++it)
 	{
 		const LineEvent& le = *it;
 		if (	le.getLine().getID() == leSwap.getLine().getID()
@@ -200,7 +200,7 @@ void
 LineStack::traceStack() const
 {
 	LOGTRACE((LLTRACE, "LineStack contains %ld lines", _ll.size()));
-	for (list<const Line*>::iterator it = (const_cast<LineStack*>(this))->_ll.begin();
+	for (vector<const Line*>::iterator it = (const_cast<LineStack*>(this))->_ll.begin();
 		 it != (const_cast<LineStack*>(this))->_ll.end();
 		 ++it)
 	{
