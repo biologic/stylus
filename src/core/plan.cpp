@@ -2051,7 +2051,11 @@ MutationSelector::selectMutation()
 void
 MutationSelector::mutationFinalize()
 {
-    _current().fValidated = Genome::validate();
+    if( _current().fValidMutations )
+        _current().fValidated = Genome::validate();
+    else
+        _current().fValidated = false;
+
     if( _current().fValidMutations && _current().fValidated )
     {
         _fAcceptedMutation = _fAcceptedMutation || _plan.evaluateConditions();
