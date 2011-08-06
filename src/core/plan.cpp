@@ -2016,14 +2016,14 @@ MutationSelector::selectMutation()
 {
     Genome::setRollbackType(RT_ATTEMPT);
 
-    // throw away current consideration which should be empty
-    ASSERT(_considerations.back().mutations.empty());
-    _considerations.pop_back();
     bool fSuccess;
-    size_t iConsideration = _pickMutation();
-    Consideration & consideration = _considerations[iConsideration];
     if( !_fSingleMutation )
     {
+        // throw away current consideration which should be empty
+        ASSERT(_considerations.back().mutations.empty());
+        _considerations.pop_back();
+        size_t iConsideration = _pickMutation();
+        Consideration & consideration = _considerations[iConsideration];
         for(MUTATIONVECTOR::iterator m = consideration.mutations.begin(); m != consideration.mutations.end();
                 m++)
         {
@@ -2037,6 +2037,7 @@ MutationSelector::selectMutation()
     }
     else
     {
+        Consideration & consideration = _considerations[0];
         fSuccess = consideration.fValidMutations && consideration.fValidated;
     }
     
