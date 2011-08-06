@@ -45,7 +45,6 @@ inline const Line& LineEvent::getLine() const { return _ln; }
 //--------------------------------------------------------------------------------
 inline EventStack::EventStack()
 {
-	_it = _llEvents.begin();
 }
 inline void EventStack::push(const LineEvent& le)
 {

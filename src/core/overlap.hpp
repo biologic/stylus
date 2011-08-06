@@ -99,7 +99,6 @@ namespace org_biologicinstitute_stylus
 
 	private:
 		std::list<LineEvent> _llEvents;
-		std::list<LineEvent>::iterator _it;
 	};
 
 	/**
