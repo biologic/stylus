@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #--------------------------------------------------------------------------------
 # Script to initialize the Stylus build environment: It creates the directory
 # hierarchy and runs configure. While a user may directly run configure, this
