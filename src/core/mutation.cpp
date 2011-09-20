@@ -442,96 +442,126 @@ TransposeModification::toXML(XMLStream& xs, STFLAGS grfRecordDetail) const
 //--------------------------------------------------------------------------------
 
 void
-Genome::recordStatistics(MUTATIONTYPE mt, size_t cbBases, bool fSilent)
+Genome::recordStatistics(ST_ATTEMPTS & attempts, size_t cbBases)
 {
-	ENTER(MUTATION,recordStatistics);
-	ASSERT(mt < MT_ILLEGAL);
+    if( _rollbackType & RT_ATTEMPT )
+        attempts._cAttempted += 1;
+    if( _rollbackType & RT_CONSIDERATION )
+        attempts._cConsidered += 1;
 
-	Genome::_statsRecordRate._cAttempted += 1;
-	Genome::_statsRecordRate._cAccepted += 1;
-	Genome::_stats._cAttempted += 1;
-	Genome::_stats._cAccepted += 1;
+    attempts._cAccepted += 1;
+    attempts._cbBases += cbBases;
+}
+
+void
+Genome::recordStatistics(ST_STATISTICS & stats, MUTATIONTYPE mt, size_t cbBases, bool fSilent)
+{
+    if( _rollbackType & RT_ATTEMPT )
+        stats._cAttempted += 1;
+    if( _rollbackType & RT_CONSIDERATION )
+        stats._cConsidered += 1;
+
+	stats._cAccepted += 1;
 
 	switch (mt)
 	{
 	case MT_CHANGE:
 		if (fSilent)
 		{
-			Genome::_statsRecordRate._cSilent += 1;
-			Genome::_stats._cSilent += 1;
+			stats._cSilent += 1;
 		}
 
-		Genome::_statsRecordRate._cbBasesChanged += cbBases;
-		Genome::_stats._cbBasesChanged += cbBases;
-
-		Genome::_statsRecordRate._atChanged._cAttempted += 1;
-		Genome::_statsRecordRate._atChanged._cAccepted += 1;
-		Genome::_statsRecordRate._atChanged._cbBases += cbBases;
-
-		Genome::_stats._atChanged._cAttempted += 1;
-		Genome::_stats._atChanged._cAccepted += 1;
-		Genome::_stats._atChanged._cbBases += cbBases;
+		stats._cbBasesChanged += cbBases;
+        recordStatistics(stats._atChanged, cbBases);
 		break;
 		
 	case MT_COPY:
-		Genome::_statsRecordRate._cbBasesInserted += cbBases;
-		Genome::_stats._cbBasesInserted += cbBases;
-
-		Genome::_statsRecordRate._atCopied._cAttempted += 1;
-		Genome::_statsRecordRate._atCopied._cAccepted += 1;
-		Genome::_statsRecordRate._atCopied._cbBases += cbBases;
-
-		Genome::_stats._atCopied._cAttempted += 1;
-		Genome::_stats._atCopied._cAccepted += 1;
-		Genome::_stats._atCopied._cbBases += cbBases;
+		stats._cbBasesInserted += cbBases;
+        recordStatistics(stats._atCopied, cbBases);
 		break;
 	
 	case MT_DELETE:
-		Genome::_statsRecordRate._cbBasesDeleted += cbBases;
-		Genome::_stats._cbBasesDeleted += cbBases;
-
-		Genome::_statsRecordRate._atDeleted._cAttempted += 1;
-		Genome::_statsRecordRate._atDeleted._cAccepted += 1;
-		Genome::_statsRecordRate._atDeleted._cbBases += cbBases;
-
-		Genome::_stats._atDeleted._cAttempted += 1;
-		Genome::_stats._atDeleted._cAccepted += 1;
-		Genome::_stats._atDeleted._cbBases += cbBases;
+		stats._cbBasesDeleted += cbBases;
+        recordStatistics(stats._atDeleted, cbBases);
 		break;
 	
 	case MT_INSERT:
-		Genome::_statsRecordRate._cbBasesInserted += cbBases;
-		Genome::_stats._cbBasesInserted += cbBases;
-
-		Genome::_statsRecordRate._atInserted._cAttempted += 1;
-		Genome::_statsRecordRate._atInserted._cAccepted += 1;
-		Genome::_statsRecordRate._atInserted._cbBases += cbBases;
-
-		Genome::_stats._atInserted._cAttempted += 1;
-		Genome::_stats._atInserted._cAccepted += 1;
-		Genome::_stats._atInserted._cbBases += cbBases;
+        stats._cbBasesInserted += cbBases;
+        recordStatistics(stats._atInserted, cbBases);
 		break;
 	
 	case MT_TRANSPOSE:
-		Genome::_statsRecordRate._cbBasesDeleted += cbBases;
-		Genome::_stats._cbBasesDeleted += cbBases;
-
-		Genome::_statsRecordRate._cbBasesInserted += cbBases;
-		Genome::_stats._cbBasesInserted += cbBases;
-
-		Genome::_statsRecordRate._atTransposed._cAttempted += 1;
-		Genome::_statsRecordRate._atTransposed._cAccepted += 1;
-		Genome::_statsRecordRate._atTransposed._cbBases += cbBases;
-
-		Genome::_stats._atTransposed._cAttempted += 1;
-		Genome::_stats._atTransposed._cAccepted += 1;
-		Genome::_stats._atTransposed._cbBases += cbBases;
+		stats._cbBasesDeleted += cbBases;
+		stats._cbBasesInserted += cbBases;
+        recordStatistics(stats._atTransposed, cbBases);
 		break;
 
 	case MT_ILLEGAL:
 	case MT_MAX:
 		break;
 	}
+
+}
+
+void
+Genome::recordStatistics(MUTATIONTYPE mt, size_t cbBases, bool fSilent)
+{
+	ENTER(MUTATION,recordStatistics);
+	ASSERT(mt < MT_ILLEGAL);
+
+    recordStatistics(Genome::_statsRecordRate, mt, cbBases, fSilent);
+    recordStatistics(Genome::_stats, mt, cbBases, fSilent);
+}
+
+void
+Genome::undoAttempts(ST_ATTEMPTS & attempts, size_t cbBases)
+{
+    attempts._cAccepted -= 1;
+    attempts._cbBases -= cbBases;
+}
+
+void
+Genome::undoStatistics(ST_STATISTICS & stats, MUTATIONTYPE mt, size_t cbBases, bool fSilent)
+{
+    stats._cAccepted -= 1;
+
+    switch (mt)
+    {
+    case MT_CHANGE:
+        if (fSilent)
+        {
+            stats._cSilent -= 1;
+        }
+
+        stats._cbBasesChanged -= cbBases;
+        undoAttempts(stats._atChanged, cbBases);
+        break;
+        
+    case MT_COPY:
+        stats._cbBasesInserted -= cbBases;
+        undoAttempts(stats._atCopied, cbBases);
+        break;
+    
+    case MT_DELETE:
+        stats._cbBasesDeleted -= cbBases;
+        undoAttempts(stats._atDeleted, cbBases);
+        break;
+    
+    case MT_INSERT:
+        stats._cbBasesInserted -= cbBases;
+        undoAttempts(stats._atInserted, cbBases);
+        break;
+    
+    case MT_TRANSPOSE:
+        stats._cbBasesDeleted -= cbBases;
+        stats._cbBasesInserted -= cbBases;
+        undoAttempts(stats._atTransposed, cbBases);
+        break;
+        
+    case MT_ILLEGAL:
+    case MT_MAX:
+        break;
+    }
 }
 
 void
@@ -540,79 +570,8 @@ Genome::undoStatistics(MUTATIONTYPE mt, size_t cbBases, bool fSilent)
 	ENTER(MUTATION,undoStatistics);
 	ASSERT(mt < MT_ILLEGAL);
 
-	Genome::_statsRecordRate._cAccepted -= 1;
-	Genome::_stats._cAccepted -= 1;
-
-	switch (mt)
-	{
-	case MT_CHANGE:
-		if (fSilent)
-		{
-			Genome::_statsRecordRate._cSilent -= 1;
-			Genome::_stats._cSilent -= 1;
-		}
-
-		Genome::_statsRecordRate._cbBasesChanged -= cbBases;
-		Genome::_stats._cbBasesChanged -= cbBases;
-
-		Genome::_statsRecordRate._atChanged._cAccepted -= 1;
-		Genome::_statsRecordRate._atChanged._cbBases -= cbBases;
-
-		Genome::_stats._atChanged._cAccepted -= 1;
-		Genome::_stats._atChanged._cbBases -= cbBases;
-		break;
-		
-	case MT_COPY:
-		Genome::_statsRecordRate._cbBasesInserted -= cbBases;
-		Genome::_stats._cbBasesInserted -= cbBases;
-
-		Genome::_statsRecordRate._atCopied._cAccepted -= 1;
-		Genome::_statsRecordRate._atCopied._cbBases -= cbBases;
-
-		Genome::_stats._atCopied._cAccepted -= 1;
-		Genome::_stats._atCopied._cbBases -= cbBases;
-		break;
-	
-	case MT_DELETE:
-		Genome::_statsRecordRate._cbBasesDeleted -= cbBases;
-		Genome::_stats._cbBasesDeleted -= cbBases;
-
-		Genome::_statsRecordRate._atDeleted._cAccepted -= 1;
-		Genome::_statsRecordRate._atDeleted._cbBases -= cbBases;
-
-		Genome::_stats._atDeleted._cAccepted -= 1;
-		Genome::_stats._atDeleted._cbBases -= cbBases;
-		break;
-	
-	case MT_INSERT:
-		Genome::_statsRecordRate._cbBasesInserted -= cbBases;
-		Genome::_stats._cbBasesInserted -= cbBases;
-
-		Genome::_statsRecordRate._atInserted._cAccepted -= 1;
-		Genome::_statsRecordRate._atInserted._cbBases -= cbBases;
-
-		Genome::_stats._atInserted._cAccepted -= 1;
-		Genome::_stats._atInserted._cbBases -= cbBases;
-		break;
-	
-	case MT_TRANSPOSE:
-		Genome::_statsRecordRate._cbBasesDeleted -= cbBases;
-		Genome::_stats._cbBasesDeleted -= cbBases;
-
-		Genome::_statsRecordRate._cbBasesInserted -= cbBases;
-		Genome::_stats._cbBasesInserted -= cbBases;
-
-		Genome::_statsRecordRate._atTransposed._cAccepted -= 1;
-		Genome::_statsRecordRate._atTransposed._cbBases -= cbBases;
-
-		Genome::_stats._atTransposed._cAccepted -= 1;
-		Genome::_stats._atTransposed._cbBases -= cbBases;
-		break;
-		
-	case MT_ILLEGAL:
-	case MT_MAX:
-		break;
-	}
+    undoStatistics(Genome::_statsRecordRate, mt, cbBases, fSilent);
+    undoStatistics(Genome::_stats, mt, cbBases, fSilent);
 }
 
 /*

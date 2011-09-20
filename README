@@ -1,6 +1,6 @@
 Stylus 1.4.0, Biologic Institute
 
-http://biologicstylus.svn.sourceforge.net/svnroot/biologicstylus
+https://github.com/biologic/stylus
 
 BUILDING STYLUS
 Stylus requires a few external libraries, the GNU C/C++ V4.x, and related tools such as libtool.
