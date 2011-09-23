@@ -1696,10 +1696,7 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
                     produceMutations(source, mutationSelector);
 					
 					// If all mutations applied, validate and score the genome
-                    {
-                    ImpreciseMode impreciseMode;
                     fSuccess = mutationSelector.selectMutation();
-                    }
 
 					// Convert a successful attempt into a successful trial and continue
 					// - Condition or caller termination leaves the success state unchanged
@@ -2045,6 +2042,7 @@ MutationSelector::selectMutation()
         }
         TFLOW(PLAN,L2,(LLTRACE, "Mutation reapplied: %d", consideration.fValidMutations));
 
+        ImpreciseMode impreciseMode;
         fSuccess = consideration.fValidMutations && Genome::validate();
     }
     else
@@ -2065,9 +2063,11 @@ MutationSelector::selectMutation()
 void
 MutationSelector::mutationFinalize()
 {
-    ImpreciseMode impreciseMode;
     if( _current().fValidMutations )
+    {
+        ImpreciseMode impreciseMode;
         _current().fValidated = Genome::validate();
+    }
     else
         _current().fValidated = false;
 
