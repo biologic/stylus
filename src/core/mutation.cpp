@@ -581,7 +581,6 @@ Genome::undoStatistics(MUTATIONTYPE mt, size_t cbBases, bool fSilent)
 void
 Genome::executePlan(const char* pxmlPlan, size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t cStatusRate)
 {
-    ImpreciseMode impreciseMode;
 
 	ENTER(MUTATION,executePlan);
 	THROWIFEXECUTING(executePlan);
@@ -599,6 +598,8 @@ Genome::executePlan(const char* pxmlPlan, size_t iTrialFirst, size_t cTrials, ST
 
 	// Load the supplied plan
 	_plan.load(pxmlPlan);
+
+    ImpreciseMode impreciseMode;
 
 	// Save the initial genome and plan
 	if (isRecording())

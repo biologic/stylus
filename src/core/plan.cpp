@@ -219,6 +219,14 @@ TrialCondition::initialize(UNIT nValueDefault)
 	}
 }
 
+static void validate_total_likelihood(UNIT cTotalLikelihood)
+{
+	if (std::abs(cTotalLikelihood -1.0) > Constants::s_nERROR_MARGIN )
+		THROWRC((RC(XMLERROR),
+				"The sum of all value likelihoods (%6.4f) is illegal - it must equal 1.0",
+				static_cast<UNIT>(cTotalLikelihood)));
+}
+
 /*
  * Function: load
  * 
@@ -266,11 +274,10 @@ TrialCondition::load(XMLDocument* pxd, xmlNodePtr pxnTrialCondition)
 					_vecValues[iValue].getValue()));
 	}
 
-	if (cTotalLikelihood != 1.0)
-		THROWRC((RC(XMLERROR),
-				"The sum of all value likelihoods (%6.4f) is illegal - it must equal 1.0",
-				static_cast<UNIT>(cTotalLikelihood)));
+    validate_total_likelihood(cTotalLikelihood);
 }
+
+
 
 /*
  * Function: toXML
@@ -405,10 +412,8 @@ MutationTrialCondition::load(XMLDocument* pxd, xmlNodePtr pxnMutationTrialCondit
 	Unit cTotalLikelihood = 0.0;
 	for (size_t iMutationsPerAttempt=0; iMutationsPerAttempt < _vecMutationsPerAttempt.size(); ++iMutationsPerAttempt)
 		cTotalLikelihood += _vecMutationsPerAttempt[iMutationsPerAttempt].getLikelihood();
-	if (cTotalLikelihood != 1.0)
-		THROWRC((RC(XMLERROR),
-				"The sum of all mutationsPerAttempt likelihoods (%6.4f) is illegal - it must equal 1.0",
-				static_cast<UNIT>(cTotalLikelihood)));
+
+    validate_total_likelihood(cTotalLikelihood);
 
     std::string mode_string;
     pxd->getAttribute(pxnMutationTrialCondition, xmlTag(XT_MODE), mode_string );
@@ -1554,10 +1559,7 @@ Step::load(XMLDocument* pxd, xmlNodePtr pxnStep)
 	Unit cTotalLikelihood = 0.0;
 	for (size_t iMutation=0; iMutation < _vecMutations.size(); ++iMutation)
 		cTotalLikelihood += _vecMutations[iMutation].getLikelihood();
-	if (cTotalLikelihood != 1.0)
-		THROWRC((RC(XMLERROR),
-				"The sum of step mutation likelihoods (%6.4f) is illegal - it must equal 1.0",
-				static_cast<UNIT>(cTotalLikelihood)));
+    validate_total_likelihood(cTotalLikelihood);
 }
 
 /*
