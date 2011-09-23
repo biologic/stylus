@@ -605,7 +605,6 @@ Genome::setGenome(const char* pxmlGenome, const char* pszAuthor)
 		// Finalize the load state
 		exitState();
 	}
-    ImpreciseMode impreciseMode;
 
 	// Fail if the genome failed to load or transition to INVALID
 	if (!isState(STGS_INVALID))
@@ -1737,6 +1736,8 @@ Genome::validate(bool fPreserveErrors)
 
 	if (isState(STGS_ALIVE))
 		return true;
+
+    ImpreciseMode impreciseMode;
 
 	bool fSuccess = false;
 	{

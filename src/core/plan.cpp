@@ -2042,7 +2042,6 @@ MutationSelector::selectMutation()
         }
         TFLOW(PLAN,L2,(LLTRACE, "Mutation reapplied: %d", consideration.fValidMutations));
 
-        ImpreciseMode impreciseMode;
         fSuccess = consideration.fValidMutations && Genome::validate();
     }
     else
@@ -2064,10 +2063,7 @@ void
 MutationSelector::mutationFinalize()
 {
     if( _current().fValidMutations )
-    {
-        ImpreciseMode impreciseMode;
         _current().fValidated = Genome::validate();
-    }
     else
         _current().fValidated = false;
 
