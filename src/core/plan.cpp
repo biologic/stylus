@@ -1619,7 +1619,6 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 	ASSERT(Genome::isState(STGS_ALIVE));
 
 
-    ImpreciseMode impreciseMode;
 	bool fPlanTerminated = false;
 	
 	// Ensure the trial being associated with the first plan step is not beyond the genome state
@@ -1674,6 +1673,8 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 			// Execute the current step to completion (or exhaustion of allowed trials)
 			while (!fPlanTerminated && cTrials && ((Genome::getTrial()+1-cTrialsInCompletedSteps-iTrialFirst) < st.getTrials()))
 			{
+
+                ImpreciseMode impreciseMode;
 				bool fTrialCompleted = false;
 				size_t cRollbackAttempts = 0;
 
