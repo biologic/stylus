@@ -1619,6 +1619,7 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 	ASSERT(Genome::isState(STGS_ALIVE));
 
 
+    ImpreciseMode impreciseMode;
 	bool fPlanTerminated = false;
 	
 	// Ensure the trial being associated with the first plan step is not beyond the genome state

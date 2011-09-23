@@ -599,7 +599,6 @@ Genome::executePlan(const char* pxmlPlan, size_t iTrialFirst, size_t cTrials, ST
 	// Load the supplied plan
 	_plan.load(pxmlPlan);
 
-    ImpreciseMode impreciseMode;
 
 	// Save the initial genome and plan
 	if (isRecording())
@@ -664,6 +663,7 @@ Genome::executePlan(const char* pxmlPlan, size_t iTrialFirst, size_t cTrials, ST
 		if (!ofstr || !ofstr.is_open())
 			THROWRC((RC(ERROR), "Unable to create plan file %s", ostrPlan.str().c_str()));
 
+        ImpreciseMode impreciseMode;
 		XMLStream xs(ofstr);
 		_plan.toXML(xs);
 	}

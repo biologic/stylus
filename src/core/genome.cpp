@@ -493,7 +493,6 @@ Genome::setGenome(const char* pxmlGenome, const char* pszAuthor)
 
 	ASSERT(VALID(pxmlGenome));
 
-    ImpreciseMode impreciseMode;
 
 	initialize();
 
@@ -504,6 +503,7 @@ Genome::setGenome(const char* pxmlGenome, const char* pszAuthor)
 				
 	// Load the definition, failure results in a DEAD genome
 	{
+        ImpreciseMode impreciseMode;
 		StateGuard sg(STGS_INVALID, STGS_DEAD);		// Ensure state exits as INVALID or DEAD
 
 		timeNow(&_tLoaded);
@@ -605,6 +605,7 @@ Genome::setGenome(const char* pxmlGenome, const char* pszAuthor)
 		// Finalize the load state
 		exitState();
 	}
+    ImpreciseMode impreciseMode;
 
 	// Fail if the genome failed to load or transition to INVALID
 	if (!isState(STGS_INVALID))
