@@ -158,6 +158,9 @@ namespace org_biologicinstitute_stylus
 		bool isDefined() const;
 		void setUndefined();
 
+        static void beginImpreciseMode();
+        static void endImpreciseMode();
+
 	private:
 		static UNIT s_nNegativeZero;
 		static UNIT s_nPositiveZero;

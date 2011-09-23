@@ -493,6 +493,8 @@ Genome::setGenome(const char* pxmlGenome, const char* pszAuthor)
 
 	ASSERT(VALID(pxmlGenome));
 
+    Unit::beginImpreciseMode();
+
 	initialize();
 
 	// Transition to the loading state
@@ -640,6 +642,8 @@ Genome::setGenome(const char* pxmlGenome, const char* pszAuthor)
 	// Mark the genome ready for use if it is alive
 	if (isState(STGS_ALIVE))
 		_fReady = true;
+
+    Unit::endImpreciseMode();
 }
 
 /*

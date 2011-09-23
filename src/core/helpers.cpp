@@ -56,8 +56,8 @@ Range::toString(bool fAsPair) const
 //
 //--------------------------------------------------------------------------------
 
-UNIT Unit::s_nNegativeZero = -Constants::s_nERROR_MARGIN;
-UNIT Unit::s_nPositiveZero = Constants::s_nERROR_MARGIN;
+UNIT Unit::s_nNegativeZero = 0;
+UNIT Unit::s_nPositiveZero = 0;
 
 void Unit::logConstants()
 {

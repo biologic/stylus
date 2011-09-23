@@ -1616,6 +1616,7 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 	
 	ASSERT(Genome::isState(STGS_ALIVE));
 
+
 	bool fPlanTerminated = false;
 	
 	// Ensure the trial being associated with the first plan step is not beyond the genome state
@@ -1748,6 +1749,8 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 	// If the genome is not alive, forcibly restore internal state to that which was last stable
 	if (!Genome::isState(STGS_ALIVE))
 		Genome::validate(true) && Genome::recordStatistics(true);
+
+
 }
 
 /*

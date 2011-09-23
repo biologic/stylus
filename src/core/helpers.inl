@@ -183,6 +183,17 @@ inline bool Unit::isDefined(UNIT n)
 		||	(n < 0 && -numeric_limits<UNIT>::infinity() != n);
 }
 
+inline void Unit::beginImpreciseMode()
+{
+    s_nNegativeZero = -Constants::s_nERROR_MARGIN;
+    s_nPositiveZero = Constants::s_nERROR_MARGIN;
+}
+
+inline void Unit::endImpreciseMode()
+{
+    s_nNegativeZero = s_nPositiveZero = 0;
+}
+
 inline Unit::Unit() { _n = 0; }
 inline Unit::Unit(UNIT n) { _n = n; }
 inline Unit::Unit(const std::string& str) { _n = strToUNIT(str); }
