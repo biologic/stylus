@@ -185,13 +185,17 @@ inline bool Unit::isDefined(UNIT n)
 
 inline void Unit::beginImpreciseMode()
 {
+    DASSERT(!s_fImprecisionMode);
     s_nNegativeZero = -Constants::s_nERROR_MARGIN;
     s_nPositiveZero = Constants::s_nERROR_MARGIN;
+    s_fImprecisionMode = true;
 }
 
 inline void Unit::endImpreciseMode()
 {
+    DASSERT(s_fImprecisionMode);
     s_nNegativeZero = s_nPositiveZero = 0;
+    s_fImprecisionMode = false;
 }
 
 inline Unit::Unit() { _n = 0; }
@@ -264,6 +268,22 @@ inline UNIT Unit::strToUNIT(const std::string& str)
 	if (errno == ERANGE)
 		THROWRC((RC(ERROR), "Illegal conversion to Unit value from %s", str.c_str()));
 	return static_cast<UNIT>(dValue);
+}
+
+//--------------------------------------------------------------------------------
+//
+// ImprecisionMode
+//
+//--------------------------------------------------------------------------------
+
+inline ImpreciseMode::ImpreciseMode()
+{
+    Unit::beginImpreciseMode();
+}
+
+inline ImpreciseMode::~ImpreciseMode()
+{
+    Unit::endImpreciseMode();
 }
 
 //--------------------------------------------------------------------------------

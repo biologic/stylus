@@ -114,6 +114,7 @@ namespace org_biologicinstitute_stylus
 	 */
 	class Unit
 	{
+        friend class ImpreciseMode;
 	public:
 		static UNIT getUndefined();
 		static bool isDefined(UNIT n);
@@ -158,17 +159,27 @@ namespace org_biologicinstitute_stylus
 		bool isDefined() const;
 		void setUndefined();
 
+
+	private:
+
         static void beginImpreciseMode();
         static void endImpreciseMode();
 
-	private:
 		static UNIT s_nNegativeZero;
 		static UNIT s_nPositiveZero;
+        static bool s_fImprecisionMode;
 
 		UNIT _n;
 
 		UNIT strToUNIT(const std::string& str);
 	};
+
+    class ImpreciseMode
+    {
+    public:
+        ImpreciseMode();
+        ~ImpreciseMode();
+    };
 
 	/**
 	 * \Brief Point class

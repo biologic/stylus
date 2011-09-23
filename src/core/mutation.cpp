@@ -581,7 +581,7 @@ Genome::undoStatistics(MUTATIONTYPE mt, size_t cbBases, bool fSilent)
 void
 Genome::executePlan(const char* pxmlPlan, size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t cStatusRate)
 {
-    Unit::beginImpreciseMode();
+    ImpreciseMode impreciseMode;
 
 	ENTER(MUTATION,executePlan);
 	THROWIFEXECUTING(executePlan);
@@ -679,8 +679,6 @@ Genome::executePlan(const char* pxmlPlan, size_t iTrialFirst, size_t cTrials, ST
 		record(RT_FINAL);
 	if (isRecordingHistory())
 		recordHistory(RT_FINAL);
-
-    Unit::endImpreciseMode();
 }
 
 /*

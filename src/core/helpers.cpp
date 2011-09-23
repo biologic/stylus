@@ -58,6 +58,7 @@ Range::toString(bool fAsPair) const
 
 UNIT Unit::s_nNegativeZero = 0;
 UNIT Unit::s_nPositiveZero = 0;
+bool Unit::s_fImprecisionMode = false;
 
 void Unit::logConstants()
 {
