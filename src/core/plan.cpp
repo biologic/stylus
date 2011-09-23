@@ -1692,12 +1692,12 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
                     mutationSelector.reset();
 
 					TFLOW(PLAN,L3,(LLTRACE, "Executing trial attempt %d", Genome::getTrialAttempts()));
-                    {
-                    ImpreciseMode impreciseMode;
                     MutationSource source(st, grfOptions, Genome::getTrial()-cTrialsInCompletedSteps-iTrialFirst);
                     produceMutations(source, mutationSelector);
 					
 					// If all mutations applied, validate and score the genome
+                    {
+                    ImpreciseMode impreciseMode;
                     fSuccess = mutationSelector.selectMutation();
                     }
 
@@ -2065,6 +2065,7 @@ MutationSelector::selectMutation()
 void
 MutationSelector::mutationFinalize()
 {
+    ImpreciseMode impreciseMode;
     if( _current().fValidMutations )
         _current().fValidated = Genome::validate();
     else
