@@ -1684,7 +1684,6 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 				// - The number of mutations to apply varies with each *attempt* (rather than each trial)
 				while (!fPlanTerminated && !fTrialCompleted)
 				{
-                    ImpreciseMode impreciseMode;
 					bool fSuccess = true;
 
 					// Advance the number of trial attempts
@@ -1693,12 +1692,14 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
                     mutationSelector.reset();
 
 					TFLOW(PLAN,L3,(LLTRACE, "Executing trial attempt %d", Genome::getTrialAttempts()));
-
+                    {
+                    ImpreciseMode impreciseMode;
                     MutationSource source(st, grfOptions, Genome::getTrial()-cTrialsInCompletedSteps-iTrialFirst);
                     produceMutations(source, mutationSelector);
 					
 					// If all mutations applied, validate and score the genome
                     fSuccess = mutationSelector.selectMutation();
+                    }
 
 					// Convert a successful attempt into a successful trial and continue
 					// - Condition or caller termination leaves the success state unchanged
