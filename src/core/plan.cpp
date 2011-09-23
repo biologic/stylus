@@ -1674,7 +1674,6 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 			while (!fPlanTerminated && cTrials && ((Genome::getTrial()+1-cTrialsInCompletedSteps-iTrialFirst) < st.getTrials()))
 			{
 
-                ImpreciseMode impreciseMode;
 				bool fTrialCompleted = false;
 				size_t cRollbackAttempts = 0;
 
@@ -1685,6 +1684,7 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 				// - The number of mutations to apply varies with each *attempt* (rather than each trial)
 				while (!fPlanTerminated && !fTrialCompleted)
 				{
+                    ImpreciseMode impreciseMode;
 					bool fSuccess = true;
 
 					// Advance the number of trial attempts
