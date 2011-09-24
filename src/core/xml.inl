@@ -172,6 +172,7 @@ inline void XMLStream::writeAttributeScientific(const char* pszAttribute, UNIT n
         << std::scientific
 		<< nValue
 		<< Constants::s_chAPOSTROPHE;
+    _ostr.unsetf( _ostr.floatfield );
 }
 
 
