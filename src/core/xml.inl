@@ -162,5 +162,18 @@ inline void XMLStream::writeAttribute(const char* pszAttribute, Unit& nValue)
 	writeAttribute<UNIT>(pszAttribute, static_cast<UNIT>(nValue));
 }
 
+inline void XMLStream::writeAttributeScientific(const char* pszAttribute, UNIT nValue)
+{
+	_ostr
+		<< Constants::s_chBLANK
+		<< pszAttribute
+		<< Constants::s_chEQUAL
+		<< Constants::s_chAPOSTROPHE
+        << std::scientific
+		<< nValue
+		<< Constants::s_chAPOSTROPHE;
+}
+
+
 template<class T> inline void XMLStream::writeContent(T t) { _ostr << t; }
 inline void XMLStream::writeContent(Unit& nValue) { writeContent<UNIT>(static_cast<UNIT>(nValue)); }

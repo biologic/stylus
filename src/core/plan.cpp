@@ -771,8 +771,8 @@ FitnessTerminationCondition::toXML(XMLStream& xs)
 	ENTER(PLAN,toXML);
 	
 	xs.openStart(xmlTag(XT_FITNESSCONDITION));
-	xs.writeAttribute(xmlTag(XT_MAXIMUM), _nMaximum);
-	xs.writeAttribute(xmlTag(XT_MINIMUM), _nMinimum);
+	xs.writeAttributeScientific(xmlTag(XT_MAXIMUM), _nMaximum);
+	xs.writeAttributeScientific(xmlTag(XT_MINIMUM), _nMinimum);
 	xs.closeStart(false);
 }
 

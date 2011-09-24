@@ -594,6 +594,7 @@ namespace org_biologicinstitute_stylus
 		 */
 		template<class T> void writeAttribute(const char* pszAttribute, T t);
 		void writeAttribute(const char* pszAttribute, Unit& nValue);
+		void writeAttributeScientific(const char* pszAttribute, UNIT nValue);
 		
 		/**
 		 * \brief Write free-form content to a tag body

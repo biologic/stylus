@@ -924,10 +924,10 @@ Genome::toXML(XMLStream& xs, STFLAGS grfRecordDetail, bool fUseTrialStatistics)
 		xs.writeAttribute(xmlTag(XT_TRIALATTEMPTS), stats._cTrialAttempts);
 		if (isState(STGS_ALIVE) || isState(STGS_RECORDING))
 		{
-			xs.writeAttribute(xmlTag(XT_SCORE), stats._nScore);
+			xs.writeAttributeScientific(xmlTag(XT_SCORE), stats._nScore);
 			xs.writeAttribute(xmlTag(XT_UNITS), stats._nUnits);
-			xs.writeAttribute(xmlTag(XT_COST), stats._nCost);
-			xs.writeAttribute(xmlTag(XT_FITNESS), stats._nFitness);
+			xs.writeAttributeScientific(xmlTag(XT_COST), stats._nCost);
+			xs.writeAttributeScientific(xmlTag(XT_FITNESS), stats._nFitness);
 		}
 
 		// Close statistics without content if only recording score
@@ -1710,7 +1710,7 @@ Genome::recordHistory(RECORDTYPE rt)
 
 		xs.openStart(xmlTag(XT_ACCEPTEDMUTATIONS));
 		xs.writeAttribute(xmlTag(XT_TRIAL), getTrial());
-		xs.writeAttribute(xmlTag(XT_FITNESS), getFitness());
+		xs.writeAttributeScientific(xmlTag(XT_FITNESS), getFitness());
 		xs.closeStart();
 
 		if (!_msModifications.isEmpty())
