@@ -95,6 +95,7 @@
 
 #ifndef RANDOMC_H
 #define RANDOMC_H
+#include <string>
 
 // Define integer types with known size: int32_t, uint32_t, int64_t, uint64_t.
 // If this doesn't work then insert compiler-specific definitions here:
@@ -173,6 +174,8 @@ public:
    int IRandomX(int min, int max);     // Output random integer, exact
    double Random();                    // Output random float
    uint32_t BRandom();                 // Output random bits
+   std::string GetState();
+   void SetState(const std::string & state);
 private:
    void Init0(int seed);               // Basic initialization procedure
    uint32_t mt[MERS_N];                // State vector

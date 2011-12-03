@@ -33,7 +33,6 @@ namespace org_biologicinstitute_stylus
 
 	private:
 		CRandomMersenne* _pmersenne;
-		int _seeds[2];
 
 		RandomC();
 		

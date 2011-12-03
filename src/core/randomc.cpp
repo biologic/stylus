@@ -29,47 +29,7 @@ using namespace stylus;
 //
 //--------------------------------------------------------------------------------
 
-/* 
- * Function: lennob
- * 
- * Returns the length of str ignoring trailing blanks but not other white space.
- * 
- * Routine copied from the Perl Math::Random-0.69 library
- */
-long lennob( char *str )
-{
-long i, i_nb;
 
-for (i=0, i_nb= -1L; *(str+i); i++)
-    if ( *(str+i) != ' ' ) i_nb = i;
-return (i_nb+1);
-}
-
-/*
- * Function: phraseToSeed
- * 
- * Routine copied from the Perl Math::Random-0.69 library
- */
-void
-phraseToSeed(char* phrase, int *seed1, int *seed2)
-{
-static int twop30 = 1073741824L;
-
-static int i,j, ichr,lphr;
-static int values[8] = { 8521739, 5266711, 3254959, 2011673, 1243273, 768389, 474899, 293507 };
-
-	*seed1 = 1234567890L;
-	*seed2 = 123456789L;
-	lphr = lennob(phrase); 
-	if(lphr < 1) return;
-	for(i=0; i<(lphr-1); i++)
-	{
-		ichr = phrase[i];
-		j = i % 8;
-		*seed1 = ( *seed1 + (values[j] * ichr) ) % twop30;
-		*seed2 = ( *seed2 + (values[7-j] * ichr) ) % twop30;
-	}
-}
 
 //--------------------------------------------------------------------------------
 //
@@ -108,28 +68,7 @@ RandomC::setSeed(const std::string& strSeed)
 	ENTER(GLOBAL,getSeed);
 	ASSERT(!EMPTYSTR(strSeed));
 
-	// Seeds beginning with a single or double quote are treated as phrases
-	if (strSeed[0] == Constants::s_chQUOTE || strSeed[0] == Constants::s_chAPOSTROPHE)
-	{
-		phraseToSeed(const_cast<char*>(strSeed.c_str()), &_seeds[0], &_seeds[1]);
-	}
-
-	// Otherwise, the seed must contain two long integers
-	else
-	{
-		char* psz;
-		_seeds[0] = ::strtol(strSeed.c_str(), &psz, 10);
-		if (_seeds[0] == INT_MAX || _seeds[0] == INT_MIN)
-			THROWRC((RC(BADARGUMENTS), "%s contains an illegal seed value", strSeed.c_str()));
-		if (!VALID(psz))
-			THROWRC((RC(BADARGUMENTS), "%s requires two long values separated by a space", strSeed.c_str()));
-
-		_seeds[1] = ::strtol(psz, NULL, 10);
-		if (_seeds[1] == INT_MAX || _seeds[1] == INT_MIN)
-			THROWRC((RC(BADARGUMENTS), "%s contains an illegal seed value - values must range from %ld to %ld", strSeed.c_str(), LONG_MAX, LONG_MIN));
-	}
-
-	_pmersenne->RandomInitByArray(_seeds, 2);
+    _pmersenne->SetState(strSeed);
 }
 
 /*
@@ -140,11 +79,7 @@ std::string
 RandomC::getSeed() const
 {
 	ENTER(GLOBAL,getSeed);
-
-	ostringstream ostr;
-
-	ostr << _seeds[0] << Constants::s_chBLANK << _seeds[1];
-	return ostr.str();
+    return _pmersenne->GetState();
 }
 
 void

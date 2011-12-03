@@ -34,6 +34,7 @@ import sys
 import time
 import urllib2
 import urlparse
+import base64
 
 #==============================================================================
 # Globals
@@ -304,44 +305,14 @@ def getArguments():
 #------------------------------------------------------------------------------
 def getUUIDSeeds():
     # Get randomness from urandom or the 'random' module.
-    intbytecount = 1
-
-    while long(''.join(['7f'] + ['ff' for i in range(intbytecount)]), 16) <= sys.maxint:
-        intbytecount += 1
+    intbytecount = 64
 
     try:
-        seeds = [os.urandom(intbytecount) for i in range(2)]
+        seeds = ''.join(chr(os.urandom(1)) for i in range(intbytecount))
     except:
-        seeds = [''.join([chr(random.randrange(256)) for j in range(intbytecount)]) for i in range(2)]
+        seeds = ''.join(chr(random.randrange(256)) for j in range(intbytecount))
 
-    acc1 = -sys.maxint - 1
-    acc2 = -sys.maxint - 1
-
-    mult = 1
-
-    for i in range(intbytecount):
-        acc1 += ord(seeds[0][i]) * mult
-        mult *= 256
-
-    mult = 1
-
-    for i in range(intbytecount):
-        acc2 += ord(seeds[1][i]) * mult
-        mult *= 256
-
-    if acc1 < 0:
-        acc1 += sys.maxint
-        
-    if acc1 > ((sys.maxint + 1) / 2):
-        acc1 /= 2
-
-    if acc2 < 0:
-        acc2 += sys.maxint
-
-    if acc2 > ((sys.maxint + 1) / 2):
-        acc2 /= 2
-
-    return '%d %d' % (acc1 , acc2)
+    return base64.b64encode(seeds)
         
 #==============================================================================
 # Main
@@ -400,9 +371,7 @@ def main(argv=None):
         if rc:
             raise StylusError(rc)
 
-        seeds = ''.join(getUUIDSeeds())
-
-        rc = Stylus.setUUIDSeeds(seeds)
+        rc = Stylus.setUUIDSeeds(getUUIDSeeds())
         if rc:
             raise StylusError(rc)
 
