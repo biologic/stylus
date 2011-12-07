@@ -24,7 +24,7 @@ perllibHEADERS = $(perllibDIR)/randlib.h
 perllibINCLUDE = -I$(perllibDIR)
 
 randomcDIR     = @srcdir@/randomc
-randomcSOURCES = $(randomcDIR)/mersenne.cpp $(randomcDIR)/mother.cpp
+randomcSOURCES = $(randomcDIR)/mersenne.cpp $(randomcDIR)/mother.cpp $(randomcDIR)/base64.cpp
 randomcHEADERS = $(randomcDIR)\randomc.h
 randomcINCLUDE = -I$(randomcDIR)
 

@@ -25,6 +25,7 @@
 *******************************************************************************/
 
 #include "randomc.h"
+#include "base64.h"
 
 void CRandomMersenne::Init0(int seed) {
    // Seed generator
@@ -186,40 +187,23 @@ int CRandomMersenne::IRandomX(int min, int max) {
 
 namespace
 {
-    const static char BASE64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     void encode_number(std::string & bytes, unsigned int index, uint32_t value)
     {
-        bytes[index * 4 + 0] = BASE64[(value & 0x00FC0000) >> 18];
-        bytes[index * 4 + 1] = BASE64[(value & 0x0003F000) >> 12];
-        bytes[index * 4 + 2] = BASE64[(value & 0x00000FC0) >> 6 ];
-        bytes[index * 4 + 3] = BASE64[(value & 0x0000003F)      ];
-    }
-
-    inline uint32_t decode_bits(char byte)
-    {
-        if(byte >= 'A' && byte <= 'Z')
-            return byte - 'A';
-        else if(byte >= 'a' && byte <= 'z')
-            return byte - 'a' + 26;
-        else if(byte >= '0' && byte <= '9')
-            return byte - '0' + 52;
-        else if(byte == '+')
-            return 62;
-        else if(byte == '/')
-            return 63;
-        else
-            return 0;
+        bytes[index * 4 + 0] = (value & 0xFF000000) >> 24;
+        bytes[index * 4 + 1] = (value & 0x00FF0000) >> 16;
+        bytes[index * 4 + 2] = (value & 0x0000FF00) >> 8 ;
+        bytes[index * 4 + 3] = (value & 0x000000FF)      ;
     }
 
     uint32_t decode_number(const std::string & bytes, unsigned int index)
     {
-        uint32_t value = decode_bits(bytes[index*4 + 0]);
-        value <<= 6;
-        value |= decode_bits(bytes[index*4+1]);
-        value <<= 6;
-        value |= decode_bits(bytes[index*4+2]);
-        value <<= 6;
-        value |= decode_bits(bytes[index*4+3]);
+        uint32_t value = (unsigned char)bytes[index*4 + 0];
+        value <<= 8;
+        value |= (unsigned char)bytes[index*4+1];
+        value <<= 8;
+        value |= (unsigned char)bytes[index*4+2];
+        value <<= 8;
+        value |= (unsigned char)bytes[index*4+3];
         return value;
     }
 
@@ -278,24 +262,12 @@ std::string CRandomMersenne::GetState()
     encode_number(state, MERS_N, mti);
     encode_number(state, MERS_N + 1, LastInterval);
     encode_number(state, MERS_N + 2, RLimit);
-
-    return state;
+    return base64_encode((const unsigned char*)state.data(), state.size());
 }
 
 void CRandomMersenne::SetState(const std::string & state)
 {
-    std::cout << "STATE:" << state << std::endl;
-    if( state.size() == STATE_SIZE)
-    {
-        for(int x = 0; x < MERS_N; x++)
-        {
-            mt[x] = decode_number(state, x);
-        }
-        mti = decode_number(state, MERS_N) % MERS_N;
-        LastInterval = decode_number(state, MERS_N + 1);
-        RLimit = decode_number(state, MERS_N + 2);
-    }
-    else if(state.size() && state[0] == '\"')
+    if(state.size() && state[0] == '\"')
     {
         int seeds[2];
 		phraseToSeed(const_cast<char*>(state.c_str()), &seeds[0], &seeds[1]);
@@ -303,12 +275,26 @@ void CRandomMersenne::SetState(const std::string & state)
     }
     else
     {
-        int length = state.size() / 4;
-        int data[length];
-        for(int x = 0; x < length; x++)
+        std::string decoded = base64_decode(state);
+        if( decoded.size() == STATE_SIZE )
         {
-            data[x] = decode_number(state, x);
+            for(int x = 0; x < MERS_N; x++)
+            {
+                mt[x] = decode_number(decoded, x);
+            }
+            mti = decode_number(decoded, MERS_N) % MERS_N;
+            LastInterval = decode_number(decoded, MERS_N + 1);
+            RLimit = decode_number(decoded, MERS_N + 2);
         }
-        RandomInitByArray(data, length);
+        else
+        {
+            int length = decoded.size() / 4;
+            int data[length];
+            for(int x = 0; x < length; x++)
+            {
+                data[x] = decode_number(decoded, x);
+            }
+            RandomInitByArray(data, length);
+        }
     }
 }
