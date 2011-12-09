@@ -267,34 +267,21 @@ std::string CRandomMersenne::GetState()
 
 void CRandomMersenne::SetState(const std::string & state)
 {
-    if(state.size() && state[0] == '\"')
+    std::string decoded = base64_decode(state);
+    if( decoded.size() == STATE_SIZE )
     {
-        int seeds[2];
-		phraseToSeed(const_cast<char*>(state.c_str()), &seeds[0], &seeds[1]);
-        RandomInitByArray(seeds, 2);
+        for(int x = 0; x < MERS_N; x++)
+        {
+            mt[x] = decode_number(decoded, x);
+        }
+        mti = decode_number(decoded, MERS_N) % MERS_N;
+        LastInterval = decode_number(decoded, MERS_N + 1);
+        RLimit = decode_number(decoded, MERS_N + 2);
     }
     else
     {
-        std::string decoded = base64_decode(state);
-        if( decoded.size() == STATE_SIZE )
-        {
-            for(int x = 0; x < MERS_N; x++)
-            {
-                mt[x] = decode_number(decoded, x);
-            }
-            mti = decode_number(decoded, MERS_N) % MERS_N;
-            LastInterval = decode_number(decoded, MERS_N + 1);
-            RLimit = decode_number(decoded, MERS_N + 2);
-        }
-        else
-        {
-            int length = decoded.size() / 4;
-            int data[length];
-            for(int x = 0; x < length; x++)
-            {
-                data[x] = decode_number(decoded, x);
-            }
-            RandomInitByArray(data, length);
-        }
+        int seeds[2];
+        phraseToSeed(const_cast<char*>(state.c_str()), &seeds[0], &seeds[1]);
+        RandomInitByArray(seeds, 2);
     }
 }
