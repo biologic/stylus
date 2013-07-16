@@ -23,6 +23,7 @@
 
 // Includes ---------------------------------------------------------------------
 #include "headers.hpp"
+#include "config.h"
 
 using namespace std;
 using namespace stylus;

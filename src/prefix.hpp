@@ -23,7 +23,6 @@
 #ifndef PREFIX_HPP
 #define PREFIX_HPP
 
-#include "config.h"
 
 #if defined(__APPLE__) and defined(__MACH__)
 #define ST_MACOSX 1

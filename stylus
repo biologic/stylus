@@ -172,21 +172,7 @@ if [ -z $XGRID_CONTROLLER_PASSWORD ] ; then
 	export XGRID_CONTROLLER_PASSWORD=""
 fi
 
-# Modify environment variables necessary to find Stylus code
-# - The release version looks first in a local bin directory (as supported by the Mac OS X deployment)
-if [[ $version = release ]] ; then
-	export PYTHONPATH="$STYLUS_HOME/bin":"$STYLUS_HOME/obj/release/src/include/.libs":"$STYLUS_HOME/obj/release/src/include":$PYTHONPATH
-	export DYLD_LIBRARY_PATH="$STYLUS_HOME/bin":"$STYLUS_HOME/obj/release/src/core/.libs":"$STYLUS_HOME/ext":$DYLD_LIBRARY_PATH
-	export LD_LIBRARY_PATH="$STYLUS_HOME/bin":"$STYLUS_HOME/obj/release/src/core/.libs":"$STYLUS_HOME/ext":$LD_LIBRARY_PATH
-elif [[ $version = profile ]] ; then
-	export PYTHONPATH="$STYLUS_HOME/obj/profile/src/include/.libs":"$STYLUS_HOME/obj/profile/src/include":$PYTHONPATH
-	export DYLD_LIBRARY_PATH="$STYLUS_HOME/obj/profile/src/core/.libs":"$STYLUS_HOME/ext":$DYLD_LIBRARY_PATH
-	export LD_LIBRARY_PATH="$STYLUS_HOME/obj/profile/src/core/.libs":"$STYLUS_HOME/ext":$LD_LIBRARY_PATH
-else
-	export PYTHONPATH="$STYLUS_HOME/obj/debug/src/include/.libs":"$STYLUS_HOME/obj/debug/src/include":$PYTHONPATH
-	export DYLD_LIBRARY_PATH="$STYLUS_HOME/obj/debug/src/core/.libs":"$STYLUS_HOME/ext":$DYLD_LIBRARY_PATH
-	export LD_LIBRARY_PATH="$STYLUS_HOME/obj/debug/src/core/.libs":"$STYLUS_HOME/ext":$LD_LIBRARY_PATH
-fi
+export PYTHONPATH="$STYLUS_HOME/lib":$PYTHONPATH
 
 # Prepare the Xgrid client environment or launch Stylus as requested
 cc=0

@@ -40,8 +40,6 @@ RGenerator::initialize(const std::string& strUUID)
 	ENTER(GLOBAL,initialize);
 	ASSERT(!EMPTYSTR(strUUID));
 
-	// if (strUUID == Randlib::s_strUUID)
-	// 	s_prgen = ::new Randlib();
 	if (strUUID == RandomC::s_strUUID)
 		s_prgen = ::new RandomC();
 	else

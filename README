@@ -3,16 +3,10 @@ Stylus 1.4.0, Biologic Institute
 https://github.com/biologic/stylus
 
 BUILDING STYLUS
-Stylus requires a few external libraries, the GNU C/C++ V4.x, and related tools such as libtool.
-While Stylus may be built using the normal autoconf/automake/make sequence, it is easier to use the
-supplied scripts: bootstrap and build.
-
-The bootstrap script prepares the environment by running autoconf, automake, and configure. It
-simplifies creating debug and release versions while keeping all compiler generated files out
-of the source directories. The build script picks up where bootstrap leaves off and runs make to
-create the binaries. Both scripts display help information when passed a -h(elp) or --h(elp)
-argument. Running the two scripts in sequence without any arguments will create a default build
-of Stylus.
+The stylus engine is packaged as a python module using the standard python distutils package.
+It depends on libxml2 and naturally the python development headers. To install locally, run 
+the bootstrap script. This will install the python library into the lib folder where it 
+will be found by the ./stylus script.
 
 Test the build by executing the following command from the root of the Stylus directory:
 

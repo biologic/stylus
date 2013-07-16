@@ -9,3 +9,7 @@ configure
 config.h.in
 autom4te.cache
 test_data
+dist
+lib
+src/stylusengine.egg-info/
+src/stylusengine_wrap.cpp
