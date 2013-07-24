@@ -165,9 +165,9 @@ _HTML_FOOTER = '''
 </html>
 '''
 
-_SVG_HEADER = '''<?xml version='1.0' standalone='no'?><?xml-stylesheet href='stylus.css' type='text/css'?><!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN' 'http://www.w3.org/Graphics/SVG/1.0/DTD/svg10.dtd'>
+_SVG_HEADER = '''<?xml version='1.0' standalone='no'?><?xml-stylesheet href='%sstylus.css' type='text/css'?><!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN' 'http://www.w3.org/Graphics/SVG/1.0/DTD/svg10.dtd'>
 <svg width='%dpx' height='%dpx' viewBox='0 0 %d %d' version='1.0' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
-<script type='text/javascript' xlink:href='stylus-svg.js' />
+<script type='text/javascript' xlink:href='%sstylus-svg.js' />
 '''
 
 _SVG_TRANSFORM_GROUP = '''
@@ -737,12 +737,166 @@ def svgCollectLabels(gene, sxyGene):
                 break
 
     return [ '\n'.join(aryLabels[0]), '\n'.join(aryLabels[1]) ]
+
+def build_single_svg(fileTrial,fImages, genome, svgOptions, href_base = ''):
+
+    if fImages:
+        fileTrial.write(_SVG_HEADER % (href_base, Constants.dxImage, Constants.dyImage, Constants.dxImage, Constants.dyImage, href_base))
+    else:
+        fileTrial.write(_SVG_HEADER % (href_base, Constants.dxTrial, Constants.dyTrial, Constants.dxTrial, Constants.dyTrial, href_base))
+
+    rcGene, aryCoherent, aryIncoherent, aryMarks, aryDropouts, aryMutations = svgCollectLines(genome)
+
+    if rcGene.width or rcGene.height:
+        sxGene = rcGene.width >= 1 and (Constants.dxGene / rcGene.width) or 1
+        syGene = rcGene.height >=1 and (Constants.dyGene / rcGene.height) or 1
+        sxyGene = min(sxGene, syGene)
+
+        dxGene = ((rcGene.left * sxyGene) * -1) + Constants.dxGeneOffset
+        dyGene = (rcGene.top * sxyGene) + Constants.dyGeneOffset
+
+        strHead = '<polyline class="%s" points="' % Constants.cssCoherent
+        strTail = '" />'
+        strCoherent = '\n'.join([ strHead + ' '.join([ '%r,%r' % (pt.x, pt.y*-1) for pt in aryPoints ]) + strTail for aryPoints in aryCoherent ])
     
+        strHead = '<polyline class="%s" style="stroke-dasharray: %r,%r;" points="' % (Constants.cssIncoherent, Constants.pxDashArrayDash / sxyGene, Constants.pxDashArrayGap / sxyGene)
+        strIncoherent = '\n'.join([ strHead + ' '.join([ '%r,%r' % (pt.x, pt.y*-1) for pt in aryPoints ]) + strTail for aryPoints in aryIncoherent ])
+    
+        strHead = '<polyline class="%s" points="' % Constants.cssMark
+        strMarks = '\n'.join([ strHead + ' '.join([ '%r,%r' % (pt.x, pt.y*-1) for pt in aryPoints ]) + strTail for aryPoints in aryMarks ])
+    
+        strHead = '<polyline class="%s" points="' % Constants.cssDropout
+        strDropouts = '\n'.join([ strHead + ' '.join([ '%r,%r' % (pt.x, pt.y*-1) for pt in aryPoints ]) + strTail for aryPoints in aryDropouts ])
+    
+        strHead = '<polyline class="%s" points="' % Constants.cssMutation
+        strMutations = '\n'.join([ strHead + ' '.join([ '%r,%r' % (pt.x, pt.y*-1) for pt in aryPoints ]) + strTail for aryPoints in aryMutations ])
+                                    
+        strHead = '<circle class="%s"' % Constants.cssOverlap
+        strTail = ' r="%r" />' % (Constants.pxOverlap / sxyGene)
+        strOverlaps = '\n'.join([ (strHead + (' cx="%r" cy="%r"' % (overlap.pt.x, overlap.pt.y*-1)) + strTail) for overlap in genome.gene.aryOverlaps ])
+                                    
+        strHead = '<circle class="%s"' % Constants.cssCoherent
+        strTail = ' r="%r" />' % (Constants.pxVertex / sxyGene)
+        aryVertices = [ '\n'.join([ '\n'.join([ strHead + (' cx="%r" cy="%r"' % (pt.x, pt.y*-1)) + strTail for pt in aryPoints]) for aryPoints in aryCoherent ]) ]
+
+        strHead = '<circle class="%s"' % Constants.cssIncoherent
+        aryVertices.append('\n'.join([ '\n'.join([ strHead + (' cx="%r" cy="%r"' % (pt.x, pt.y*-1)) + strTail for pt in aryPoints]) for aryPoints in aryIncoherent ]))
+
+        strHead = '<circle class="%s"' % Constants.cssMark
+        aryVertices.append('\n'.join([ '\n'.join([ strHead + (' cx="%r" cy="%r"' % (pt.x, pt.y*-1)) + strTail for pt in aryPoints]) for aryPoints in aryMarks ]))
+
+        strHead = '<circle class="%s"' % Constants.cssDropout
+        aryVertices.append('\n'.join([ '\n'.join([ strHead + (' cx="%r" cy="%r"' % (pt.x, pt.y*-1)) + strTail for pt in aryPoints]) for aryPoints in aryDropouts ]))
+    
+        aryLabels = svgCollectLabels(genome.gene, sxyGene)
+
+        pxFontSize = max(Constants.pxFontSize / sxyGene, Constants.pxFontSizeScaledMin)
+        strBoundingGroups = '\n'.join([ '<rect class="%s" x="%r" y="%r" width="%r" height="%r" style="stroke-width: %rpx;" /><text class="%s" x="%r" y="%r" font-size="%r">%d</text>' %
+                (Constants.cssBoundingGroup,
+                genome.gene.aryGroups[i].bounds.left,
+                genome.gene.aryGroups[i].bounds.top*-1,
+                genome.gene.aryGroups[i].bounds.width,
+                genome.gene.aryGroups[i].bounds.height,
+                Constants.pxGridMajor / sxyGene,
+                Constants.cssBoundingGroup,
+                genome.gene.aryGroups[i].bounds.left + (pxFontSize / 4),
+                genome.gene.aryGroups[i].bounds.top*-1 + pxFontSize,
+                pxFontSize,
+                i+1) for i in xrange(0,len(genome.gene.aryGroups)) if genome.gene.aryGroups[i].bounds ])
+
+        strBoundingStrokes = '\n'.join([ '<rect class="%s" x="%r" y="%r" width="%r" height="%r" style="stroke-width: %rpx;" />' %
+                (Constants.cssBoundingStroke,
+                s.bounds.left,
+                s.bounds.top*-1,
+                s.bounds.width,
+                s.bounds.height,
+                Constants.pxGridMajor / sxyGene) for s in genome.gene.aryStrokes if s.bounds ])
+
+        fileTrial.write(_SVG_TRANSFORM_GROUP %
+                        (Constants.cssGene, dxGene, dyGene, sxyGene, Constants.pxLine / sxyGene, ('%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s' %
+                            (_SVG_DISPLAY_GROUP % ('grid', svgOptions.fGrid and 1.0 or 0.0, svgCollectGridLines(rcGene, sxyGene)),
+                            _SVG_DISPLAY_GROUP % ('coherent', svgOptions.fCoherent and 1.0 or 0.0, strCoherent),
+                            _SVG_DISPLAY_GROUP % ('incoherent', svgOptions.fIncoherent and 1.0 or 0.0, strIncoherent),
+                            _SVG_DISPLAY_GROUP % ('marks', svgOptions.fNoise and 1.0 or 0.0, strMarks),
+                            _SVG_DISPLAY_GROUP % ('dropouts', svgOptions.fNoise and 1.0 or 0.0, strDropouts),
+                            _SVG_DISPLAY_GROUP % ('mutations', svgOptions.fMutations and 1.0 or 0.0, strMutations),
+                            _SVG_DISPLAY_GROUP % ('overlaps', svgOptions.fOverlaps and 1.0 or 0.0, strOverlaps),
+                            _SVG_DISPLAY_GROUP % ('vertices-coherent', (svgOptions.fCoherent and svgOptions.fVertices) and 1.0 or 0.0, aryVertices[0]),
+                            _SVG_DISPLAY_GROUP % ('vertices-incoherent', (svgOptions.fIncoherent and svgOptions.fVertices) and 1.0 or 0.0, aryVertices[1]),
+                            _SVG_DISPLAY_GROUP % ('vertices-marks', (svgOptions.fNoise and svgOptions.fVertices) and 1.0 or 0.0, aryVertices[2]),
+                            _SVG_DISPLAY_GROUP % ('vertices-dropouts', (svgOptions.fNoise and svgOptions.fVertices) and 1.0 or 0.0, aryVertices[3]),
+                            _SVG_DISPLAY_GROUP % ('labels-coherent', (svgOptions.fCoherent and svgOptions.fLabels) and 1.0 or 0.0, aryLabels[0]),
+                            _SVG_DISPLAY_GROUP % ('labels-incoherent', (svgOptions.fIncoherent and svgOptions.fLabels) and 1.0 or 0.0, aryLabels[1]),
+                            _SVG_DISPLAY_GROUP % ('bounding-group', svgOptions.fBounding and 1.0 or 0.0, strBoundingGroups),
+                            _SVG_DISPLAY_GROUP % ('bounding-stroke', svgOptions.fBounding and 1.0 or 0.0, strBoundingStrokes)))))
+    
+        if not fImages:
+            # Build the gene icon display (display coherent portions and marks only, both as ink)
+            sxIcon = rcGene.width >= 1 and Constants.dxIcon / rcGene.width or 1
+            syIcon = rcGene.height >=1 and Constants.dyIcon / rcGene.height or 1
+            sxyIcon = min(sxIcon, syIcon)
+    
+            pxLine = max(Constants.pxLine / sxyIcon, Constants.pxLine)
+            if ((pxLine * sxyIcon) > Constants.pxLineScaledMax):
+                pxLine = Constants.pxLineScaledMax / sxyIcon
+
+            dxIcon = ((rcGene.left * sxyIcon) * -1) + Constants.dxIconOffset
+            dyIcon = (rcGene.top * sxyIcon) + Constants.dyIconOffset
+
+            strHead = '<polyline class="%s" points="' % Constants.cssCoherent
+            strTail = '" />'
+            strCoherent = '\n'.join([ strHead + ' '.join([ '%r,%r' % (pt.x, pt.y*-1) for pt in aryPoints ]) + strTail for aryPoints in (aryCoherent+aryMarks) ])
+        
+            fileTrial.write(_SVG_TRANSFORM_GROUP % (Constants.cssGene, dxIcon, dyIcon, sxyIcon, pxLine, '%s' % strCoherent))
+
+    if not fImages:
+        # Build the Han icon display
+        rcHan = han.bounds
+        sxIcon = rcHan.width >= 1 and Constants.dxIcon / rcHan.width or 1
+        syIcon = rcHan.height >=1 and Constants.dyIcon / rcHan.height or 1
+        sxyIcon = min(sxIcon, syIcon)
+    
+        pxLine = max(Constants.pxLine / sxyIcon, Constants.pxLine)
+        if ((pxLine * sxyIcon) > Constants.pxLineScaledMax):
+            pxLine = Constants.pxLineScaledMax / sxyIcon
+
+        dxIcon = ((rcHan.left * sxyIcon) * -1) + Constants.dxHanIconOffset
+        dyIcon = (rcHan.top * sxyIcon) + Constants.dyHanIconOffset
+
+        strLine = '<polyline class="%s" points="' % Constants.cssHan
+        fileTrial.write(_SVG_TRANSFORM_GROUP % (Constants.cssHan, dxIcon, dyIcon, sxyIcon, pxLine,
+                                        '\n'.join([ strLine + ' '.join([ str(ptd.x) + ',' + str(ptd.y*-1) for ptd in hanStroke.aryPointsForward ]) + '" />' for hanStroke in han.aryStrokes ] )))
+
+        # Write controls
+        fileTrial.write(_SVG_TRIAL_CONTROLS % (svgOptions.fCoherent and Constants.fillVisible or Constants.fillInvisible,
+                                                svgOptions.fIncoherent and Constants.fillVisible or Constants.fillInvisible,
+                                                svgOptions.fNoise and Constants.fillVisible or Constants.fillInvisible,
+                                                svgOptions.fNoise and Constants.fillVisible or Constants.fillInvisible,
+                                                svgOptions.fMutations and Constants.fillVisible or Constants.fillInvisible,
+                                                svgOptions.fOverlaps and Constants.fillVisible or Constants.fillInvisible,
+                                                svgOptions.fLabels and Constants.fillVisible or Constants.fillInvisible,
+                                                svgOptions.fVertices and Constants.fillVisible or Constants.fillInvisible,
+                                                svgOptions.fGrid and Constants.fillVisible or Constants.fillInvisible,
+                                                svgOptions.fBounding and Constants.fillVisible or Constants.fillInvisible,
+                                                svgOptions.fBounding and Constants.fillVisible or Constants.fillInvisible,
+                                                genome.gene.bounds and min((Codons.Constants.vectorShort * sxyGene), Constants.dxSmallVectorMax) or 0,
+                                                genome.gene.bounds and min((Codons.Constants.vectorMedium * sxyGene), Constants.dxMediumVectorMax) or 0,
+                                                genome.gene.bounds and min((Codons.Constants.vectorLong * sxyGene), Constants.dxLongVectorMax) or 0,
+                                                genome.statistics.fitness or 0,
+                                                svgOptions.fVertices and 1.0 or 0.0,
+                                                svgOptions.fLabels and 1.0 or 0.0))
+
+    fileTrial.write(_SVG_FOOTER)
+
+     
+
 #------------------------------------------------------------------------------
 # Function: buildSVG
 # 
 # Generate the SVG files used by all XHTML
 #------------------------------------------------------------------------------
+
+
 def buildSVG(aryData, han, fImages):
     Common.say('Creating SVG files', False)
 
@@ -761,7 +915,7 @@ def buildSVG(aryData, han, fImages):
             dx = ((Constants.dxDefault + Constants.dxDefaultBorder) * nIcons) - Constants.dxDefaultBorder
 
             fileDefault = open(os.path.join(Globals.names.pathReport, 'default%d.svg' % iDefaultSVG), 'w')
-            fileDefault.write(_SVG_HEADER % (dx, Constants.dyDefault, dx, Constants.dyDefault))
+            fileDefault.write(_SVG_HEADER % ('', dx, Constants.dyDefault, dx, Constants.dyDefault, ''))
         
             iDefaultIcon = 0
             dxDefaultOffset = 0
@@ -771,153 +925,7 @@ def buildSVG(aryData, han, fImages):
         svgFile = os.path.join(Globals.names.pathReport, (os.path.splitext(strFile)[0]+'.svg'))
 
         fileTrial = open(svgFile, 'w')
-        if fImages:
-            fileTrial.write(_SVG_HEADER % (Constants.dxImage, Constants.dyImage, Constants.dxImage, Constants.dyImage))
-        else:
-            fileTrial.write(_SVG_HEADER % (Constants.dxTrial, Constants.dyTrial, Constants.dxTrial, Constants.dyTrial))
-
-        rcGene, aryCoherent, aryIncoherent, aryMarks, aryDropouts, aryMutations = svgCollectLines(genome)
-
-        if rcGene.width or rcGene.height:
-            sxGene = rcGene.width >= 1 and (Constants.dxGene / rcGene.width) or 1
-            syGene = rcGene.height >=1 and (Constants.dyGene / rcGene.height) or 1
-            sxyGene = min(sxGene, syGene)
-
-            dxGene = ((rcGene.left * sxyGene) * -1) + Constants.dxGeneOffset
-            dyGene = (rcGene.top * sxyGene) + Constants.dyGeneOffset
-
-            strHead = '<polyline class="%s" points="' % Constants.cssCoherent
-            strTail = '" />'
-            strCoherent = '\n'.join([ strHead + ' '.join([ '%r,%r' % (pt.x, pt.y*-1) for pt in aryPoints ]) + strTail for aryPoints in aryCoherent ])
-        
-            strHead = '<polyline class="%s" style="stroke-dasharray: %r,%r;" points="' % (Constants.cssIncoherent, Constants.pxDashArrayDash / sxyGene, Constants.pxDashArrayGap / sxyGene)
-            strIncoherent = '\n'.join([ strHead + ' '.join([ '%r,%r' % (pt.x, pt.y*-1) for pt in aryPoints ]) + strTail for aryPoints in aryIncoherent ])
-        
-            strHead = '<polyline class="%s" points="' % Constants.cssMark
-            strMarks = '\n'.join([ strHead + ' '.join([ '%r,%r' % (pt.x, pt.y*-1) for pt in aryPoints ]) + strTail for aryPoints in aryMarks ])
-        
-            strHead = '<polyline class="%s" points="' % Constants.cssDropout
-            strDropouts = '\n'.join([ strHead + ' '.join([ '%r,%r' % (pt.x, pt.y*-1) for pt in aryPoints ]) + strTail for aryPoints in aryDropouts ])
-        
-            strHead = '<polyline class="%s" points="' % Constants.cssMutation
-            strMutations = '\n'.join([ strHead + ' '.join([ '%r,%r' % (pt.x, pt.y*-1) for pt in aryPoints ]) + strTail for aryPoints in aryMutations ])
-                                        
-            strHead = '<circle class="%s"' % Constants.cssOverlap
-            strTail = ' r="%r" />' % (Constants.pxOverlap / sxyGene)
-            strOverlaps = '\n'.join([ (strHead + (' cx="%r" cy="%r"' % (overlap.pt.x, overlap.pt.y*-1)) + strTail) for overlap in genome.gene.aryOverlaps ])
-                                        
-            strHead = '<circle class="%s"' % Constants.cssCoherent
-            strTail = ' r="%r" />' % (Constants.pxVertex / sxyGene)
-            aryVertices = [ '\n'.join([ '\n'.join([ strHead + (' cx="%r" cy="%r"' % (pt.x, pt.y*-1)) + strTail for pt in aryPoints]) for aryPoints in aryCoherent ]) ]
-
-            strHead = '<circle class="%s"' % Constants.cssIncoherent
-            aryVertices.append('\n'.join([ '\n'.join([ strHead + (' cx="%r" cy="%r"' % (pt.x, pt.y*-1)) + strTail for pt in aryPoints]) for aryPoints in aryIncoherent ]))
-
-            strHead = '<circle class="%s"' % Constants.cssMark
-            aryVertices.append('\n'.join([ '\n'.join([ strHead + (' cx="%r" cy="%r"' % (pt.x, pt.y*-1)) + strTail for pt in aryPoints]) for aryPoints in aryMarks ]))
-
-            strHead = '<circle class="%s"' % Constants.cssDropout
-            aryVertices.append('\n'.join([ '\n'.join([ strHead + (' cx="%r" cy="%r"' % (pt.x, pt.y*-1)) + strTail for pt in aryPoints]) for aryPoints in aryDropouts ]))
-        
-            aryLabels = svgCollectLabels(genome.gene, sxyGene)
-
-            pxFontSize = max(Constants.pxFontSize / sxyGene, Constants.pxFontSizeScaledMin)
-            strBoundingGroups = '\n'.join([ '<rect class="%s" x="%r" y="%r" width="%r" height="%r" style="stroke-width: %rpx;" /><text class="%s" x="%r" y="%r" font-size="%r">%d</text>' %
-                    (Constants.cssBoundingGroup,
-                    genome.gene.aryGroups[i].bounds.left,
-                    genome.gene.aryGroups[i].bounds.top*-1,
-                    genome.gene.aryGroups[i].bounds.width,
-                    genome.gene.aryGroups[i].bounds.height,
-                    Constants.pxGridMajor / sxyGene,
-                    Constants.cssBoundingGroup,
-                    genome.gene.aryGroups[i].bounds.left + (pxFontSize / 4),
-                    genome.gene.aryGroups[i].bounds.top*-1 + pxFontSize,
-                    pxFontSize,
-                    i+1) for i in xrange(0,len(genome.gene.aryGroups)) if genome.gene.aryGroups[i].bounds ])
-
-            strBoundingStrokes = '\n'.join([ '<rect class="%s" x="%r" y="%r" width="%r" height="%r" style="stroke-width: %rpx;" />' %
-                    (Constants.cssBoundingStroke,
-                    s.bounds.left,
-                    s.bounds.top*-1,
-                    s.bounds.width,
-                    s.bounds.height,
-                    Constants.pxGridMajor / sxyGene) for s in genome.gene.aryStrokes if s.bounds ])
-
-            fileTrial.write(_SVG_TRANSFORM_GROUP %
-                            (Constants.cssGene, dxGene, dyGene, sxyGene, Constants.pxLine / sxyGene, ('%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s' %
-                                (_SVG_DISPLAY_GROUP % ('grid', svgOptions.fGrid and 1.0 or 0.0, svgCollectGridLines(rcGene, sxyGene)),
-                                _SVG_DISPLAY_GROUP % ('coherent', svgOptions.fCoherent and 1.0 or 0.0, strCoherent),
-                                _SVG_DISPLAY_GROUP % ('incoherent', svgOptions.fIncoherent and 1.0 or 0.0, strIncoherent),
-                                _SVG_DISPLAY_GROUP % ('marks', svgOptions.fNoise and 1.0 or 0.0, strMarks),
-                                _SVG_DISPLAY_GROUP % ('dropouts', svgOptions.fNoise and 1.0 or 0.0, strDropouts),
-                                _SVG_DISPLAY_GROUP % ('mutations', svgOptions.fMutations and 1.0 or 0.0, strMutations),
-                                _SVG_DISPLAY_GROUP % ('overlaps', svgOptions.fOverlaps and 1.0 or 0.0, strOverlaps),
-                                _SVG_DISPLAY_GROUP % ('vertices-coherent', (svgOptions.fCoherent and svgOptions.fVertices) and 1.0 or 0.0, aryVertices[0]),
-                                _SVG_DISPLAY_GROUP % ('vertices-incoherent', (svgOptions.fIncoherent and svgOptions.fVertices) and 1.0 or 0.0, aryVertices[1]),
-                                _SVG_DISPLAY_GROUP % ('vertices-marks', (svgOptions.fNoise and svgOptions.fVertices) and 1.0 or 0.0, aryVertices[2]),
-                                _SVG_DISPLAY_GROUP % ('vertices-dropouts', (svgOptions.fNoise and svgOptions.fVertices) and 1.0 or 0.0, aryVertices[3]),
-                                _SVG_DISPLAY_GROUP % ('labels-coherent', (svgOptions.fCoherent and svgOptions.fLabels) and 1.0 or 0.0, aryLabels[0]),
-                                _SVG_DISPLAY_GROUP % ('labels-incoherent', (svgOptions.fIncoherent and svgOptions.fLabels) and 1.0 or 0.0, aryLabels[1]),
-                                _SVG_DISPLAY_GROUP % ('bounding-group', svgOptions.fBounding and 1.0 or 0.0, strBoundingGroups),
-                                _SVG_DISPLAY_GROUP % ('bounding-stroke', svgOptions.fBounding and 1.0 or 0.0, strBoundingStrokes)))))
-        
-            if not fImages:
-                # Build the gene icon display (display coherent portions and marks only, both as ink)
-                sxIcon = rcGene.width >= 1 and Constants.dxIcon / rcGene.width or 1
-                syIcon = rcGene.height >=1 and Constants.dyIcon / rcGene.height or 1
-                sxyIcon = min(sxIcon, syIcon)
-        
-                pxLine = max(Constants.pxLine / sxyIcon, Constants.pxLine)
-                if ((pxLine * sxyIcon) > Constants.pxLineScaledMax):
-                    pxLine = Constants.pxLineScaledMax / sxyIcon
-
-                dxIcon = ((rcGene.left * sxyIcon) * -1) + Constants.dxIconOffset
-                dyIcon = (rcGene.top * sxyIcon) + Constants.dyIconOffset
-
-                strHead = '<polyline class="%s" points="' % Constants.cssCoherent
-                strTail = '" />'
-                strCoherent = '\n'.join([ strHead + ' '.join([ '%r,%r' % (pt.x, pt.y*-1) for pt in aryPoints ]) + strTail for aryPoints in (aryCoherent+aryMarks) ])
-            
-                fileTrial.write(_SVG_TRANSFORM_GROUP % (Constants.cssGene, dxIcon, dyIcon, sxyIcon, pxLine, '%s' % strCoherent))
-
-        if not fImages:
-            # Build the Han icon display
-            rcHan = han.bounds
-            sxIcon = rcHan.width >= 1 and Constants.dxIcon / rcHan.width or 1
-            syIcon = rcHan.height >=1 and Constants.dyIcon / rcHan.height or 1
-            sxyIcon = min(sxIcon, syIcon)
-        
-            pxLine = max(Constants.pxLine / sxyIcon, Constants.pxLine)
-            if ((pxLine * sxyIcon) > Constants.pxLineScaledMax):
-                pxLine = Constants.pxLineScaledMax / sxyIcon
-
-            dxIcon = ((rcHan.left * sxyIcon) * -1) + Constants.dxHanIconOffset
-            dyIcon = (rcHan.top * sxyIcon) + Constants.dyHanIconOffset
-
-            strLine = '<polyline class="%s" points="' % Constants.cssHan
-            fileTrial.write(_SVG_TRANSFORM_GROUP % (Constants.cssHan, dxIcon, dyIcon, sxyIcon, pxLine,
-                                            '\n'.join([ strLine + ' '.join([ str(ptd.x) + ',' + str(ptd.y*-1) for ptd in hanStroke.aryPointsForward ]) + '" />' for hanStroke in han.aryStrokes ] )))
-
-            # Write controls
-            fileTrial.write(_SVG_TRIAL_CONTROLS % (svgOptions.fCoherent and Constants.fillVisible or Constants.fillInvisible,
-                                                    svgOptions.fIncoherent and Constants.fillVisible or Constants.fillInvisible,
-                                                    svgOptions.fNoise and Constants.fillVisible or Constants.fillInvisible,
-                                                    svgOptions.fNoise and Constants.fillVisible or Constants.fillInvisible,
-                                                    svgOptions.fMutations and Constants.fillVisible or Constants.fillInvisible,
-                                                    svgOptions.fOverlaps and Constants.fillVisible or Constants.fillInvisible,
-                                                    svgOptions.fLabels and Constants.fillVisible or Constants.fillInvisible,
-                                                    svgOptions.fVertices and Constants.fillVisible or Constants.fillInvisible,
-                                                    svgOptions.fGrid and Constants.fillVisible or Constants.fillInvisible,
-                                                    svgOptions.fBounding and Constants.fillVisible or Constants.fillInvisible,
-                                                    svgOptions.fBounding and Constants.fillVisible or Constants.fillInvisible,
-                                                    genome.gene.bounds and min((Codons.Constants.vectorShort * sxyGene), Constants.dxSmallVectorMax) or 0,
-                                                    genome.gene.bounds and min((Codons.Constants.vectorMedium * sxyGene), Constants.dxMediumVectorMax) or 0,
-                                                    genome.gene.bounds and min((Codons.Constants.vectorLong * sxyGene), Constants.dxLongVectorMax) or 0,
-                                                    genome.statistics.fitness or 0,
-                                                    svgOptions.fVertices and 1.0 or 0.0,
-                                                    svgOptions.fLabels and 1.0 or 0.0))
-
-        fileTrial.write(_SVG_FOOTER)
+        build_single_svg(fileTrial, fImages, genome, svgOptions)
         fileTrial.close()
 
         if not fImages:

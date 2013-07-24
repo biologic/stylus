@@ -546,7 +546,6 @@ extern "C"
 
 		if (!VALID(pxmlGenome) || !VALID(pcchGenome))
 			RETURN_BADARGS();
-
 		Genome::getGenome(pxmlGenome, pcchGenome, grfRecordDetail);
 		RETURN_SUCCESS();
 		

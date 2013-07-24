@@ -539,14 +539,13 @@ XMLDocument::createInstance(const char* pszXML)
 			xmlSchemaValidCtxtSPtr spxsv(::xmlSchemaNewValidCtxt(s_arySCHEMAS[iSchema]._pxsSchema));
 			if (!VALIDSP(spxsv))
 				THROWXML();
-
+    
 			if (!::xmlSchemaValidateDoc(spxsv.get(), spxd.get()))
 				break;
 		}
 	}
 	if (iSchema >= ARRAY_LENGTH(s_arySCHEMAS))
         THROWXML();
-//		THROWRC((RC(XMLERROR), "XML document failed validation with all schemas"));
 
 	return ::new XMLDocument(spxd.release());
 }

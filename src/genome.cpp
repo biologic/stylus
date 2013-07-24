@@ -501,10 +501,14 @@ Genome::setGenome(const char* pxmlGenome, const char* pszAuthor)
 		THROWRC((RC(INVALIDSTATE),
 				 "Attempt to load a new genome during an invalid state (%s)", stateToString()));
 				
+		
+
 	// Load the definition, failure results in a DEAD genome
 	{
         ImpreciseMode impreciseMode;
 		StateGuard sg(STGS_INVALID, STGS_DEAD);		// Ensure state exits as INVALID or DEAD
+
+
 
 		timeNow(&_tLoaded);
 
@@ -874,10 +878,13 @@ Genome::toXML(XMLStream& xs, STFLAGS grfRecordDetail, bool fUseTrialStatistics)
 	
 	timeToString(szTime, &_tLoaded, false, true);
 
-	// Get a new UUID for the new XML file
-    ASSERT(!_vecUUIDs.empty());
-	_strUUID = _vecUUIDs.back();
-	_vecUUIDs.pop_back();
+    if( _strUUID.empty() )
+    {
+        // Get a new UUID for the new XML file
+        ASSERT(!_vecUUIDs.empty());
+        _strUUID = _vecUUIDs.back();
+        _vecUUIDs.pop_back();
+    }
 
 	// Add the genome element and attributes
 	xs.openStart(xmlTag(XT_GENOME));
@@ -1236,6 +1243,8 @@ void
 Genome::advanceTrial(bool fRestore)
 {
 	ENTER(GENOME,advanceTrial);
+
+    _strUUID.clear(); // no longer valid
 
 	// First, spawn a new genome (as needed)
 	if (isState(STGS_ALIVE))
