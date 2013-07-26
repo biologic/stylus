@@ -828,12 +828,17 @@ class CodonTable(CodonTableElement):
 # 
 #------------------------------------------------------------------------------
 class Genome(object):
-    def __init__(self, urlGenome):
+    def __init__(self, urlGenome = None, text = None):
+        assert urlGenome or text
         xmlDict = xmldict.XMLDict({
                                 xmldict.XMLDict.toList : [ 'codonTable', 'acceptedMutations', 'rejectedMutations', 'attempt', 'genes', 'hanReferences', 'groups', 'strokes', 'overlaps', 'segments', 'segment' ],
                                 xmldict.XMLDict.ignore : []
                                 })
-        dictGenome = xmlDict.load(urlGenome)['genome']
+        if urlGenome:
+            dictGenome = xmlDict.load(urlGenome)['genome']
+        else:
+            dictGenome = xmlDict.loads(text)['genome']
+
 
         self.uuid = dictGenome['uuid'].upper()
 
