@@ -82,6 +82,40 @@ extern "C"
 	}
 
 	/*
+	 * Function: stGetLastErrorDescription
+	 * 
+	 * Note:
+	 * - This routine avoids the standard public macros so that, even if an error occurs, the "last"
+	 *   error remains unmodified
+	 */
+	ST_RETCODE
+	stGetLastErrorDescription(ST_RETCODE* prc, char* pszDetails, size_t* pcchDetails)
+	{
+		ST_RETCODE rc = ST_RCERROR;
+		ENTER(GLOBAL,stGetLastError);
+
+		try
+		{
+			if (!VALID(prc) || !VALID(pszDetails) || !VALID(pcchDetails) || *pcchDetails <= 0)
+				rc = ST_RCBADARGUMENTS;
+
+			else
+			{
+				const Error& e = Error::getLastError();
+				*prc = e.getRetcode();
+				rc = copyString(pszDetails, pcchDetails, e.getDescription());
+			}
+		}
+		catch (...)
+		{
+			rc = ST_RCERROR;
+		}
+
+		return rc;
+	}
+
+
+	/*
 	 * Function: stInitialize
 	 *
 	 */

@@ -317,6 +317,10 @@ def getLastError():
   return _stylusengine.getLastError()
 getLastError = _stylusengine.getLastError
 
+def getLastErrorDescription():
+  return _stylusengine.getLastErrorDescription()
+getLastErrorDescription = _stylusengine.getLastErrorDescription
+
 def getLastErrorCode():
   return _stylusengine.getLastErrorCode()
 getLastErrorCode = _stylusengine.getLastErrorCode

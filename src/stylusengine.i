@@ -70,6 +70,7 @@ bool g_fStylusInitialized = false;
 %ignore ST_ISRC;
 
 %ignore stGetLastError;
+%ignore stGetLastErrorDescription;
 %ignore stInitialize;
 %ignore stTerminate;
 %ignore stSetUUIDSeeds;
@@ -403,6 +404,28 @@ bool g_fStylusInitialized = false;
 				{
 					*pszLastError = '\0';
 					::stGetLastError(&rc, pszLastError, &cchLastError);
+				}
+			}
+		}
+		return pszLastError;
+	}
+
+	const char* getLastErrorDescription()
+	{
+		char* pszLastError = ::new char[DEFAULT_BUFFERSIZE];
+		size_t cchLastError = DEFAULT_BUFFERSIZE;
+		ST_RETCODE rc;
+		if (VALID(pszLastError))
+		{
+			*pszLastError = '\0';
+			if (ST_ISSUCCESS(::ensureStylus()) && ST_ISRC(::stGetLastErrorDescription(&rc, pszLastError, &cchLastError), ST_RCBUFFERTOOSMALL))
+			{
+				::delete[] pszLastError;
+				pszLastError = ::new char[cchLastError];
+				if (VALID(pszLastError))
+				{
+					*pszLastError = '\0';
+					::stGetLastErrorDescription(&rc, pszLastError, &cchLastError);
 				}
 			}
 		}

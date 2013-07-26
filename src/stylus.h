@@ -160,6 +160,19 @@ extern "C" {
 	ST_RETCODE stGetLastError(ST_RETCODE* prc, char* pszDetails, size_t* pcchDetails);
 
 	/**
+	 * \brief Obtain the description of the last reported error
+	 *
+	 * This method returns a string containing just the description
+	 * for the last returned error.
+	 * 
+	 * \param[in] prc Last return code
+	 * \param[in] pszDetails Buffer to hold error string
+	 * \param[in,out] pcchDetails Length of output buffer on entry, number of
+	 *							  characters copied or required on return
+	 */
+	ST_RETCODE stGetLastErrorDescription(ST_RETCODE* prc, char* pszDetails, size_t* pcchDetails);
+
+	/**
 	 * \brief Initialize Stylus
 	 * 
 	 * Stylus and its internal libraries require initialization.
