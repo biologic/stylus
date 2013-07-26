@@ -326,6 +326,26 @@ extern "C"
 		EXITPUBLIC(GLOBAL,stGetLogRate);
 	}
 
+    /*
+     * Function: stSetLogFile
+     *
+     */
+    ST_RETCODE
+    stSetLogFile(const char * filename)
+    {
+        ENTERPUBLIC(GLOBAL,stSetLogFile);
+		RETURN_NOTINITIALIZED();
+
+		if (!VALID(filename))
+			RETURN_BADARGS();
+
+		Globals::setLogFile(filename);
+		RETURN_SUCCESS();
+		
+		EXITPUBLIC(GLOBAL,stSetLogFile);
+    }
+
+
 	/*
 	 * Function: stClearTraceRegions
 	 *
@@ -909,6 +929,7 @@ bool Globals::_fSupplied = false;
 ST_LOGLEVEL Globals::_ll = STLL_INFO;
 STFLAGS Globals::_grfLogOptions = STLO_SHORTFORMAT;
 size_t Globals::_cLogRate = 500;
+std::ofstream Globals::_logFile;
 
 STFLAGS Globals::_grfTR = 0;
 ST_TRACELEVEL Globals::_tl[STTC_MAX] = { STTL_NONE, STTL_NONE };
@@ -1137,6 +1158,15 @@ Globals::toXML(XMLStream& xs)
 }
 
 /*
+ * Function: setLogFile
+ */
+void
+Globals::setLogFile(const char * logFilename)
+{
+    _logFile.open(logFilename);
+}
+
+/*
  * Function: log
  *
  */
@@ -1200,7 +1230,11 @@ Globals::log(ST_LOGLEVEL ll, const char* pszFileline, const char* pszFormat, ...
 EXIT:
 	if (_grfLogOptions & STLO_USESTDOUT)
 		cout << s_achBuffer << endl;
-	cerr << s_achBuffer << endl;
+
+    if( !_logFile.is_open() )
+        cerr << s_achBuffer << endl;
+    else
+        _logFile << s_achBuffer << endl;
 
 	va_end(ap);
 	return;

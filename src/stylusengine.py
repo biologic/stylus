@@ -345,6 +345,10 @@ def setLogLevel(*args):
   return _stylusengine.setLogLevel(*args)
 setLogLevel = _stylusengine.setLogLevel
 
+def setLogFile(*args):
+  return _stylusengine.setLogFile(*args)
+setLogFile = _stylusengine.setLogFile
+
 def getTraceRegions():
   return _stylusengine.getTraceRegions()
 getTraceRegions = _stylusengine.getTraceRegions

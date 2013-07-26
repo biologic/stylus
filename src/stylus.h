@@ -289,6 +289,7 @@ extern "C" {
 	ST_RETCODE stGetLogOptions(STFLAGS* pgrfLogOptions);
 	ST_RETCODE stSetLogRate(size_t cLogRate);
 	ST_RETCODE stGetLogRate(size_t* pcLogRate);
+    ST_RETCODE stSetLogFile(const char * logFilename);
 	//@}
 
 	/**

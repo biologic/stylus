@@ -308,6 +308,7 @@ namespace org_biologicinstitute_stylus
 		 */
 		//{@
 		/// Determine if a log message should be written
+        static void setLogFile(const char * logFilename);
 		static bool logIf(ST_LOGLEVEL ll) throw();
 		static bool logIfRate(ST_LOGLEVEL ll, size_t iTrial) throw();
 
@@ -373,7 +374,8 @@ namespace org_biologicinstitute_stylus
 	private:
 		static bool _fInitialized;
 		static bool _fSupplied;
-		
+	
+        static std::ofstream _logFile;
 		static ST_LOGLEVEL _ll;
 		static STFLAGS _grfLogOptions;
 		static size_t _cLogRate;

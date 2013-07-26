@@ -95,6 +95,7 @@ bool g_fStylusInitialized = false;
 %ignore stGetLogOptions;
 %ignore stSetLogRate;
 %ignore stGetLogRate;
+%ignore stSetLogFile;
 
 %ignore STTR_NONE;
 %ignore STTR_GLOBAL;
@@ -499,6 +500,17 @@ bool g_fStylusInitialized = false;
 			rc = ::stSetLogRate(cRate);
 		return rc;
 	}
+
+    unsigned long setLogFile(const char * filename)
+    {
+        ST_RETCODE rc = ::ensureStylus();
+		return (!ST_ISSUCCESS(rc)
+				? rc
+				: ::stSetLogFile(filename));
+
+    }
+
+
 
 	const char** getTraceRegions()
 	{
