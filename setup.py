@@ -1,6 +1,7 @@
 from setuptools import setup, Extension
 import subprocess
 import glob
+import platform
 
 sources = glob.glob('src/*.cpp') + glob.glob('src/randomc/*.cpp') + glob.glob('src/*.i')
 sources = [source for source in sources if '_wrap' not in source]
