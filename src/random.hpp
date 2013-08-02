@@ -105,13 +105,6 @@ namespace org_biologicinstitute_stylus
 		static void terminate();
 
 		/**
-		 * \brief Generate a v4 UUID as per RFC 4122
-		 *
-		 * Use the random number generator to generate a v4 UUID.
-		 */
-		static std::string getUUIDv4();
-
-		/**
 		 * \brief Methods that statically reroute to the active random generator
 		 *
 		 */

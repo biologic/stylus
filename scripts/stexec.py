@@ -298,21 +298,7 @@ def getArguments():
             Globals.aryLog[2] = os.path.abspath(os.path.join(Globals.names.pathData, Globals.aryLog[2]))
         Globals.aryLog[2] = os.path.normpath(os.path.normcase(Globals.aryLog[2]))
         
-#------------------------------------------------------------------------------
-# Function: getUUIDSeeds
-#
-# Generate seeds for UUID generation
-#------------------------------------------------------------------------------
-def getUUIDSeeds():
-    # Get randomness from urandom or the 'random' module.
-    intbytecount = 64
 
-    try:
-        seeds = ''.join(chr(os.urandom(1)) for i in range(intbytecount))
-    except:
-        seeds = ''.join(chr(random.randrange(256)) for j in range(intbytecount))
-
-    return base64.b64encode(seeds)
         
 #==============================================================================
 # Main
@@ -368,10 +354,6 @@ def main(argv=None):
                 raise StylusError(rc)
             
         rc = Stylus.setGenome(strGenome, Globals.strAuthor)
-        if rc:
-            raise StylusError(rc)
-
-        rc = Stylus.setUUIDSeeds(getUUIDSeeds())
         if rc:
             raise StylusError(rc)
 

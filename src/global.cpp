@@ -178,23 +178,6 @@ extern "C"
 		EXITPUBLIC(GLOBAL,stSetGlobals);
 	}
 	
-	/*
-	 * Function: stSetUUIDSeeds
-	 * 
-	 */
-	ST_RETCODE
-	stSetUUIDSeeds(const char* pszSeeds)
-	{
-		ENTERPUBLIC(GLOBAL,stSetUUIDSeeds);
-		RETURN_NOTINITIALIZED();
-		
-		// Generate UUIDs
-		Genome::setUUIDSeeds(pszSeeds);
-
-		RETURN_SUCCESS();
-
-		EXITPUBLIC(GLOBAL,stSetUUIDSeeds);
-	}
 
 	/*
 	 * Function: stSetScope

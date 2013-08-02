@@ -373,10 +373,6 @@ def getGenome(*args):
   return _stylusengine.getGenome(*args)
 getGenome = _stylusengine.getGenome
 
-def setUUIDSeeds(*args):
-  return _stylusengine.setUUIDSeeds(*args)
-setUUIDSeeds = _stylusengine.setUUIDSeeds
-
 def getGenomeBases():
   return _stylusengine.getGenomeBases()
 getGenomeBases = _stylusengine.getGenomeBases

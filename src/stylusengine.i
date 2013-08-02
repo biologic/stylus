@@ -73,7 +73,6 @@ bool g_fStylusInitialized = false;
 %ignore stGetLastErrorDescription;
 %ignore stInitialize;
 %ignore stTerminate;
-%ignore stSetUUIDSeeds;
 %ignore stSetScope;
 %ignore stGetVersion;
 
@@ -578,14 +577,6 @@ bool g_fStylusInitialized = false;
 		return pszGenome;
 	}
 
-	unsigned long setUUIDSeeds(const char* pszSeeds)
-	{
-		ST_RETCODE rc = ::ensureStylus();
-		return (!ST_ISSUCCESS(rc)
-				? rc
-				: ::stSetUUIDSeeds(pszSeeds));
-	}
-	
 	const char* getGenomeBases()
 	{
 		char* pszBases = ::new char[DEFAULT_BUFFERSIZE];

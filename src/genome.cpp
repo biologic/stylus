@@ -19,6 +19,7 @@
 
 
 // Includes ---------------------------------------------------------------------
+#include <uuid/uuid.h>
 #include "headers.hpp"
 
 using namespace std;
@@ -335,9 +336,6 @@ std::string Genome::_strUUID;
 std::string Genome::_strStrain;
 std::string Genome::_strAncestors;
 
-std::string Genome::_strUUIDSeeds;
-STRINGARRAY Genome::_vecUUIDs;
-
 bool Genome::_fReady;
 ROLLBACKTYPE Genome::_rollbackType;
 
@@ -649,18 +647,6 @@ Genome::setGenome(const char* pxmlGenome, const char* pszAuthor)
 }
 
 /*
- * Function: setUUIDSeeds
- *
- */
-void
-Genome::setUUIDSeeds(const char* pszSeeds)
-{
-	ENTER(GENOME,setUUIDSeeds);
-
-	_strUUIDSeeds = pszSeeds;
-}
-
-/*
  * Function: getGenome
  *
  */
@@ -878,13 +864,11 @@ Genome::toXML(XMLStream& xs, STFLAGS grfRecordDetail, bool fUseTrialStatistics)
 	
 	timeToString(szTime, &_tLoaded, false, true);
 
-    if( _strUUID.empty() )
-    {
-        // Get a new UUID for the new XML file
-        ASSERT(!_vecUUIDs.empty());
-        _strUUID = _vecUUIDs.back();
-        _vecUUIDs.pop_back();
-    }
+    uuid_t uuid;
+    uuid_generate(uuid);
+    char buffer[37];
+    uuid_unparse_upper(uuid, buffer);
+    _strUUID = buffer;
 
 	// Add the genome element and attributes
 	xs.openStart(xmlTag(XT_GENOME));

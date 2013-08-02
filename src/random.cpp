@@ -59,45 +59,6 @@ RGenerator::terminate()
 }
 
 /*
- * Function: getUUIDv4
- *
- */
-std::string 
-RGenerator::getUUIDv4()
-{
-	ENTER(GLOBAL,getUUIDv4);
-
-	long bytes[16];
-	ostringstream ostr;
-
-	// Get random bytes for UUID
-	for (size_t index = 0; index < 16; index += 1) {
-		bytes[index] = getUniform((long)0, (long)255);
-	}
-
-	// Set the UUID variant to be RFC4122
-	bytes[7] &= ~0xc0;
-	bytes[7] |= 0x80;
-
-	// Set the UUID version number to 4
-	bytes[9] &= ~0xf0;
-	bytes[9] |= 0x40;
-
-	// Format UUID string
-	ostr << uppercase << hex << setfill('0');
-	ostr << setw(2) << bytes[15] << setw(2) << bytes[14];
-	ostr << setw(2) << bytes[13] << setw(2) << bytes[12] << '-';
-	ostr << setw(2) << bytes[11] << setw(2) << bytes[10] << '-';
-	ostr << setw(2) << bytes[9]  << setw(2) << bytes[8]  << '-';
-	ostr << setw(2) << bytes[7]  << setw(2) << bytes[6]  << '-';
-	ostr << setw(2) << bytes[5]  << setw(2) << bytes[4];
-	ostr << setw(2) << bytes[3]  << setw(2) << bytes[2];
-	ostr << setw(2) << bytes[1]  << setw(2) << bytes[0];
-
-	return ostr.str();
-}
-
-/*
  * Function: loadSeed
  *
  */

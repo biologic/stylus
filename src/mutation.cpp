@@ -603,38 +603,6 @@ Genome::executePlan(const char* pxmlPlan, size_t iTrialFirst, size_t cTrials, ST
 	// Save the initial genome and plan
 	if (isRecording())
 	{
-		// Preserve the current seed so UUID generation does not perturb the
-		// reproducibility of executing a plan
-		std::string oldSeed = RGenerator::getSeed();
-
-		// Set the seed for UUID generation
-		RGenerator::setSeed(_strUUIDSeeds);
-
-		// Generate UUIDs for each recording trial
-		// (conservatively over-estimate the number of UUIDs required to
-		//  simplify the logic - then exact start and end trial numbers do not
-		//  need to be determined)
-		long uuidCount = (_plan.getActualTrialCount(cTrials, iTrialFirst) + (Genome::recordingRate() - 1)) / Genome::recordingRate();
-
-		// Generate UUIDs for the start and final XML files
-		uuidCount += 2;
-
-		// Adjust for any UUIDs that may already have been created due to
-		// conservative over-estimation above to avoid indefinite growth of
-		// surplus UUIDs
-		uuidCount -= _vecUUIDs.size();
-
-		for (long iCount=0; iCount < uuidCount; ++iCount) {
-			_vecUUIDs.push_back(RGenerator::getUUIDv4());
-		}
-
-		// Save the updated UUID generation seed for future UUID generation
-		// during multiple plan execution
-		_strUUIDSeeds = RGenerator::getSeed();
-
-		// Restore the plan seed to ensure reproducible plan execution
-		RGenerator::setSeed(oldSeed);
-
 		if (Globals::isSupplied())
 		{
 			ostringstream ostrGlobals;

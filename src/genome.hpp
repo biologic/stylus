@@ -274,8 +274,6 @@ namespace org_biologicinstitute_stylus
 		static void setGenome(const char* pxmlGenome, const char* pszAuthor);
 		static void getGenome(char* pxmlGenome, size_t* pcchGenome, STFLAGS grfRecordDetail);
 
-		static void setUUIDSeeds(const char* pszSeeds);
-
 		static void setTraceTrial(size_t iTrialTrace);
 		static size_t getTraceTrial();
 		
@@ -339,9 +337,6 @@ namespace org_biologicinstitute_stylus
 		static std::string _strUUID;			///< Genome universally unique ID
 		static std::string _strStrain;			///< User-supplied strain identifier (unused and uninterpreted)
 		static std::string _strAncestors;		///< User-supplied ancestor identifiers (unused and uninterpreted)
-
-		static std::string _strUUIDSeeds;		///< Seed for UUID generation
-		static STRINGARRAY _vecUUIDs;			///< Array of unique IDs to use when recording
 
 		static bool _fReady;					///< Genome is ready for use
         static ROLLBACKTYPE _rollbackType;      ///< Current rollback type

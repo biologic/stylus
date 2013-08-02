@@ -200,30 +200,6 @@ extern "C" {
 	ST_RETCODE stSetGlobals(const char* pxmlGlobals);
 	
 	/**
-	 * \brief Load Stylus UUID seeds
-	 * 
-	 * Stylus generates unique UUIDs for each genome XML file it records during
-	 * execution of a plan.
-	 * 
-	 * When a plan is executed, the random number generator is temporarily
-	 * initialised with this seed to generate a sequence of UUIDs for the genome
-	 * XML files. After a sequence of UUIDs for the plan to be executed have
-	 * been generated, the seed used during the trials in this plan is restored
-	 * and subsequently saved in each of the genome XML files when recording (in
-	 * order to allow the sequence of trials in the plan's execution to be
-	 * recreated).
-	 * 
-	 * After the sequence of UUIDs for a plan's execution has been generated and
-	 * before the normal seed is restored, the random number generator's
-	 * (updated) current seed is saved and maintained separately, so that it can
-	 * be used for subsequent plan executions - i.e. this method need only be
-	 * called once at after initialisation.
-	 * 
-	 * \param[in] pszSeeds Pointer to the UUID seeds
-	 */
-	ST_RETCODE stSetUUIDSeeds(const char* pszSeeds);
-	
-	/**
 	 * \brief Establish the Han and XML scopes for locating external files
 	 * 
 	 * \param[in] pszURLHan Pointer to the null terminated string containing the
