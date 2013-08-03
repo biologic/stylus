@@ -170,6 +170,13 @@ _SVG_HEADER = '''<?xml version='1.0' standalone='no'?><?xml-stylesheet href='%ss
 <script type='text/javascript' xlink:href='%sstylus-svg.js' />
 '''
 
+
+_SVG_HEADER_PLAIN = '''<?xml version='1.0' standalone='no'?><!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN' 'http://www.w3.org/Graphics/SVG/1.0/DTD/svg10.dtd'>
+<svg width='%dpx' height='%dpx' viewBox='0 0 %d %d' version='1.0' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
+'''
+
+
+
 _SVG_TRANSFORM_GROUP = '''
 <g class='%s' transform='translate(%d,%d) scale(%r)' style='stroke-width: %rpx;'>
 %s
@@ -195,6 +202,7 @@ _SVG_TRIAL_CONTROLS = '''
 <rect class='han' x='500' y='0' width='200px' height='345px' />
 <rect class='han' x='500' y='345' width='200px' height='100px' />
 <g class='control' transform='translate(508,350)'><a onclick='showHide("coherent");'><circle id='coherent-control' fill='%s' cx='5' cy='5' r='4' /><text x='12' y='10' class='coherent'>Strokes</text></a></g>
+<g class='control' transform='translate(508,365)'><a onclick='showHide("incoherent");'><circle id='incoherent-control' fill='%s' cx='5' cy='5' r='4' /><text x='12' y='10' class='incoherent'>Moves</text></a></g>
 <g class='control' transform='translate(508,365)'><a onclick='showHide("incoherent");'><circle id='incoherent-control' fill='%s' cx='5' cy='5' r='4' /><text x='12' y='10' class='incoherent'>Moves</text></a></g>
 <g class='control' transform='translate(508,380)'><a onclick='showHide("marks");'><circle id='marks-control' fill='%s' cx='5' cy='5' r='4' /><text x='12' y='10' class='mark'>Marks</text></a></g>
 <g class='control' transform='translate(508,395)'><a onclick='showHide("dropouts");'><circle id='dropouts-control' fill='%s' cx='5' cy='5' r='4' /><text x='12' y='10' class='dropout'>Dropouts</text></a></g>
@@ -740,10 +748,16 @@ def svgCollectLabels(gene, sxyGene):
 
 def build_single_svg(fileTrial,fImages, genome, svgOptions, href_base = ''):
 
-    if fImages:
-        fileTrial.write(_SVG_HEADER % (href_base, Constants.dxImage, Constants.dyImage, Constants.dxImage, Constants.dyImage, href_base))
+    if href_base is None:
+        if fImages:
+            fileTrial.write(_SVG_HEADER_PLAIN % (Constants.dxImage, Constants.dyImage, Constants.dxImage, Constants.dyImage))
+        else:
+            fileTrial.write(_SVG_HEADER_PLAIN % (Constants.dxTrial, Constants.dyTrial, Constants.dxTrial, Constants.dyTrial))
     else:
-        fileTrial.write(_SVG_HEADER % (href_base, Constants.dxTrial, Constants.dyTrial, Constants.dxTrial, Constants.dyTrial, href_base))
+        if fImages:
+            fileTrial.write(_SVG_HEADER % (href_base, Constants.dxImage, Constants.dyImage, Constants.dxImage, Constants.dyImage, href_base))
+        else:
+            fileTrial.write(_SVG_HEADER % (href_base, Constants.dxTrial, Constants.dyTrial, Constants.dxTrial, Constants.dyTrial, href_base))
 
     rcGene, aryCoherent, aryIncoherent, aryMarks, aryDropouts, aryMutations = svgCollectLines(genome)
 
