@@ -203,7 +203,6 @@ _SVG_TRIAL_CONTROLS = '''
 <rect class='han' x='500' y='345' width='200px' height='100px' />
 <g class='control' transform='translate(508,350)'><a onclick='showHide("coherent");'><circle id='coherent-control' fill='%s' cx='5' cy='5' r='4' /><text x='12' y='10' class='coherent'>Strokes</text></a></g>
 <g class='control' transform='translate(508,365)'><a onclick='showHide("incoherent");'><circle id='incoherent-control' fill='%s' cx='5' cy='5' r='4' /><text x='12' y='10' class='incoherent'>Moves</text></a></g>
-<g class='control' transform='translate(508,365)'><a onclick='showHide("incoherent");'><circle id='incoherent-control' fill='%s' cx='5' cy='5' r='4' /><text x='12' y='10' class='incoherent'>Moves</text></a></g>
 <g class='control' transform='translate(508,380)'><a onclick='showHide("marks");'><circle id='marks-control' fill='%s' cx='5' cy='5' r='4' /><text x='12' y='10' class='mark'>Marks</text></a></g>
 <g class='control' transform='translate(508,395)'><a onclick='showHide("dropouts");'><circle id='dropouts-control' fill='%s' cx='5' cy='5' r='4' /><text x='12' y='10' class='dropout'>Dropouts</text></a></g>
 <g class='control' transform='translate(508,410)'><a onclick='showHide("mutations");'><circle id='mutations-control' fill='%s' cx='5' cy='5' r='4' /><text x='12' y='10' class='mutation'>Mutations</text></a></g>
@@ -746,7 +745,7 @@ def svgCollectLabels(gene, sxyGene):
 
     return [ '\n'.join(aryLabels[0]), '\n'.join(aryLabels[1]) ]
 
-def build_single_svg(fileTrial,fImages, genome, svgOptions, href_base = ''):
+def build_single_svg(fileTrial,fImages, genome, svgOptions, href_base = '', han = None):
 
     if href_base is None:
         if fImages:
@@ -939,10 +938,76 @@ def buildSVG(aryData, han, fImages):
         svgFile = os.path.join(Globals.names.pathReport, (os.path.splitext(strFile)[0]+'.svg'))
 
         fileTrial = open(svgFile, 'w')
-        build_single_svg(fileTrial, fImages, genome, svgOptions)
+        build_single_svg(fileTrial, fImages, genome, svgOptions, han = han)
         fileTrial.close()
 
         if not fImages:
+            rcGene, aryCoherent, aryIncoherent, aryMarks, aryDropouts, aryMutations = svgCollectLines(genome)
+            if rcGene.width or rcGene.height:
+                    sxGene = rcGene.width >= 1 and (Constants.dxGene / rcGene.width) or 1
+                    syGene = rcGene.height >=1 and (Constants.dyGene / rcGene.height) or 1
+                    sxyGene = min(sxGene, syGene)
+
+                    dxGene = ((rcGene.left * sxyGene) * -1) + Constants.dxGeneOffset
+                    dyGene = (rcGene.top * sxyGene) + Constants.dyGeneOffset
+
+                    strHead = '<polyline class="%s" points="' % Constants.cssCoherent
+                    strTail = '" />'
+                    strCoherent = '\n'.join([ strHead + ' '.join([ '%r,%r' % (pt.x, pt.y*-1) for pt in aryPoints ]) + strTail for aryPoints in aryCoherent ])
+                
+                    strHead = '<polyline class="%s" style="stroke-dasharray: %r,%r;" points="' % (Constants.cssIncoherent, Constants.pxDashArrayDash / sxyGene, Constants.pxDashArrayGap / sxyGene)
+                    strIncoherent = '\n'.join([ strHead + ' '.join([ '%r,%r' % (pt.x, pt.y*-1) for pt in aryPoints ]) + strTail for aryPoints in aryIncoherent ])
+                
+                    strHead = '<polyline class="%s" points="' % Constants.cssMark
+                    strMarks = '\n'.join([ strHead + ' '.join([ '%r,%r' % (pt.x, pt.y*-1) for pt in aryPoints ]) + strTail for aryPoints in aryMarks ])
+                
+                    strHead = '<polyline class="%s" points="' % Constants.cssDropout
+                    strDropouts = '\n'.join([ strHead + ' '.join([ '%r,%r' % (pt.x, pt.y*-1) for pt in aryPoints ]) + strTail for aryPoints in aryDropouts ])
+                
+                    strHead = '<polyline class="%s" points="' % Constants.cssMutation
+                    strMutations = '\n'.join([ strHead + ' '.join([ '%r,%r' % (pt.x, pt.y*-1) for pt in aryPoints ]) + strTail for aryPoints in aryMutations ])
+                                                
+                    strHead = '<circle class="%s"' % Constants.cssOverlap
+                    strTail = ' r="%r" />' % (Constants.pxOverlap / sxyGene)
+                    strOverlaps = '\n'.join([ (strHead + (' cx="%r" cy="%r"' % (overlap.pt.x, overlap.pt.y*-1)) + strTail) for overlap in genome.gene.aryOverlaps ])
+                                                
+                    strHead = '<circle class="%s"' % Constants.cssCoherent
+                    strTail = ' r="%r" />' % (Constants.pxVertex / sxyGene)
+                    aryVertices = [ '\n'.join([ '\n'.join([ strHead + (' cx="%r" cy="%r"' % (pt.x, pt.y*-1)) + strTail for pt in aryPoints]) for aryPoints in aryCoherent ]) ]
+
+                    strHead = '<circle class="%s"' % Constants.cssIncoherent
+                    aryVertices.append('\n'.join([ '\n'.join([ strHead + (' cx="%r" cy="%r"' % (pt.x, pt.y*-1)) + strTail for pt in aryPoints]) for aryPoints in aryIncoherent ]))
+
+                    strHead = '<circle class="%s"' % Constants.cssMark
+                    aryVertices.append('\n'.join([ '\n'.join([ strHead + (' cx="%r" cy="%r"' % (pt.x, pt.y*-1)) + strTail for pt in aryPoints]) for aryPoints in aryMarks ]))
+
+                    strHead = '<circle class="%s"' % Constants.cssDropout
+                    aryVertices.append('\n'.join([ '\n'.join([ strHead + (' cx="%r" cy="%r"' % (pt.x, pt.y*-1)) + strTail for pt in aryPoints]) for aryPoints in aryDropouts ]))
+                
+                    aryLabels = svgCollectLabels(genome.gene, sxyGene)
+
+                    pxFontSize = max(Constants.pxFontSize / sxyGene, Constants.pxFontSizeScaledMin)
+                    strBoundingGroups = '\n'.join([ '<rect class="%s" x="%r" y="%r" width="%r" height="%r" style="stroke-width: %rpx;" /><text class="%s" x="%r" y="%r" font-size="%r">%d</text>' %
+                            (Constants.cssBoundingGroup,
+                            genome.gene.aryGroups[i].bounds.left,
+                            genome.gene.aryGroups[i].bounds.top*-1,
+                            genome.gene.aryGroups[i].bounds.width,
+                            genome.gene.aryGroups[i].bounds.height,
+                            Constants.pxGridMajor / sxyGene,
+                            Constants.cssBoundingGroup,
+                            genome.gene.aryGroups[i].bounds.left + (pxFontSize / 4),
+                            genome.gene.aryGroups[i].bounds.top*-1 + pxFontSize,
+                            pxFontSize,
+                            i+1) for i in xrange(0,len(genome.gene.aryGroups)) if genome.gene.aryGroups[i].bounds ])
+
+                    strBoundingStrokes = '\n'.join([ '<rect class="%s" x="%r" y="%r" width="%r" height="%r" style="stroke-width: %rpx;" />' %
+                            (Constants.cssBoundingStroke,
+                            s.bounds.left,
+                            s.bounds.top*-1,
+                            s.bounds.width,
+                            s.bounds.height,
+                            Constants.pxGridMajor / sxyGene) for s in genome.gene.aryStrokes if s.bounds ])
+
             # Add the gene icon to the default collection
             sxIcon = rcGene.width >= 1 and Constants.dxDefaultIcon / rcGene.width or 1
             syIcon = rcGene.height >=1 and Constants.dyDefaultIcon / rcGene.height or 1
