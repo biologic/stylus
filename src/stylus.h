@@ -376,20 +376,24 @@ extern "C" {
 		STRD_SCOREALL	= 0x0020,	///< Record all score details
 		STRD_SEGMENTS	= 0x0040,	///< Record calculated segments and points
 		STRD_STATISTICS = 0x0080,	///< Record genome statistics
+        STRD_SEED       = 0x0100,
 
 		STRD_NONE		= 0x0000,	///< Record nothing
 
 		STRD_RESTART	= STRD_GENES
-						| STRD_SCORE,
+						| STRD_SCORE
+                        | STRD_SEED,
 
 		STRD_STANDARD	= STRD_GENES
 						| STRD_LINEAGE
 						| STRD_SCORE
-						| STRD_SEGMENTS,
+						| STRD_SEGMENTS
+                        | STRD_SEED,
 
 		STRD_SUMMARY	= STRD_GENES
 						| STRD_LINEAGE
-						| STRD_SCORE,
+						| STRD_SCORE
+                        | STRD_SEED,
 
 		STRD_ALL		= STRD_DIMENSIONS
 						| STRD_GENES
@@ -399,6 +403,17 @@ extern "C" {
 						| STRD_SCOREALL
 						| STRD_SEGMENTS
 						| STRD_STATISTICS
+                        | STRD_SEED,
+
+        STRD_ALL_NOSEED = STRD_DIMENSIONS
+						| STRD_GENES
+						| STRD_LINEAGE
+						| STRD_LINEAGEALL
+						| STRD_SCORE
+						| STRD_SCOREALL
+						| STRD_SEGMENTS
+						| STRD_STATISTICS
+
 	} ST_RECORDDETAIL;
 #define DEFAULT_RECORDDETAIL STRD_STANDARD
 

@@ -146,6 +146,7 @@ bool g_fStylusInitialized = false;
 %ignore STRD_STANDARD;
 %ignore STRD_SUMMARY;
 %ignore STRD_ALL;
+%ignore STRD_ALL_NOSEED;
 %ignore ST_RECORDDETAIL;
 %ignore DEFAULT_RECORDDETAIL;
 
@@ -293,6 +294,7 @@ bool g_fStylusInitialized = false;
 		"standard",
 		"summary",
 		"all",
+        "all-noseed",
 		NULL
 	};
 	static const size_t s_aryRECORDDETAILFLAGS[] =
@@ -309,7 +311,8 @@ bool g_fStylusInitialized = false;
 		STRD_RESTART,
 		STRD_STANDARD,
 		STRD_SUMMARY,
-		STRD_ALL
+		STRD_ALL,
+        STRD_ALL_NOSEED
 	};
 	static const size_t s_cRECORDDETAILS = ARRAY_LENGTH(s_aryRECORDDETAILS)-1;
 	

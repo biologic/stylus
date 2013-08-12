@@ -880,8 +880,9 @@ Genome::toXML(XMLStream& xs, STFLAGS grfRecordDetail, bool fUseTrialStatistics)
 	xs.writeAttribute(xmlTag(XT_CREATIONDATE), szTime);
 	xs.closeStart();
 	
-	// Add the seed child element
-	RGenerator::getSeed(xs, grfRecordDetail);
+    if( grfRecordDetail & STRD_SEED)
+        // Add the seed child element
+        RGenerator::getSeed(xs, grfRecordDetail);
 	
 	// Add the codon table
 	_ct.toXML(xs, grfRecordDetail);
