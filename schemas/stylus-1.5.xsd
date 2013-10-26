@@ -1096,7 +1096,7 @@
 				<xs:complexType mixed="false">
 					<xs:sequence minOccurs="1" maxOccurs="1">
 						<xs:element name="trialConditions" type="st:trialConditionsType" minOccurs="0" maxOccurs="1" />
-						<xs:choice minOccurs="1" maxOccurs="unbounded">
+						<xs:choice minOccurs="0" maxOccurs="unbounded">
 							<xs:element name="change" type="st:changeType" minOccurs="1" maxOccurs="1" />
 							<xs:element name="copy" type="st:copyType" minOccurs="1" maxOccurs="1" />
 							<xs:element name="delete" type="st:deleteType" minOccurs="1" maxOccurs="1" />
