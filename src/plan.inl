@@ -479,9 +479,9 @@ inline void Plan::endExecution() { _fExecuting = false; }
 
 inline size_t Plan::getActualTrialCount(size_t cTrials, size_t iTrialFirst)
 {
-	return cTrials == 0
-		? _cTrials
-		: min<size_t>(cTrials, (_cTrials - (Genome::getTrial()+1) + iTrialFirst));
+    if(cTrials == 0)
+        cTrials = _cTrials;
+	return min<size_t>(cTrials, (_cTrials - (Genome::getTrial()+1) + iTrialFirst));
 }
 
 //--------------------------------------------------------------------------------

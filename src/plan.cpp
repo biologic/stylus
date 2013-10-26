@@ -1711,7 +1711,7 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 							fPlanTerminated = true;
 
 						// If a callback exists, notify the caller (and terminate if requested)
-						else if (fSuccess && VALID(pfnStatus) && ((Genome::getTrial() % cStatusRate) != 0) && (*pfnStatus)())
+						else if (fSuccess && VALID(pfnStatus) && ((Genome::getTrial() % cStatusRate) == 0) && (*pfnStatus)())
 						{
 							Genome::recordTermination(ST_FILELINE, STGT_CALLBACK, STGR_TERMINATED, "Callback ended plan execution at trial %ld", Genome::getTrial());
 							fPlanTerminated = true;

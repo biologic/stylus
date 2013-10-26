@@ -47,6 +47,18 @@ bool g_fStylusInitialized = false;
 #define VALID(x)			(x != NULL)
 
 #include <stylus.h>
+
+PyObject * g_planStatusCallback = NULL;
+bool g_planStatusCallbackError = false;
+
+bool python_status_callback()
+{
+    PyObject * result = PyObject_CallObject(g_planStatusCallback, NULL);
+    Py_XDECREF(result);
+    if(result == NULL)
+        g_planStatusCallbackError = true;
+    return result == NULL;
+}
 %}
 
 %naturalvar;
@@ -561,8 +573,8 @@ bool g_fStylusInitialized = false;
 	const char* getGenome(VECSTRING* pvecDetail)
 	{
 		STFLAGS grfDetail = ::stringsToFlags(s_aryRECORDDETAILS, s_aryRECORDDETAILFLAGS, s_cRECORDDETAILS, pvecDetail);
-		char* pszGenome = ::new char[DEFAULT_BUFFERSIZE];
-		size_t cchGenome = DEFAULT_BUFFERSIZE;
+		char* pszGenome = ::new char[DEFAULT_BUFFERSIZE*20];
+		size_t cchGenome = DEFAULT_BUFFERSIZE*20;
 		if (VALID(pszGenome))
 		{
 			*pszGenome = '\0';
@@ -608,6 +620,28 @@ bool g_fStylusInitialized = false;
 				? rc
 				: ::stExecutePlan(pszPlan, iTrialFirst, cTrials, NULL, 0));
 	}
+
+	PyObject * executePlan(const char* pszPlan, size_t iTrialFirst, size_t cTrials, PyObject * callback)
+	{
+        assert(g_planStatusCallback == NULL);
+        g_planStatusCallback = callback;
+        g_planStatusCallbackError = false;
+        Py_INCREF(g_planStatusCallback);
+        
+		ST_RETCODE rc = ::ensureStylus();
+		unsigned long result = (!ST_ISSUCCESS(rc)
+				? rc
+				: ::stExecutePlan(pszPlan, iTrialFirst, cTrials, python_status_callback, 1));
+        Py_DECREF(g_planStatusCallback);
+        g_planStatusCallback = NULL;
+        if(g_planStatusCallbackError) {
+            // At some point the callback failed.
+            // It's error will still be in Python's state
+            return NULL;
+        } else {
+            return PyInt_FromLong(result);
+        }
+	}
 	
 	class STATISTICS : public ST_STATISTICS
 	{
@@ -623,7 +657,7 @@ bool g_fStylusInitialized = false;
 			::stGetStatistics(&statistics);
 		return statistics;
 	}
-	
+
 	ST_GENOMESTATE getState()
 	{
 		ST_GENOMESTATE gs;
