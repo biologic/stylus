@@ -523,9 +523,6 @@ XMLDocument::createInstance(const char* pszXML)
 
 	xmlParserCtxtSPtr spxpc(::xmlCreateDocParserCtxt((xmlChar*)pszXML));
 
-	::xmlSetGenericErrorFunc(spxpc.get(), &handlerGenericError);
-	::xmlSetStructuredErrorFunc(spxpc.get(), &handlerStructuredError);
-
 	if (::xmlParseDocument(spxpc.get()) < 0)
 		THROWXML();
 
