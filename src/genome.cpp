@@ -248,6 +248,13 @@ CodonTable::load(XMLDocument* pxd, xmlNodePtr pxnCodonTable)
 			_mapCodonToType[iCodon] = Acid::vectorToType(strVector.c_str());
 		}
 	}
+	
+    // Next, any codons without supplied values become the defaults
+	for (size_t iCodon=0; iCodon < Constants::s_nmaxCODONS; ++iCodon)
+    {
+        if (_mapCodonToType[iCodon] == ACID_MAX)
+            _mapCodonToType[iCodon] = s_mapCodonToType[iCodon];
+    }
 
 	// Finally, ensure that each acid occurs at least once in the codon table
 	bool grfAcid[ACID_MAX];
