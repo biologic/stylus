@@ -44,9 +44,15 @@ TrialValue::load(XMLDocument* pxd, xmlNodePtr pxnValue)
 	
 	string str;
 	
-	pxd->getAttribute(pxnValue, xmlTag(XT_VALUE), str);
-	_nValueOriginal = str;
-	_nValue = str;
+	if (pxd->getAttribute(pxnValue, xmlTag(XT_VALUE), str)) 
+    {
+        _nValueOriginal = str;
+        _nValue = str;
+    }
+    else
+    {
+        _nValueOriginal = _nValue = 0.0;
+    }
 
 	if (pxd->getAttribute(pxnValue, xmlTag(XT_LIKELIHOOD), str))
 		_nLikelihood = str;
@@ -65,7 +71,8 @@ TrialValue::toXML(XMLStream& xs)
 	ENTER(PLAN,toXML);
 	
 	xs.openStart(xmlTag(XT_VALUE));
-	xs.writeAttribute(xmlTag(XT_VALUE), _nValueOriginal);
+    if (_nValueOriginal != 0.0) 
+        xs.writeAttribute(xmlTag(XT_VALUE), _nValueOriginal);
 	if (_nLikelihood != 1.0)
 		xs.writeAttribute(xmlTag(XT_LIKELIHOOD), _nLikelihood);
 	if (_nFactor != 1.0)
@@ -201,7 +208,7 @@ TrialCondition::initialize(UNIT nValueDefault)
 	// If increasing and the default value is above the supplied value, use the default
 	if (_tcm == TCM_INCREASE)
 	{
-		if (Unit(_vecValues[0].getValue()) < nValueDefault)
+		if (Unit(_vecValues[0].getValue()) < nValueDefault || _vecValues[0].getValue() == 0.0)
 		{
 			_vecValues[0].setValue(nValueDefault);
 			LOGINFO((LLINFO, "Default value is greater than supplied value to increase - adjusting value"));
@@ -211,7 +218,7 @@ TrialCondition::initialize(UNIT nValueDefault)
 	// If decreasing and the default value is below the supplied value, use the default
 	else if (_tcm == TCM_DECREASE)
 	{
-		if (Unit(_vecValues[0].getValue()) > nValueDefault)
+		if (Unit(_vecValues[0].getValue()) > nValueDefault || _vecValues[0].getValue() == 0.0)
 		{
 			_vecValues[0].setValue(nValueDefault);
 			LOGINFO((LLINFO, "Default value is less than supplied value to decrease - adjusting value"));
