@@ -691,6 +691,17 @@ extern "C"
 
 		EXITPUBLIC(GLOBAL,stGetGenomeTermination);
 	}
+
+    ST_RETCODE stSetSeed(const char * seed)
+    {
+		ENTERPUBLIC(GLOBAL,stSetSeed);
+		RETURN_NOTINITIALIZED();
+        if (!VALID(seed))
+            RETURN_BADARGS();
+        RGenerator::setSeed(seed);
+        RETURN_SUCCESS();
+		EXITPUBLIC(GLOBAL,stSetSeed);
+    }
 }
 
 /*

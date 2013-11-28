@@ -770,6 +770,7 @@ extern "C" {
 	 */
 	ST_RETCODE stGetGenomeTermination(ST_GENOMETERMINATION* pgt, ST_GENOMEREASON* pgr, char* pszTermination, size_t* pcchTermination);
 
+    ST_RETCODE stSetSeed(const char * seed);
 #ifdef __cplusplus
 }
 #endif

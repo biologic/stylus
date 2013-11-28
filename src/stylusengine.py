@@ -307,6 +307,10 @@ def stGetGenomeTermination(*args):
   return _stylusengine.stGetGenomeTermination(*args)
 stGetGenomeTermination = _stylusengine.stGetGenomeTermination
 
+def stSetSeed(*args):
+  return _stylusengine.stSetSeed(*args)
+stSetSeed = _stylusengine.stSetSeed
+
 def errorToString(*args):
   return _stylusengine.errorToString(*args)
 errorToString = _stylusengine.errorToString
@@ -407,6 +411,10 @@ getStatistics = _stylusengine.getStatistics
 def getState():
   return _stylusengine.getState()
 getState = _stylusengine.getState
+
+def setSeed(*args):
+  return _stylusengine.setSeed(*args)
+setSeed = _stylusengine.setSeed
 
 def getTermination():
   return _stylusengine.getTermination()

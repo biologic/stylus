@@ -664,6 +664,10 @@ bool python_status_callback()
 		::stGetGenomeState(&gs);
 		return gs;
 	}
+
+    void setSeed(const char * seed) {
+        stSetSeed(seed);
+    }
 	
 	ST_GENOMETERMINATION getTermination()
 	{

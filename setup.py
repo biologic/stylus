@@ -7,7 +7,7 @@ sources = glob.glob('src/*.cpp') + glob.glob('src/randomc/*.cpp') + glob.glob('s
 sources = [source for source in sources if '_wrap' not in source]
 
 if platform.system() == 'Darwin':
-    libraries = []
+    libraries = ['ssl']
 elif platform.system() == 'Linux':
     libraries = ['uuid']
 else:

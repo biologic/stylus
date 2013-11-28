@@ -1,4 +1,5 @@
 #include <iostream>
+#include <openssl/sha.h>
 /**************************   mersenne.cpp   **********************************
  *
 * Author:        Agner Fog
@@ -208,48 +209,6 @@ namespace
     }
 
     const unsigned int STATE_SIZE = 4 * (MERS_N + 3);
-
-/* 
- * Function: lennob
- * 
- * Returns the length of str ignoring trailing blanks but not other white space.
- * 
- * Routine copied from the Perl Math::Random-0.69 library
- */
-long lennob( char *str )
-{
-long i, i_nb;
-
-for (i=0, i_nb= -1L; *(str+i); i++)
-    if ( *(str+i) != ' ' ) i_nb = i;
-return (i_nb+1);
-}
-
-/*
- * Function: phraseToSeed
- * 
- * Routine copied from the Perl Math::Random-0.69 library
- */
-void
-phraseToSeed(char* phrase, int *seed1, int *seed2)
-{
-static int twop30 = 1073741824L;
-
-static int i,j, ichr,lphr;
-static int values[8] = { 8521739, 5266711, 3254959, 2011673, 1243273, 768389, 474899, 293507 };
-
-	*seed1 = 1234567890L;
-	*seed2 = 123456789L;
-	lphr = lennob(phrase); 
-	if(lphr < 1) return;
-	for(i=0; i<(lphr-1); i++)
-	{
-		ichr = phrase[i];
-		j = i % 8;
-		*seed1 = ( *seed1 + (values[j] * ichr) ) % twop30;
-		*seed2 = ( *seed2 + (values[7-j] * ichr) ) % twop30;
-	}
-}
 }
 
 std::string CRandomMersenne::GetState()
@@ -280,8 +239,11 @@ void CRandomMersenne::SetState(const std::string & state)
     }
     else
     {
-        int seeds[2];
-        phraseToSeed(const_cast<char*>(state.c_str()), &seeds[0], &seeds[1]);
-        RandomInitByArray(seeds, 2);
+        unsigned char hash[SHA256_DIGEST_LENGTH];
+        SHA256_CTX sha256;
+        SHA256_Init(&sha256);
+        SHA256_Update(&sha256, state.data(), state.size());
+        SHA256_Final(hash, &sha256);
+        RandomInitByArray(reinterpret_cast<int*>(hash), SHA256_DIGEST_LENGTH / sizeof(int));
     }
 }
