@@ -672,7 +672,10 @@ RollbackTerminationCondition::evaluate(size_t nRollbacks)
 	
 	bool fSuccess = (nRollbacks <= _cRollbacks);
 	if (!fSuccess)
+    {
+        Genome::recordTermination(ST_FILELINE, STGT_ROLLBACK, STGR_LIMIT, "Maximum number of rollbacks executed in trial %lu - plan ending after %lu rollbacks", Genome::getTrial(), _cRollbacks);
 		LOGINFO((LLINFO, "Maximum number of rollbacks executed in trial %lu - plan ending after %lu rollbacks", Genome::getTrial(), _cRollbacks));
+    }
 
 	return fSuccess;
 }
@@ -1678,8 +1681,12 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 			st.initialize();
 
 			// Execute the current step to completion (or exhaustion of allowed trials)
-			while (!fPlanTerminated && cTrials && ((Genome::getTrial()+1-cTrialsInCompletedSteps-iTrialFirst) < st.getTrials()))
+			while (!fPlanTerminated)
 			{
+                if (cTrials == 0 || ((Genome::getTrial()+1-cTrialsInCompletedSteps-iTrialFirst) >= st.getTrials())) {
+					Genome::recordTermination(ST_FILELINE, STGT_CALLBACK, STGR_TERMINATED, "Finished trials: %ld", st.getTrials());
+                    break;
+                }
 
 				bool fTrialCompleted = false;
 				size_t cRollbackAttempts = 0;
@@ -1739,6 +1746,7 @@ Plan::execute(size_t iTrialFirst, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t
 						if (!mutationSelector.getRollbackPossible() )
                         {
                             fPlanTerminated = true;
+                            Genome::recordTermination(ST_FILELINE, STGT_ROLLBACK, STGR_NONE, "Rollbacks not possible in trial %lu - plan ending", Genome::getTrial() );
                             LOGINFO((LLINFO, "Rollbacks not possible in trial %lu - plan ending", Genome::getTrial() ));
                         }else if(!_rc.evaluate(++cRollbackAttempts))
                         {
