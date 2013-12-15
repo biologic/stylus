@@ -816,14 +816,20 @@ stylus::purgeWhitespace(char* psz) throw()
  * Function: timeNow
  *
  */
+typedef std::string utime;
 void
 stylus::timeNow(utime* pt) throw()
 {
 	if (VALID(pt))
 	{
+
+#ifdef _WIN32
+		*pt = 0;
+#else
 		struct timeval tv;
 		::gettimeofday(&tv, NULL);
 		*pt = (tv.tv_sec * s_nUSECPERSEC) + tv.tv_usec;
+#endif
 	}
 }
 

@@ -66,9 +66,6 @@ const Acid Acid::s_aryACIDS[ACID_MAX] =
 	{ -Constants::s_nMEDIUM_DIAGONALSTEP,	Constants::s_nMEDIUM_DIAGONALSTEP,  Constants::s_nVECTOR_MEDIUM,	DIR_NORTHWEST, 	"Nwm" }
 };
 
-const size_t Codon::s_cchCODON;
-const size_t Codon::s_nTRIVECTOR;
-
 const std::string Codon::s_strSTART("ATG");
 
 const bool Codon::s_aryCOHERENCE[ACID_MAX][ACID_MAX][ACID_MAX] =

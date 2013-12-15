@@ -1446,8 +1446,7 @@ Step::produceMutations(MutationSelector & selector, STFLAGS grfOptions, size_t i
             ASSERT(m.needsBases() && !m.hasBases());
 
             ASSERT(Constants::s_strBASES.length() == 4);
-            size_t counts[m._cbBases+1];
-            memset(counts, 0, sizeof(counts));
+	    std::vector<size_t> counts(m._cbBases+1);
             m._strBases.resize(m._cbBases);
             while(!counts[m._cbBases])
             {

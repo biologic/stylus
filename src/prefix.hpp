@@ -77,9 +77,13 @@ extern "C"
 
 // C Headers -------------------------------------------------------------------
 #include <stdarg.h>
-#include <sys/errno.h>
+//#include <sys/errno.h>
 #include <sys/stat.h>
-#include <sys/time.h>
+//#include <sys/time.h>
+//
+#ifdef _WIN32
+#define snprintf _snprintf
+#endif
 	
 #ifndef __cplusplus
 #include <stdbool.h>

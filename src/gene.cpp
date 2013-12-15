@@ -277,8 +277,6 @@ Group::traceScore() const
 //
 //--------------------------------------------------------------------------------
 
-const size_t Gene::s_cDROPOUT;
-
 /*
  * Function: operator=
  *
@@ -1087,7 +1085,7 @@ Gene::toXML(XMLStream& xs, STFLAGS grfRecordDetail) const
 		if (ST_ISANYSET(grfRecordDetail, STRD_SCOREALL) && isValid(GI_SCORED) && _setOverlaps.size())
 		{
 			xs.writeStart(xmlTag(XT_OVERLAPS));
-			for (STROKEOVERLAPS::iterator it=_setOverlaps.begin(); it != _setOverlaps.end(); ++it)
+			for (STROKEOVERLAPS::const_iterator it=_setOverlaps.begin(); it != _setOverlaps.end(); ++it)
 			{
 				xs.openStart(xmlTag(XT_OVERLAP));
 

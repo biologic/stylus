@@ -1419,7 +1419,7 @@
 				<xs:element name="genes" type="st:geneArrayType" minOccurs="0" maxOccurs="1"/>
 			</xs:sequence>
 
-			<xs:attribute name="uuid" type="st:UUIDType" use="required"/>
+			<xs:attribute name="uuid" type="st:UUIDType" use="optional"/>
 			<xs:attributeGroup ref="st:creationDescriptionGroup"/>
 		</xs:complexType>
 	</xs:element>

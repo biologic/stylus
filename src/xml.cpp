@@ -589,11 +589,13 @@ XMLDocument::createInstanceFromURL(const std::string& strURL)
 	else if (!strURL.compare(0, Constants::s_strURIScheme_FILE.length(), Constants::s_strURIScheme_FILE))
 	{
 		string strFile(strURL.substr(Constants::s_strURIScheme_FILE.length()));
+		char path[260];
+		::xmlURIUnescapeString(strFile.substr(1).c_str(), 0, path);
 
-		ifstream fileXML(strFile.c_str());
+		ifstream fileXML(path);
 
 		if (!fileXML)
-			THROWRC((RC(BADARGUMENTS), "Unable to open file URL: %s", strFile.c_str()));
+			THROWRC((RC(BADARGUMENTS), "Unable to open file: %s", path));
 
 		ostringstream ostrXML;
 		ostrXML << fileXML.rdbuf();

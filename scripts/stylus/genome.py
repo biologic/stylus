@@ -839,9 +839,6 @@ class Genome(object):
         else:
             dictGenome = xmlDict.loads(text)['genome']
 
-
-        self.uuid = dictGenome['uuid'].upper()
-
         self.author = 'author' in dictGenome and dictGenome['author'] or None
         self.creationDate = 'creationDate' in dictGenome and dictGenome['creationDate'] or None
         self.creationTool = 'creationTool' in dictGenome and dictGenome['creationTool'] or None

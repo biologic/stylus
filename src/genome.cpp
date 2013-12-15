@@ -19,7 +19,6 @@
 
 
 // Includes ---------------------------------------------------------------------
-#include <uuid/uuid.h>
 #include "headers.hpp"
 
 using namespace std;
@@ -332,8 +331,6 @@ const char* Genome::s_aryGENOMESTATES[STGS_MAX] =
 	"VALIDATED",
 	"VALIDATING"
 };
-
-const size_t Genome::s_maxGENES;
 
 std::string Genome::_strAuthor;
 CodonTable Genome::_ct;
@@ -871,16 +868,9 @@ Genome::toXML(XMLStream& xs, STFLAGS grfRecordDetail, bool fUseTrialStatistics)
 	
 	timeToString(szTime, &_tLoaded, false, true);
 
-    uuid_t uuid;
-    uuid_generate(uuid);
-    char buffer[37];
-    uuid_unparse_upper(uuid, buffer);
-    _strUUID = buffer;
-
 	// Add the genome element and attributes
 	xs.openStart(xmlTag(XT_GENOME));
 	xs.writeAttribute(xmlTag(XT_XMLNS), XMLDocument::s_szStylusNamespace);
-	xs.writeAttribute(xmlTag(XT_UUID), _strUUID);
 	if (!EMPTYSTR(_strAuthor))
 		xs.writeAttribute(xmlTag(XT_AUTHOR), _strAuthor);
 	xs.writeAttribute(xmlTag(XT_CREATIONTOOL), Globals::s_szBuild);

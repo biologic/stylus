@@ -36,12 +36,12 @@ namespace org_biologicinstitute_stylus
 		static const size_t s_cchTIME = 28;
 		static const size_t s_nmaxCODONS = 64;
 
-		static const UNIT s_nVECTOR_SHORT = 1;
-		static const UNIT s_nVECTOR_MEDIUM = 1.648721270700128;
-		static const UNIT s_nVECTOR_LONG = M_E;
-		static const UNIT s_nSHORT_DIAGONALSTEP = M_SQRT1_2;
-		static const UNIT s_nMEDIUM_DIAGONALSTEP = 1.165821990798562;
-		static const UNIT s_nERROR_MARGIN = 0.0000000001;
+		static const UNIT s_nVECTOR_SHORT;
+		static const UNIT s_nVECTOR_MEDIUM;
+		static const UNIT s_nVECTOR_LONG;
+		static const UNIT s_nSHORT_DIAGONALSTEP;
+		static const UNIT s_nMEDIUM_DIAGONALSTEP;
+		static const UNIT s_nERROR_MARGIN;
 
 		static const size_t s_nMAXIMUMGENERATEDLENGTH = (3 * 3);	///< Maximum generated length (up to 3 trivectors)
 
