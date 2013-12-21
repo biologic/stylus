@@ -536,36 +536,6 @@ Genome::setGenome(const char* pxmlGenome, const char* pszAuthor)
 		if (XMLDocument::isXPathSuccess(spxpo.get(), 1))
 			RGenerator::loadSeed(spxd.get(), spxpo->nodesetval->nodeTab[0]);
 
-		// Read and set the current trial and trial attempts from the contained statistics (if any)
-		spxpo = spxd->evalXPath(spxpc.get(), xmlXPath(XP_STATISTICS));
-		if (XMLDocument::isXPathSuccess(spxpo.get(), 1))
-		{
-			string str;
-
-			if (spxd->getAttribute(spxpo->nodesetval->nodeTab[0], xmlTag(XT_TRIALLAST), str))
-			{
-				_stats._iTrialInitial =
-				_stats._iTrialCurrent =
-				_stats._tsMax._iTrial =
-				_stats._tsMin._iTrial =
-				_stats._tuMax._iTrial =
-				_stats._tuMin._iTrial =
-				_stats._tcMax._iTrial =
-				_stats._tcMin._iTrial =
-				_stats._tfMax._iTrial =
-				_stats._tfMin._iTrial =
-				_stats._trMax._iTrial =
-				_stats._trMin._iTrial =
-				_stats._tzMax._iTrial =
-				_stats._tzMin._iTrial = ::atol(str.c_str());
-			}
-			
-			if (spxd->getAttribute(spxpo->nodesetval->nodeTab[0], xmlTag(XT_TRIALATTEMPTS), str))
-			{
-				_stats._cTrialAttempts = ::atol(str.c_str());
-			}
-		}
-		
 		// Read the codon table
 		spxpo = spxd->evalXPath(spxpc.get(), xmlXPath(XP_CODONTABLE));
 		if (XMLDocument::isXPathSuccess(spxpo.get(), 1))
