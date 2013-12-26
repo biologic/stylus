@@ -369,6 +369,8 @@ ST_GENOMESTATE Genome::_gsCurrent;
 ST_GENOMETERMINATION Genome::_gaTermination = STGT_NONE;
 ST_GENOMEREASON Genome::_grTermination = STGR_NONE;
 std::string Genome::_strTermination;
+ST_PFNSTATUS Genome::_mutationCallback;
+std::string Genome::_mutationFullString;
 
 #ifdef ST_DEBUG
 Unit Genome::_nFitnessPassing;
@@ -622,6 +624,13 @@ Genome::setGenome(const char* pxmlGenome, const char* pszAuthor)
 	if (isState(STGS_ALIVE))
 		_fReady = true;
 }
+
+void
+Genome::setMutationCallback(ST_PFNSTATUS pfnStatus) 
+{
+    _mutationCallback = pfnStatus;
+}
+
 
 /*
  * Function: getGenome
@@ -1853,6 +1862,22 @@ Genome::removeConsideration(size_t iConsideration)
     _vecConsiderations.erase( consideration );
 }
 
+std::string ModificationStack::toFullString() const 
+{   
+    std::ostringstream ss;
+    for (MODIFICATIONARRAY::const_iterator iter = _vecModifications.begin(); iter != _vecModifications.end(); iter++)
+    {
+        ss << (*iter)->toString() << "\n";
+    }
+    ss << toString();
+    return ss.str();
+}
+
+const char * stGetMutationDescription()
+{
+    return Genome::getMutationDescription();
+}
+
 #ifdef ST_DEBUG
 /*
  * Function: testRollback
@@ -1965,4 +1990,6 @@ Genome::testRollback()
 	_fTestingRollback = false;
 	return fSuccess;
 }
+
+
 #endif

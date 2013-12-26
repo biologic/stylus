@@ -2082,6 +2082,12 @@ MutationSelector::mutationFinalize()
     else
         _current().fValidated = false;
 
+    if( VALID(Genome::_mutationCallback) )
+    {
+        Genome::_mutationFullString = Genome::_msModifications.toFullString();
+        (*Genome::_mutationCallback)();
+    }
+
     if( _current().fValidMutations && _current().fValidated )
     {
         _fAcceptedMutation = _fAcceptedMutation || _plan.evaluateConditions(false);

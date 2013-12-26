@@ -87,6 +87,7 @@ bool python_status_callback()
 %ignore stTerminate;
 %ignore stSetScope;
 %ignore stGetVersion;
+%ignore stGetMutationDescription;
 
 %ignore STLL_ERROR;
 %ignore STLL_WARNING;
@@ -425,6 +426,11 @@ bool python_status_callback()
 		return pszLastError;
 	}
 
+    const char* getMutationDescription()
+    {
+        return stGetMutationDescription();
+    }
+
 	const char* getLastErrorDescription()
 	{
 		char* pszLastError = ::new char[DEFAULT_BUFFERSIZE];
@@ -642,6 +648,29 @@ bool python_status_callback()
             return PyInt_FromLong(result);
         }
 	}
+
+	PyObject * executePlanForMutations(const char* pszPlan, size_t iTrialFirst, size_t cTrials, PyObject * callback)
+	{
+        assert(g_planStatusCallback == NULL);
+        g_planStatusCallback = callback;
+        g_planStatusCallbackError = false;
+        Py_INCREF(g_planStatusCallback);
+        
+		ST_RETCODE rc = ::ensureStylus();
+		unsigned long result = (!ST_ISSUCCESS(rc)
+				? rc
+				: ::stExecutePlanForMutations(pszPlan, iTrialFirst, cTrials, python_status_callback, 0));
+        Py_DECREF(g_planStatusCallback);
+        g_planStatusCallback = NULL;
+        if(g_planStatusCallbackError) {
+            // At some point the callback failed.
+            // It's error will still be in Python's state
+            return NULL;
+        } else {
+            return PyInt_FromLong(result);
+        }
+	}
+
 	
 	class STATISTICS : public ST_STATISTICS
 	{

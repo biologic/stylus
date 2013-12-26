@@ -463,6 +463,8 @@ extern "C" {
 	 */
 	ST_RETCODE stGetGenome(char* pxmlGenome, size_t* pcchGenome, STFLAGS grfRecordDetail);
 
+    const char * stGetMutationDescription();
+
 	/**
 	 * \brief Retrieve the bases in the current genome
 	 *
@@ -549,6 +551,10 @@ extern "C" {
 	ST_RETCODE stExecutePlan(const char* pxmlPlan,
 							size_t iTrialFirst, size_t cTrials,
 							ST_PFNSTATUS pfnStatus, size_t cStatusRate);
+	ST_RETCODE stExecutePlanForMutations(const char* pxmlPlan,
+							size_t iTrialFirst, size_t cTrials,
+							ST_PFNSTATUS pfnStatus, size_t cStatusRate);
+
 
 	/**
 	 * \brief An association of a value and a trial

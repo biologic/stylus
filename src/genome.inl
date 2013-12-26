@@ -168,3 +168,4 @@ inline size_t Genome::indexToGene(size_t iBase)
 	for (; iGene < _vecGenes.size() && !_vecGenes[iGene].getRange().contains(iBase); ++iGene);
 	return iGene;
 }
+inline const char * Genome::getMutationDescription() { return _mutationFullString.c_str(); }
