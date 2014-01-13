@@ -172,8 +172,8 @@ namespace org_biologicinstitute_stylus
 		const Point& getPoint() const;
 
 	private:
-		const Type _t1;							///< First overlapping item
-		const Type _t2;							///< Second overlapping item
+		Type _t1;							///< First overlapping item
+		Type _t2;							///< Second overlapping item
 		Point _pt;								///< Location of the overlap
 
 		int compare(const Overlap<Type>& ol) const;
