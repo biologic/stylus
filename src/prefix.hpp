@@ -33,6 +33,7 @@
 #include <bitset>
 #include <cctype>
 #include <cmath>
+#include <cerrno>
 #include <climits>
 #include <cstdarg>
 #include <cstdlib>
@@ -77,12 +78,13 @@ extern "C"
 
 // C Headers -------------------------------------------------------------------
 #include <stdarg.h>
-//#include <sys/errno.h>
 #include <sys/stat.h>
-//#include <sys/time.h>
-//
+
 #ifdef _WIN32
 #define snprintf _snprintf
+#else
+#include <sys/errno.h>
+#include <sys/time.h>
 #endif
 	
 #ifndef __cplusplus
