@@ -74,6 +74,7 @@ namespace org_biologicinstitute_stylus
 		void clear();
 
 		std::string toString() const;
+        std::string toFullString() const;
 		void toXML(XMLStream& xs, STFLAGS grfRecordDetail) const;
 		
 	private:
@@ -323,6 +324,8 @@ namespace org_biologicinstitute_stylus
         static void setRollbackType(ROLLBACKTYPE rollback_type);
         static void removeConsideration(size_t iConsideration);
 
+        static void setMutationCallback(ST_PFNSTATUS pfnStatus);
+        static const char * getMutationDescription();
   	private:
 		static const char* s_aryGENOMESTATES[STGS_MAX];
 		
@@ -365,6 +368,8 @@ namespace org_biologicinstitute_stylus
 		static ST_GENOMETERMINATION _gaTermination;	///< Last failed action
 		static ST_GENOMEREASON _grTermination;		///< Reason code associated with last failed action
 		static std::string _strTermination;			///< Human-readable string describing the action
+        static ST_PFNSTATUS _mutationCallback;
+        static std::string _mutationFullString;
 
 		//--------------------------------------------------------------------------------
 		// Internal Methods

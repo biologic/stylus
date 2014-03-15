@@ -366,6 +366,8 @@ ST_GENOMESTATE Genome::_gsCurrent;
 ST_GENOMETERMINATION Genome::_gaTermination = STGT_NONE;
 ST_GENOMEREASON Genome::_grTermination = STGR_NONE;
 std::string Genome::_strTermination;
+ST_PFNSTATUS Genome::_mutationCallback;
+std::string Genome::_mutationFullString;
 
 #ifdef ST_DEBUG
 Unit Genome::_nFitnessPassing;
@@ -533,36 +535,6 @@ Genome::setGenome(const char* pxmlGenome, const char* pszAuthor)
 		if (XMLDocument::isXPathSuccess(spxpo.get(), 1))
 			RGenerator::loadSeed(spxd.get(), spxpo->nodesetval->nodeTab[0]);
 
-		// Read and set the current trial and trial attempts from the contained statistics (if any)
-		spxpo = spxd->evalXPath(spxpc.get(), xmlXPath(XP_STATISTICS));
-		if (XMLDocument::isXPathSuccess(spxpo.get(), 1))
-		{
-			string str;
-
-			if (spxd->getAttribute(spxpo->nodesetval->nodeTab[0], xmlTag(XT_TRIALLAST), str))
-			{
-				_stats._iTrialInitial =
-				_stats._iTrialCurrent =
-				_stats._tsMax._iTrial =
-				_stats._tsMin._iTrial =
-				_stats._tuMax._iTrial =
-				_stats._tuMin._iTrial =
-				_stats._tcMax._iTrial =
-				_stats._tcMin._iTrial =
-				_stats._tfMax._iTrial =
-				_stats._tfMin._iTrial =
-				_stats._trMax._iTrial =
-				_stats._trMin._iTrial =
-				_stats._tzMax._iTrial =
-				_stats._tzMin._iTrial = ::atol(str.c_str());
-			}
-			
-			if (spxd->getAttribute(spxpo->nodesetval->nodeTab[0], xmlTag(XT_TRIALATTEMPTS), str))
-			{
-				_stats._cTrialAttempts = ::atol(str.c_str());
-			}
-		}
-		
 		// Read the codon table
 		spxpo = spxd->evalXPath(spxpc.get(), xmlXPath(XP_CODONTABLE));
 		if (XMLDocument::isXPathSuccess(spxpo.get(), 1))
@@ -649,6 +621,13 @@ Genome::setGenome(const char* pxmlGenome, const char* pszAuthor)
 	if (isState(STGS_ALIVE))
 		_fReady = true;
 }
+
+void
+Genome::setMutationCallback(ST_PFNSTATUS pfnStatus) 
+{
+    _mutationCallback = pfnStatus;
+}
+
 
 /*
  * Function: getGenome
@@ -1873,6 +1852,22 @@ Genome::removeConsideration(size_t iConsideration)
     _vecConsiderations.erase( consideration );
 }
 
+std::string ModificationStack::toFullString() const 
+{   
+    std::ostringstream ss;
+    for (MODIFICATIONARRAY::const_iterator iter = _vecModifications.begin(); iter != _vecModifications.end(); iter++)
+    {
+        ss << (*iter)->toString() << "\n";
+    }
+    ss << toString();
+    return ss.str();
+}
+
+const char * stGetMutationDescription()
+{
+    return Genome::getMutationDescription();
+}
+
 #ifdef ST_DEBUG
 /*
  * Function: testRollback
@@ -1985,4 +1980,6 @@ Genome::testRollback()
 	_fTestingRollback = false;
 	return fSuccess;
 }
+
+
 #endif

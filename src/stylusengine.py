@@ -81,6 +81,10 @@ stSetTraceAttempt = _stylusengine.stSetTraceAttempt
 def stGetTraceAttempt(*args):
   return _stylusengine.stGetTraceAttempt(*args)
 stGetTraceAttempt = _stylusengine.stGetTraceAttempt
+
+def stExecutePlanForMutations(*args):
+  return _stylusengine.stExecutePlanForMutations(*args)
+stExecutePlanForMutations = _stylusengine.stExecutePlanForMutations
 class ST_TRIALVALUE(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, ST_TRIALVALUE, name, value)
@@ -323,6 +327,10 @@ def getLastError():
   return _stylusengine.getLastError()
 getLastError = _stylusengine.getLastError
 
+def getMutationDescription():
+  return _stylusengine.getMutationDescription()
+getMutationDescription = _stylusengine.getMutationDescription
+
 def getLastErrorDescription():
   return _stylusengine.getLastErrorDescription()
 getLastErrorDescription = _stylusengine.getLastErrorDescription
@@ -386,6 +394,10 @@ getGenomeBases = _stylusengine.getGenomeBases
 def executePlan(*args):
   return _stylusengine.executePlan(*args)
 executePlan = _stylusengine.executePlan
+
+def executePlanForMutations(*args):
+  return _stylusengine.executePlanForMutations(*args)
+executePlanForMutations = _stylusengine.executePlanForMutations
 class STATISTICS(ST_STATISTICS):
     __swig_setmethods__ = {}
     for _s in [ST_STATISTICS]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))

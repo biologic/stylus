@@ -635,6 +635,23 @@ extern "C"
 		EXITPUBLIC(GLOBAL,stExecutePlan);
 	}
 
+	ST_RETCODE
+	stExecutePlanForMutations(const char* pxmlPlan, size_t iTrial, size_t cTrials, ST_PFNSTATUS pfnStatus, size_t cStatusRate)
+	{
+		ENTERPUBLIC(GLOBAL,stExecutePlan);
+		RETURN_NOTINITIALIZED();
+		
+		if (!VALID(pxmlPlan))
+			RETURN_BADARGS();
+			
+        Genome::setMutationCallback(pfnStatus);
+		Genome::executePlan(pxmlPlan, iTrial, cTrials, NULL, cStatusRate);
+        Genome::setMutationCallback(NULL);
+		RETURN_SUCCESS();
+		
+		EXITPUBLIC(GLOBAL,stExecutePlan);
+	}
+
 	/*
 	 * Function: stGetStatistics
 	 *
