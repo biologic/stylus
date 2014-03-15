@@ -590,7 +590,7 @@ XMLDocument::createInstanceFromURL(const std::string& strURL)
 	{
 		string strFile(strURL.substr(Constants::s_strURIScheme_FILE.length()));
 		char path[260];
-		::xmlURIUnescapeString(strFile.substr(1).c_str(), 0, path);
+		::xmlURIUnescapeString(strFile.c_str(), 0, path);
 
 		ifstream fileXML(path);
 
