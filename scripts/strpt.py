@@ -48,7 +48,7 @@ _HTML_HEADER = '''<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http
 <html xmlns='http://www.w3.org/1999/xhtml'>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-		<title>Stylus - Genome %s - Trials %d to %d</title>
+		<title>Stylus - Trials %d to %d</title>
 		<style type='text/css'>@import url(stylus.css);</style>
 		<script type='text/javascript' src='expanded.js'></script>
 		<script type='text/javascript' src='stylus.js'></script>
@@ -58,7 +58,7 @@ _HTML_HEADER = '''<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http
 
 _HTML_TITLE_SECTION = '''
 <div class='title'>
-    <h1>Genome %s (based on %s)- Trials %d to %d</h1>
+    <h1>Genome (based on %s)- Trials %d to %d</h1>
     <table>
         <tr><th>Experiment Date</th><td>%s &mdash; %s UTC</td></tr>
         <tr><th>Author</th><td>%s</td></tr>
@@ -389,7 +389,7 @@ class Usage(Common.BiologicError):
     __strHelpMessage = '''
 \t[(-r|--reportpath) <report output path>] - The path for report files
 \t[(-d|--datapath) <data input path>] - The path for experiment data
-\t[(-n|--name) <experiment name>[,asis|dir|file|unicode|uuid][,plan]] - Optional experiment name
+\t[(-n|--name) <experiment name>[,asis|dir|file|unicode][,plan]] - Optional experiment name
 \t[(-e|--expand) <trial number>[,repeat]] - Trial to expand
 
 \t[[-u|--urls] [<Genome URL>][,<Han URL>][,<HTML URL>][,<Plan URL>][,<XML Schema URL>]] - Set the URLs for obtaining files
@@ -1105,14 +1105,14 @@ def buildXHTML(aryData, strUnicode, han):
     genome = aryTrials[-1][1]
     statistics = genome.statistics
     fileDefault = open(os.path.join(Globals.names.pathReport, 'default.html'), 'w')
-    fileDefault.write(_HTML_HEADER % (genome.uuid, statistics.trialFirst, statistics.trialLast))
+    fileDefault.write(_HTML_HEADER % (statistics.trialFirst, statistics.trialLast))
 
     strDate, strTime = genome.creationDate and genome.creationDate.split('T') or [ '', '' ]
     strAuthor = genome.author or ''
     if genome.creationTool:
         strCreationTool = genome.creationTool + (genome.creationParameters and (' &mdash; ' + genome.creationParameters) or '')
         strAuthor += strAuthor and (' (%s)' % strCreationTool) or strCreationTool
-    fileDefault.write(_HTML_TITLE_SECTION % (genome.uuid, strUnicode,
+    fileDefault.write(_HTML_TITLE_SECTION % (strUnicode,
                                             statistics.trialFirst, statistics.trialLast,
                                             strDate, strTime[:-1], strAuthor,
                                             strDefaultNavigation))
@@ -1153,7 +1153,7 @@ def buildXHTML(aryData, strUnicode, han):
         statistics = genome.statistics
 
         fileTrial = open(os.path.join(Globals.names.pathReport, strTrial), 'w')
-        fileTrial.write(_HTML_HEADER % (genome.uuid, (not statistics and -1 or statistics.trialFirst), (not statistics and -1 or statistics.trialLast)))
+        fileTrial.write(_HTML_HEADER % ((not statistics and -1 or statistics.trialFirst), (not statistics and -1 or statistics.trialLast)))
 
         strTrialPrev = iTrial > 1 and ('<a class="sibling-prev" href="%s">&#171;%s</a>' % (aryTrials[iTrial-1][0], Common.Constants.reTRIALFILE.match(aryTrials[iTrial-1][0]).groups()[0])) or (iTrial == 1 and '<a class="sibling-prev" href="initial.html">&#171;initial</a>' or '<span class="sibling-prev">&nbsp;</span>')
         strTrialNext = iTrial == len(aryTrials)-1 and '<span class="sibling-next">&nbsp;</span>' or (iTrial == len(aryTrials)-2 and '<a class="sibling-next" href="final.html">final&#187;</a>' or ('<a class="sibling-next" href="%s">%s&#187;</a>' % (aryTrials[iTrial+1][0], Common.Constants.reTRIALFILE.match(aryTrials[iTrial+1][0]).groups()[0])))
@@ -1163,7 +1163,7 @@ def buildXHTML(aryData, strUnicode, han):
         if genome.creationTool:
             strCreationTool = genome.creationTool + (genome.creationParameters and (' &mdash; ' + genome.creationParameters) or '')
             strAuthor += strAuthor and (' (%s)' % strCreationTool) or strCreationTool
-        fileTrial.write(_HTML_TITLE_SECTION % (genome.uuid, strUnicode,
+        fileTrial.write(_HTML_TITLE_SECTION % (strUnicode,
                                             (not statistics and -1 or statistics.trialFirst),
                                             (not statistics and -1 or statistics.trialLast),
                                             strDate, strTime[:-1], strAuthor,
@@ -1279,7 +1279,7 @@ def buildPDB(aryData):
 
         filePDB = open(os.path.join(Globals.names.pathReport, os.path.splitext(os.path.basename(urlGenome))[0]+'.pdb'), 'w')
         filePDB.write(_PDB_HEADER)
-        filePDB.write(_PDB_TITLE % genome.uuid)
+        filePDB.write(_PDB_TITLE % "")
         if genome.statistics and genome.statistics.trialLast:
             filePDB.write(_PDB_TITLE % ('Trial %d created on %s' % (genome.statistics.trialLast, genome.creationDate or 'unknown')))
         if genome.author:
