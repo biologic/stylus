@@ -21,6 +21,10 @@ elif platform.system() == 'Windows':
     extra_compile_args = ['/D_USE_MATH_DEFINES']
     extra_link_args = [r"/LIBPATH:C:\extern\lib\vc\static", r"/LIBPATH:C:\extern\lib"]
     include_dirs.append(r"C:\extern\include")
+elif "CYGWIN" in platform.system():
+    extra_compile_args = subprocess.check_output(['xml2-config', '--cflags']).split()
+    extra_link_args = subprocess.check_output(['xml2-config', '--libs']).split()
+    libraries = ['uuid', 'crypto']
 else:
     libraries = [] # hope for the best
     extra_compile_args = []
