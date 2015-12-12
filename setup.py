@@ -15,7 +15,7 @@ if platform.system() == 'Darwin':
 elif platform.system() == 'Linux':
     extra_compile_args = subprocess.check_output(['xml2-config', '--cflags']).split()
     extra_link_args = subprocess.check_output(['xml2-config', '--libs']).split()
-    libraries = ['uuid']
+    libraries = ['ssl', 'crypto']
 elif platform.system() == 'Windows':
     libraries = ["libeay32", r"ssleay32", "libxml2"] 
     extra_compile_args = ['/D_USE_MATH_DEFINES']
