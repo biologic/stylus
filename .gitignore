@@ -14,5 +14,6 @@ lib
 src/stylusengine.egg-info/
 src/stylusengine_wrap.cpp
 src/_stylusengine.so
+src/stylusengine.py
 build
 .DS_Store
