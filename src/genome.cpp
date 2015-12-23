@@ -850,10 +850,6 @@ Genome::toXML(XMLStream& xs, STFLAGS grfRecordDetail, bool fUseTrialStatistics)
 	// Add the genome element and attributes
 	xs.openStart(xmlTag(XT_GENOME));
 	xs.writeAttribute(xmlTag(XT_XMLNS), XMLDocument::s_szStylusNamespace);
-	if (!EMPTYSTR(_strAuthor))
-		xs.writeAttribute(xmlTag(XT_AUTHOR), _strAuthor);
-	xs.writeAttribute(xmlTag(XT_CREATIONTOOL), Globals::s_szBuild);
-	xs.writeAttribute(xmlTag(XT_CREATIONDATE), szTime);
 	xs.closeStart();
 	
     if( grfRecordDetail & STRD_SEED)
