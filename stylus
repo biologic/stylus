@@ -126,7 +126,7 @@ if [ -z "$STYLUS_GENOMEURL" ] ; then
 	elif [[ $config = xgrid ]] ; then
 		export STYLUS_GENOMEURL=file://$STYLUS_XGRID_VOLUME/genes/
 	else
-		export STYLUS_GENOMEURL=http://bioserve.bi010gic.net/genes/
+		export STYLUS_GENOMEURL=file://$STYLUS_HOME/sample/
 	fi
 fi
 
@@ -136,7 +136,7 @@ if [ -z "$STYLUS_HANURL" ] ; then
 	elif [[ $config = local ]] ; then
 		export STYLUS_HANURL=http://localhost/archetypes/
 	else
-		export STYLUS_HANURL=http://bioserve.bi010gic.net/archetypes/
+		export STYLUS_HANURL=file://$STYLUS_HOME/sample/
 	fi
 fi
 
@@ -165,7 +165,7 @@ if [ -z "$STYLUS_XGRID_SHELL" ] ; then
 fi
 
 if [ -z $XGRID_CONTROLLER_HOSTNAME ] ; then
-	export XGRID_CONTROLLER_HOSTNAME=bioserve.bi010gic.net
+	export XGRID_CONTROLLER_HOSTNAME=""
 fi
 
 if [ -z $XGRID_CONTROLLER_PASSWORD ] ; then
