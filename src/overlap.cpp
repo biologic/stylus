@@ -261,7 +261,7 @@ Overlaps::buildStrokeLines()
 
 				TDATA(VALIDATION,L4,(LLTRACE, "Strokes %ld and %ld may intersect within %s", (iStroke1+1), (iStroke2+1), rIntersect.toString().c_str()));
 
-				rIntersect.expand(Constants::s_nVECTOR_MEDIUM, -Constants::s_nVECTOR_MEDIUM, -Constants::s_nVECTOR_MEDIUM, Constants::s_nVECTOR_MEDIUM);
+				rIntersect.expand(Constants::s_nVECTOR_LONG, -Constants::s_nVECTOR_LONG, -Constants::s_nVECTOR_LONG, Constants::s_nVECTOR_LONG);
 				vecIntersects.push_back(rIntersect);
 			}
 		}
