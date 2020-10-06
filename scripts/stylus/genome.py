@@ -26,13 +26,13 @@ This script assumes a single gene within the genome.
 Stylus, Copyright 2006-2009 Biologic Institute.
 '''
 
-import codons as Codons
+from . import codons as Codons
 import fpconst
 import math
 import re
 import sys
-import urllib2
-import xmldict
+import urllib.request, urllib.error, urllib.parse
+from . import xmldict
 
 #------------------------------------------------------------------------------
 # Class: BezierCurve
@@ -150,7 +150,7 @@ def getPointBetween(aryPtd, fractionalDistance):
     elif fractionalDistance == 1:
         return aryPtd[-1]
     else:
-        for i in xrange(1,len(aryPtd)):
+        for i in range(1,len(aryPtd)):
             if aryPtd[i].distance >= fractionalDistance:
                 break
         ptdStart = aryPtd[i-1]
@@ -307,7 +307,7 @@ class Range(object):
 # 
 #------------------------------------------------------------------------------
 class Rectangle(object):
-    def __init__(self, top=-sys.maxint-1, left=sys.maxint, bottom=sys.maxint, right=-sys.maxint, dictRect=None, rect=None):
+    def __init__(self, top=-sys.maxsize-1, left=sys.maxsize, bottom=sys.maxsize, right=-sys.maxsize, dictRect=None, rect=None):
         self.__set(top, left, bottom, right)
 
         if dictRect:
@@ -489,7 +489,7 @@ class Gene(object):
             self.xOrigin = 'x' in dictOrigin and float(dictOrigin['x']) or 0.0
             self.yOrigin = 'y' in dictOrigin and float(dictOrigin['y']) or 0.0
         
-        self.unicode = None
+        self.str = None
         self.bounds = None
 
         self.sxToHan = None
@@ -511,7 +511,7 @@ class Gene(object):
 
         if 'hanReferences' in dictGene:
             dictHanReference = dictGene['hanReferences'][xmldict.XMLDict.children][0][1]
-            self.unicode = dictHanReference['unicode']
+            self.str = dictHanReference['unicode']
 
             if 'bounds' in dictHanReference:
                 self.bounds = Rectangle(dictRect=dictHanReference['bounds'])
@@ -907,7 +907,7 @@ class Han(object):
         dictHan = xmlDict.load(urlHan)['hanDefinition']
         
         self.uuid = dictHan['uuid']
-        self.unicode = dictHan['unicode']
+        self.str = dictHan['unicode']
 
         self.creationDate = 'creationDate' in dictHan and dictHan['creationDate'] or None
         self.creationTool = 'creationTool' in dictHan and dictHan['creationTool'] or None
@@ -1038,21 +1038,21 @@ class HCF(object):
     _reOverlap = re.compile(r'overlap:(\d+,\d+,[0|1])')
     
     def __init__(self, urlHCF):
-        self.unicode = ''
+        self.str = ''
         self.bounds = Rectangle()
         self.length = 0
-        self.minimumStrokeLength = sys.maxint
+        self.minimumStrokeLength = sys.maxsize
         self.aryStrokes = []
         self.aryGroups = []
         self.aryOverlaps = []
 
-        try: fileHCF = urllib2.urlopen(urlHCF)
-        except urllib2.URLError, err: raise HCFError('Unable to open URL %s - %s' % (urlHCF, str(err)))
+        try: fileHCF = urllib.request.urlopen(urlHCF)
+        except urllib.error.URLError as err: raise HCFError('Unable to open URL %s - %s' % (urlHCF, str(err)))
         
         for l in fileHCF.readlines():
             mo = HCF._reHan.match(l)
             if mo:
-                self.unicode = mo.groups()[0].upper()
+                self.str = mo.groups()[0].upper()
                 continue
                 
             mo = HCF._reStroke.match(l)
@@ -1092,7 +1092,7 @@ class HCF(object):
         self.aryGroups = [ HCFGroup(strStrokes, self.aryStrokes) for strStrokes in self.aryGroups ]
         
     def __str__(self):
-        return 'unicode(%s) bounds[%s] len(%r) minStrokeLen(%r)\nStrokes:\n%s\nGroups:\n%s\nOverlaps:\n%s' % (self.unicode,
+        return 'unicode(%s) bounds[%s] len(%r) minStrokeLen(%r)\nStrokes:\n%s\nGroups:\n%s\nOverlaps:\n%s' % (self.str,
                                                                                                         str(self.bounds),
                                                                                                         self.length,
                                                                                                         self.minimumStrokeLength,

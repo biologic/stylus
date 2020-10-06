@@ -38,8 +38,8 @@ import stylus.common as Common
 import stylus.genome as Genome
 import sys
 import time
-import urllib2
-import urlparse
+import urllib.request, urllib.error, urllib.parse
+import urllib.parse
 
 #==============================================================================
 # Global Constants
@@ -475,7 +475,7 @@ def getArguments():
             remaining[0].strip()
             if len(remaining) > 1 or remaining[0]:
                 raise Usage(' '.join(remaining) + ' contains unexpected arguments')
-    except getopt.error, err:
+    except getopt.error as err:
         raise Usage(' '.join(argv[1:]) + ' contains unknown arguments')
 
     for option, value in opts:
@@ -500,7 +500,7 @@ def getArguments():
                 
             if option in ('-p', '--plan'):
                 Globals.names.set(Common.Names.PLAN, value)
-        except Common.BiologicError, err:
+        except Common.BiologicError as err:
             raise Usage(str(err))
             
         if option in ('-i', '--images'):
@@ -554,7 +554,7 @@ def getArguments():
     try:
         Globals.urls.validate(Common.URLs.HAN | Common.URLs.HTML)
         Globals.names.validate(Globals.urls, Common.Names.DATA | Common.Names.REPORT)
-    except Common.BiologicError, err:
+    except Common.BiologicError as err:
         raise Usage(str(err))
 
     if not Common.isDir(Globals.names.pathData):
@@ -569,9 +569,9 @@ def getArguments():
 def loadHan(strUnicode):
     urlHan = Common.pathToURL(Common.makeHanPath(strUnicode + Common.Constants.extHan), Globals.urls.urlHan)
     try: han = Genome.Han(urlHan)
-    except LookupError, err: raise Common.BiologicError('%s is missing one or more required elements or attributes - %s' % (urlHan, str(err)))
-    except urllib2.URLError, err: raise Common.BiologicError('Unable to open URL %s - %s' % (urlHan, str(err)))
-    except OSError, err:  raise Common.BiologicError('Unable to open URL %s - %s' % (urlHan, str(err)))
+    except LookupError as err: raise Common.BiologicError('%s is missing one or more required elements or attributes - %s' % (urlHan, str(err)))
+    except urllib.error.URLError as err: raise Common.BiologicError('Unable to open URL %s - %s' % (urlHan, str(err)))
+    except OSError as err:  raise Common.BiologicError('Unable to open URL %s - %s' % (urlHan, str(err)))
     except: raise Common.BiologicError('Unable to open URL %s' % urlHan)
     return han
 
@@ -589,8 +589,8 @@ def loadData():
     strPath = ''
     Common.say('Processing %d files (initial, final, and %d trials)' % (len(aryFiles), len(aryFiles)-2), False)
     try: aryData = [ [ urlGenome, Genome.Genome(urlGenome) ] for urlGenome in aryFiles if Common.say('.',False) ]
-    except LookupError, err: raise Common.BiologicError('%s is missing one or more required elements or attributes - %s' % (urlGenome, str(err)))
-    except urllib2.URLError, err: raise Common.BiologicError('Unable to open URL %s - %s' % (urlGenome, str(err)))
+    except LookupError as err: raise Common.BiologicError('%s is missing one or more required elements or attributes - %s' % (urlGenome, str(err)))
+    except urllib.error.URLError as err: raise Common.BiologicError('Unable to open URL %s - %s' % (urlGenome, str(err)))
 
     Common.say('')
 
@@ -617,10 +617,10 @@ def svgCollectGridLines(rc, sxyGene):
     if dGridMajor and dGridMinor:
         ary += [ not x % dGridMajor and
                         ('<line class="%s" x1="%r" y1="%r" x2="%r" y2="%r" style="stroke-width: %rpx;" />' % (Constants.cssGridMajor, x, top*-1, x, bottom*-1, Constants.pxGridMajor / sxyGene)) or
-                        ('<line class="%s" x1="%r" y1="%r" x2="%r" y2="%r" style="stroke-width: %rpx;" />' % (Constants.cssGridMinor, x, top*-1, x, bottom*-1, Constants.pxGridMinor / sxyGene)) for x in xrange(left, right+1, dGridMinor) if x ]
+                        ('<line class="%s" x1="%r" y1="%r" x2="%r" y2="%r" style="stroke-width: %rpx;" />' % (Constants.cssGridMinor, x, top*-1, x, bottom*-1, Constants.pxGridMinor / sxyGene)) for x in range(left, right+1, dGridMinor) if x ]
         ary += [ not y % dGridMajor and
                         ('<line class="%s" x1="%r" y1="%r" x2="%r" y2="%r" style="stroke-width: %rpx;" />' % (Constants.cssGridMajor, left, y*-1, right, y*-1, Constants.pxGridMajor / sxyGene)) or
-                        ('<line class="%s" x1="%r" y1="%r" x2="%r" y2="%r" style="stroke-width: %rpx;" />' % (Constants.cssGridMinor, left, y*-1, right, y*-1, Constants.pxGridMinor / sxyGene)) for y in xrange(bottom, top+1, dGridMinor) if y ]
+                        ('<line class="%s" x1="%r" y1="%r" x2="%r" y2="%r" style="stroke-width: %rpx;" />' % (Constants.cssGridMinor, left, y*-1, right, y*-1, Constants.pxGridMinor / sxyGene)) for y in range(bottom, top+1, dGridMinor) if y ]
 
     ary += [ ('<line class="%s" x1="%r" y1="0" x2="%r" y2="0" style="stroke-width: %rpx;" />' % (Constants.cssAxis, left, right, Constants.pxAxis / sxyGene)),
             ('<line class="%s" x1="0" y1="%r" x2="0" y2="%r" style="stroke-width: %rpx;" />' % (Constants.cssAxis, top*-1, bottom*-1, Constants.pxAxis / sxyGene)) ]
@@ -650,12 +650,12 @@ def svgCollectLines(genome):
     
     aryStrokes = gene.aryStrokes
     itStrokes = iter(aryStrokes)
-    stroke = itStrokes.next()
+    stroke = next(itStrokes)
     
-    top = -sys.maxint - 1
-    left = sys.maxint
-    bottom = sys.maxint
-    right = -sys.maxint - 1
+    top = -sys.maxsize - 1
+    left = sys.maxsize
+    bottom = sys.maxsize
+    right = -sys.maxsize - 1
 
     aryPoints = []
     if gene.arySegments:
@@ -669,7 +669,7 @@ def svgCollectLines(genome):
             aryPoints += segment.aryPoints[:-1]
         
             try:
-                while stroke and segment.rgBases > stroke.rgBases: stroke = itStrokes.next()
+                while stroke and segment.rgBases > stroke.rgBases: stroke = next(itStrokes)
             except StopIteration: stroke = None
             fInStroke = (stroke and stroke.rgBases.containsRange(segment.rgBases)) and True or False
         
@@ -698,7 +698,7 @@ def svgCollectLabels(gene, sxyGene):
 
     if gene.arySegments:
         itSegments = iter(gene.arySegments)
-        segment = itSegments.next()
+        segment = next(itSegments)
 
         iStroke = 1
         iMove = 1
@@ -715,7 +715,7 @@ def svgCollectLabels(gene, sxyGene):
     
         for stroke in gene.aryStrokes:
             try:
-                while segment.rgBases.baseFirst != stroke.rgBases.baseFirst: segment = itSegments.next()
+                while segment.rgBases.baseFirst != stroke.rgBases.baseFirst: segment = next(itSegments)
                 aryLabels[0].append('<text class="%s" x="%r" y="%r" font-size="%rpx">%d</text>' % (Constants.cssCoherent,
                                                                                             segment.aryPoints[0].x,
                                                                                             segment.aryPoints[0].y*-1,
@@ -726,7 +726,7 @@ def svgCollectLabels(gene, sxyGene):
                 break
 
             try:
-                while segment.rgBases.baseFirst != stroke.rgBases.baseLast+1: segment = itSegments.next()
+                while segment.rgBases.baseFirst != stroke.rgBases.baseLast+1: segment = next(itSegments)
                 aryLabels[1].append('<text class="%s" x="%r" y="%r" font-size="%rpx">%d</text>' % (Constants.cssIncoherent,
                                                                                             segment.aryPoints[0].x,
                                                                                             segment.aryPoints[0].y*-1,
@@ -833,7 +833,7 @@ def buildSVG(aryData, han, fImages):
                     genome.gene.aryGroups[i].bounds.left + (pxFontSize / 4),
                     genome.gene.aryGroups[i].bounds.top*-1 + pxFontSize,
                     pxFontSize,
-                    i+1) for i in xrange(0,len(genome.gene.aryGroups)) if genome.gene.aryGroups[i].bounds ])
+                    i+1) for i in range(0,len(genome.gene.aryGroups)) if genome.gene.aryGroups[i].bounds ])
 
             strBoundingStrokes = '\n'.join([ '<rect class="%s" x="%r" y="%r" width="%r" height="%r" style="stroke-width: %rpx;" />' %
                     (Constants.cssBoundingStroke,
@@ -984,7 +984,7 @@ def buildExpandedLists(aryData):
                 fileExpanded.seek(0)
                 fileExpanded.write(strExpanded)
         fileExpanded.close()
-    except IOError, err:
+    except IOError as err:
         pass
     return
     
@@ -1001,23 +1001,23 @@ def htmlCollectCodons(genome):
     cStrokeBases = sum([ stroke.rgBases.length() for stroke in aryStrokes ])
 
     strStrokeDetails = ''
-    for iStrokeStart in xrange(0,len(aryStrokes),Constants.dStrokeRangesPerLine):
+    for iStrokeStart in range(0,len(aryStrokes),Constants.dStrokeRangesPerLine):
         iStrokeEnd = min(iStrokeStart + Constants.dStrokeRangesPerLine, len(aryStrokes))
         strStrokeDetails += "<table class='stroke-range'><tr><th>Stroke</th>%s</tr><tr><th>Bases</th>%s</tr><tr><th>Han #</th>%s</tr></table>" % (
-                                    ''.join([ '<td><a href="#s%d">%d</a></td>' % (i, i+1) for i in xrange(iStrokeStart,iStrokeEnd) ]),
-                                    ''.join([ '<td><a href="#s%d">%04d&mdash;%04d</a></td>' % (i, aryStrokes[i].rgBases.baseFirst, aryStrokes[i].rgBases.baseLast) for i in xrange(iStrokeStart,iStrokeEnd) ]),
-                                    ''.join([ '<td>%d</td>' % aryStrokes[i].correspondsTo for i in xrange(iStrokeStart,iStrokeEnd) ]))
+                                    ''.join([ '<td><a href="#s%d">%d</a></td>' % (i, i+1) for i in range(iStrokeStart,iStrokeEnd) ]),
+                                    ''.join([ '<td><a href="#s%d">%04d&mdash;%04d</a></td>' % (i, aryStrokes[i].rgBases.baseFirst, aryStrokes[i].rgBases.baseLast) for i in range(iStrokeStart,iStrokeEnd) ]),
+                                    ''.join([ '<td>%d</td>' % aryStrokes[i].correspondsTo for i in range(iStrokeStart,iStrokeEnd) ]))
                                 
-    strDigits = ' '.join([ '%d%d%d' % (i%10,(i+1)%10,(i+2)%10) for i in xrange(1,Constants.dBasesPerLine,3) ])
+    strDigits = ' '.join([ '%d%d%d' % (i%10,(i+1)%10,(i+2)%10) for i in range(1,Constants.dBasesPerLine,3) ])
     
     strCodonTable = ''
     if not genome.codonTable.isStandard():
         strCodonTable += '<h3>Codon Table - %s</h3>' % genome.codonTable.uuid
         aryEntries = genome.codonTable.entries()
-        for iEntryRow in xrange(0,len(aryEntries),Constants.dCodonTableEntriesPerLine):
+        for iEntryRow in range(0,len(aryEntries),Constants.dCodonTableEntriesPerLine):
             aryEntriesRow = aryEntries[iEntryRow:iEntryRow+Constants.dCodonTableEntriesPerLine]
             strCodonTableRow = ''
-            for iEntrySet in xrange(0,len(aryEntriesRow),Constants.dCodonTableEntriesPerSet):
+            for iEntrySet in range(0,len(aryEntriesRow),Constants.dCodonTableEntriesPerSet):
                 aryEntriesSet = aryEntriesRow[iEntrySet:iEntrySet+Constants.dCodonTableEntriesPerSet]
                 strCodonTableRow += "<td><table class='codon-row'><tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (aryEntriesSet[0][0], aryEntriesSet[1][0], aryEntriesSet[2][0], aryEntriesSet[3][0])
                 strCodonTableRow += "<tr><td class='%s'>%s</td><td class='%s'>%s</td><td class='%s'>%s</td><td class='%s'>%s</td></tr></table></td>" % (
@@ -1033,11 +1033,11 @@ def htmlCollectCodons(genome):
     
     iStroke = 0
     strCodonDetails = ''    
-    for i in xrange(0,len(genome.bases),Constants.dBasesPerLine):
+    for i in range(0,len(genome.bases),Constants.dBasesPerLine):
         bases = genome.bases[i:i+Constants.dBasesPerLine]
         
         aryCodons = Codons.Constants.reSPLITCODONS.findall(bases)
-        aryVectors = map(genome.codonTable.codonToVectorName, aryCodons)
+        aryVectors = list(map(genome.codonTable.codonToVectorName, aryCodons))
         
         nBases = len(aryCodons) * 3
 
@@ -1083,9 +1083,9 @@ def buildXHTML(aryData, strUnicode, han):
     nDepth = 0
     while strPath:
         strPath, strDir = os.path.split(strPath)
-        aryPath = [ '..' for i in xrange(nDepth) ]
+        aryPath = [ '..' for i in range(nDepth) ]
         aryPath.append('default.html')
-        aryPathNavigation.append('<a class="pathpart" href="%s">%s</a>' % (apply(os.path.join, aryPath), strDir))
+        aryPathNavigation.append('<a class="pathpart" href="%s">%s</a>' % (os.path.join(*aryPath), strDir))
         nDepth += 1
     aryPathNavigation.append('&nbsp;')
     aryPathNavigation.reverse()
@@ -1134,11 +1134,11 @@ def buildXHTML(aryData, strUnicode, han):
 
     strIcons = ''
     iDefaultSVG = 0
-    for iTrialFirst in xrange(0, len(aryTrials), Constants.cDefaultIcons):
+    for iTrialFirst in range(0, len(aryTrials), Constants.cDefaultIcons):
         nIcons = min(len(aryTrials) - (Constants.cDefaultIcons * iDefaultSVG), Constants.cDefaultIcons)
         dxRow = ((Constants.dxDefault + Constants.dxDefaultBorder) * nIcons) - Constants.dxDefaultBorder
         iTrialLast = min(iTrialFirst+Constants.cDefaultIcons, len(aryTrials))
-        strLinks = '\n'.join([ '<th><a href="%s">%d&ndash;%d</a></th>' % (aryTrials[i][0], aryTrials[i][1].statistics.trialFirst, aryTrials[i][1].statistics.trialLast) for i in xrange(iTrialFirst,iTrialLast) ])
+        strLinks = '\n'.join([ '<th><a href="%s">%d&ndash;%d</a></th>' % (aryTrials[i][0], aryTrials[i][1].statistics.trialFirst, aryTrials[i][1].statistics.trialLast) for i in range(iTrialFirst,iTrialLast) ])
         strIcons += _HTML_DEFAULT_ROW % (strLinks, nIcons, dxRow, Constants.dyDefault, 'default%d.svg' % iDefaultSVG)
         iDefaultSVG += 1
     
@@ -1146,7 +1146,7 @@ def buildXHTML(aryData, strUnicode, han):
 
     fileDefault.write(_HTML_FOOTER)
 
-    for iTrial in xrange(len(aryTrials)):
+    for iTrial in range(len(aryTrials)):
         strTrial = aryTrials[iTrial][0]
         genome = aryTrials[iTrial][1]
         gene = genome.gene
@@ -1226,7 +1226,7 @@ def buildXHTML(aryData, strUnicode, han):
                                                                                     '\n'.join([ '<div class="reject" style="background-color: %s;"><h4>%s</h4><ol>%s</ol></div>' % (
                                                                                                         (i % 2) and '#fff' or '#eee',
                                                                                                         genome.lineage.rejectedMutations[i].description,
-                                                                                                        '\n'.join([ '<li>%s</li>' % str(m) for m in genome.lineage.rejectedMutations[i].mutations ])) for i in xrange(len(genome.lineage.rejectedMutations)) ]))))
+                                                                                                        '\n'.join([ '<li>%s</li>' % str(m) for m in genome.lineage.rejectedMutations[i].mutations ])) for i in range(len(genome.lineage.rejectedMutations)) ]))))
 
         cBases, cStrokeBases, strStrokeDetails, strCodonTable, strCodonDetails = htmlCollectCodons(genome)
         strCodons = _HTML_TRIAL_ROW % ('codons', 'codons',
@@ -1337,9 +1337,9 @@ def main(argv=None):
         aryData = loadData();
 
         if Globals.fXHTML or Globals.fImages:
-            strUnicode = aryData[0][1].gene.unicode
+            strUnicode = aryData[0][1].gene.str
             try: han = loadHan(strUnicode)
-            except LookupError, err: raise XMLError(aryData[0][0])
+            except LookupError as err: raise XMLError(aryData[0][0])
 
             # TODO: Replace these copies with direct links to the content
             Common.copyURLToFile(Common.pathToURL(Constants.fileCSS, Globals.urls.urlHTML), os.path.join(Globals.names.pathReport, Constants.fileCSS))
@@ -1357,11 +1357,11 @@ def main(argv=None):
 
         return 0
         
-    except Usage, err:
+    except Usage as err:
         Common.sayError(err)
         return 0
 
-    except Common.BiologicError, err:
+    except Common.BiologicError as err:
         Common.sayError(err)
         return 2
 

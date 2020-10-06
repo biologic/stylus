@@ -26,9 +26,9 @@ import re
 import shutil
 import sys
 import time
-import urllib2
-import urlparse
-import xmldict as XMLDict
+import urllib.request, urllib.error, urllib.parse
+import urllib.parse
+from . import xmldict as XMLDict
 
 #==============================================================================
 # Global Constants and Variables
@@ -155,12 +155,12 @@ class URLs:
             
     def __pathToURL__(self, strPath, strURL):
         strURL = pathToURL(strPath, strURL)
-        if strURL[len(strURL)-1] <> Constants.urlSeparator:
+        if strURL[len(strURL)-1] != Constants.urlSeparator:
             strURL += Constants.urlSeparator
         return strURL
     
     def __validateScheme__(self, url):
-        aryURL = urlparse.urlsplit(url.lower())
+        aryURL = urllib.parse.urlsplit(url.lower())
         if aryURL[0] != 'http' and aryURL[0] != 'file':
             raise BiologicError(url + ' uses an unaccepted scheme - only http: or file: may be used')
 
@@ -264,7 +264,7 @@ class Names:
                 if not Constants.reUUID.match(self.strGenome):
                     xmlDict = XMLDict.XMLDict({ XMLDict.XMLDict.ignore : [ 'seed', 'bases', 'statistics', 'lineage', 'genes' ] })
                     try: self.idGenome = str(xmlDict.load(self.urlGenome)['genome']['uuid']).upper()
-                    except LookupError, err: raise BiologicError('Genome (%s) is missing a UUID' % self.urlGenome)
+                    except LookupError as err: raise BiologicError('Genome (%s) is missing a UUID' % self.urlGenome)
             elif self.strNameType == 'unicode':
                 aryParts = os.path.split(self.urlGenome)
                 mo = Constants.reBASENAMEUNICODE.match(aryParts[1])
@@ -411,7 +411,7 @@ def copyURLToFile(strURL, strFile):
 def ensureInteger(strValue, nDefault, strError):
     if strValue:
         try: return int(strValue)
-        except ValueError, err: raise BiologicError(strError + ' - rather than "' + strValue + '"')
+        except ValueError as err: raise BiologicError(strError + ' - rather than "' + strValue + '"')
     else:
         return nDefault
         
@@ -436,7 +436,7 @@ def isDir(strPath):
 # 
 #------------------------------------------------------------------------------
 def makeHanPath(strPath):
-    if not os.path.isabs(strPath) and not urlparse.urlparse(strPath)[0]:
+    if not os.path.isabs(strPath) and not urllib.parse.urlparse(strPath)[0]:
         aryParts = os.path.split(strPath)
         if aryParts[1]:
             mo = Constants.reBASENAMEUNICODE.match(aryParts[1])
@@ -451,7 +451,7 @@ def makeHanPath(strPath):
 #------------------------------------------------------------------------------
 def pathToURL(strPath, strURL):
     strPath = resolvePath(strPath)
-    return os.path.isabs(strPath) and urlparse.urljoin(Constants.schemeFile, strPath) or urlparse.urljoin(strURL, strPath)
+    return os.path.isabs(strPath) and urllib.parse.urljoin(Constants.schemeFile, strPath) or urllib.parse.urljoin(strURL, strPath)
         
 #------------------------------------------------------------------------------
 # Function: readEnvironment
@@ -469,7 +469,7 @@ def readEnvironment(strVariable):
 #------------------------------------------------------------------------------
 def readFile(strURL):
     try:
-        file = urllib2.urlopen(strURL)
+        file = urllib.request.urlopen(strURL)
         str = file.read()
         file.close()
         return str
@@ -494,7 +494,7 @@ def replacePath(strPath):
         if not os.path.isdir(strPath):
             raise BiologicError(strPath + ' exists and is not a directory')
         try: shutil.rmtree(strPath)
-        except OSError, err: raise BiologicError('Unable to replace ' + strPath)
+        except OSError as err: raise BiologicError('Unable to replace ' + strPath)
     ensurePath(strPath)
         
 #------------------------------------------------------------------------------
@@ -509,7 +509,7 @@ def resolvePath(strPath):
             elif strPath[1] == '.':
                 strPath = os.path.join(os.path.dirname(os.getcwd()),strPath[3:])
         strPath = os.path.expanduser(strPath)
-        if not urlparse.urlparse(strPath)[0]:
+        if not urllib.parse.urlparse(strPath)[0]:
             fPreserveSeparator = (strPath[-1] == os.sep)
             strPath = os.path.normpath(os.path.normcase(strPath))
             if fPreserveSeparator:
@@ -539,9 +539,9 @@ def say(strMsg, fNewline=True, fIgnoreQuiet=False):
     
 def sayError(strMsg):
     if not Globals.fQuiet:
-        print >> sys.stderr, strMsg
+        print(strMsg, file=sys.stderr)
         if Globals.fEchoStderr:
-            print strMsg
+            print(strMsg)
     return True
 
 #------------------------------------------------------------------------------
@@ -550,7 +550,7 @@ def sayError(strMsg):
 #------------------------------------------------------------------------------
 def toFloat(strValue):
     try: return float(strValue)
-    except ValueError, err: raise BiologicError('A floating-point number is required rather than "' + strValue + '"')
+    except ValueError as err: raise BiologicError('A floating-point number is required rather than "' + strValue + '"')
 
 #------------------------------------------------------------------------------
 # Function: toInteger
@@ -558,7 +558,7 @@ def toFloat(strValue):
 #------------------------------------------------------------------------------
 def toInteger(strValue):
     try: return int(strValue)
-    except ValueError, err: raise BiologicError('An integer is required rather than "' + strValue + '"')
+    except ValueError as err: raise BiologicError('An integer is required rather than "' + strValue + '"')
     
 #------------------------------------------------------------------------------
 # Function: trimDirectory

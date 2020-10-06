@@ -32,8 +32,8 @@ import stylus.xmldict as XMLDict
 import stylusengine as Stylus
 import sys
 import time
-import urllib2
-import urlparse
+import urllib.request, urllib.error, urllib.parse
+import urllib.parse
 import base64
 
 #==============================================================================
@@ -164,7 +164,7 @@ def getArguments():
             remaining[0].strip()
             if len(remaining) > 1 or remaining[0]:
                 raise Usage(' '.join(remaining) + ' contains unexpected arguments')
-    except getopt.GetoptError, err:
+    except getopt.GetoptError as err:
         raise Usage(' '.join(argv[1:]) + ' contains unknown arguments')
 
     for option, value in opts:
@@ -186,7 +186,7 @@ def getArguments():
                 
             if option in ('-p', '--plan'):
                 Globals.names.set(Common.Names.PLAN, value)
-        except Common.BiologicError, err:
+        except Common.BiologicError as err:
             raise Usage(str(err))
 
         if option in ('-c', '--constants'):
@@ -250,7 +250,7 @@ def getArguments():
 
         if option in ('-t', '--trace'):
             if not Globals.aryTrace:
-                Globals.aryTrace = [ '', 2, 0, sys.maxint, sys.maxint ]
+                Globals.aryTrace = [ '', 2, 0, sys.maxsize, sys.maxsize ]
             aryArgs = value.split(',')
             if len(aryArgs) < 1 or len(aryArgs) > 5:
                 raise Usage('trace requires one to five arguments')
@@ -266,7 +266,7 @@ def getArguments():
                 Globals.aryTrace[3] = Common.ensureInteger(aryArgs[3], Globals.aryTrace[3], 'trace requires an integer for the trace trial')
             if len(aryArgs) > 4:
                 Globals.aryTrace[4] = Common.ensureInteger(aryArgs[4], Globals.aryTrace[4], 'trace requires an integer for the trace attempt')
-            if Globals.aryTrace[3] == sys.maxint and Globals.aryTrace[4] == sys.maxint:
+            if Globals.aryTrace[3] == sys.maxsize and Globals.aryTrace[4] == sys.maxsize:
                 Globals.aryTrace[3] = 0
                 Globals.aryTrace[4] = 0
 
@@ -285,7 +285,7 @@ def getArguments():
     try:
         Globals.urls.validate(Common.URLs.HAN | Common.URLs.SCHEMA)
         Globals.names.validate(Globals.urls, Common.Names.DATA | Common.Names.GENOME | Common.Names.PLAN)
-    except Common.BiologicError, err:
+    except Common.BiologicError as err:
         raise Usage(str(err))
 
     if Globals.urlGlobals:
@@ -405,11 +405,11 @@ def main(argv=None):
 
         return nCompletionCode
 
-    except Usage, err:
+    except Usage as err:
         Common.sayError(err)
         return 0
 
-    except Common.BiologicError, err:
+    except Common.BiologicError as err:
         Common.sayError(str(err))
         return 2
 

@@ -35,8 +35,8 @@ import stylus.common as Common
 import stylus.genome as Genome
 import sys
 import time
-import urllib2
-import urlparse
+import urllib.request, urllib.error, urllib.parse
+import urllib.parse
 import uuid
 
 #==============================================================================
@@ -190,7 +190,7 @@ def getArguments():
             remaining[0].strip()
             if len(remaining) > 1 or remaining[0]:
                 raise Usage(' '.join(remaining) + ' contains unexpected arguments')
-    except getopt.error, err:
+    except getopt.error as err:
         raise Usage(' '.join(argv[1:]) + ' contains unknown arguments')
         
     for option, value in opts:
@@ -240,21 +240,21 @@ def getArguments():
         raise Usage('create, validate, or translate are required')
 
     Globals.urlGenomeBase = Common.pathToURL(Globals.urlGenomeBase, Common.Constants.schemeFile)
-    if Globals.urlGenomeBase[len(Globals.urlGenomeBase)-1] <> Common.Constants.urlSeparator:
+    if Globals.urlGenomeBase[len(Globals.urlGenomeBase)-1] != Common.Constants.urlSeparator:
         Globals.urlGenomeBase += Common.Constants.urlSeparator
 
     Globals.urlCodonTableBase = Common.pathToURL(Globals.urlCodonTableBase, Common.Constants.schemeFile)
-    if Globals.urlCodonTableBase[len(Globals.urlCodonTableBase)-1] <> Common.Constants.urlSeparator:
+    if Globals.urlCodonTableBase[len(Globals.urlCodonTableBase)-1] != Common.Constants.urlSeparator:
         Globals.urlCodonTableBase += Common.Constants.urlSeparator
 
-    if Globals.cmd <> Constants.cmdTranslate and Globals.strGenome and Globals.strCodonTable:
+    if Globals.cmd != Constants.cmdTranslate and Globals.strGenome and Globals.strCodonTable:
         raise Usage('%s takes either the genome or codon table as its source - not both' % (Globals.cmd == Constants.cmdCreate and 'create' or 'validate'))
     if Globals.cmd == Constants.cmdValidate and not Globals.strGenome and not Globals.strCodonTable:
         raise Usage('validate takes either the genome or codon table as its source')
     if Globals.cmd == Constants.cmdTranslate and (not Globals.strGenome or not Globals.strCodonTable):
         raise Usage('translate requires both the genome to translate and the codon table to use')
         
-    if Globals.cmd <> Constants.cmdValidate:
+    if Globals.cmd != Constants.cmdValidate:
         Globals.uuid = str(uuid.uuid4()).upper()
 
     if Globals.strGenome:
@@ -262,7 +262,7 @@ def getArguments():
     if Globals.strCodonTable:
         Globals.urlCodonTable = Common.pathToURL(Globals.strCodonTable, Globals.urlCodonTableBase)
         
-    if Globals.cmd <> Constants.cmdValidate and Globals.pathOutput:
+    if Globals.cmd != Constants.cmdValidate and Globals.pathOutput:
         Globals.pathOutput = Common.resolvePath(Globals.pathOutput)
         Common.ensurePath(os.path.dirname(Globals.pathOutput))
         Globals.pathOutput = os.path.join(Globals.pathOutput, ('%s%s' % (Globals.uuid, (Globals.cmd == Constants.cmdTranslate and Common.Constants.extGene or Common.Constants.extCodonTable))))
@@ -278,9 +278,9 @@ def createTable():
     
     if Globals.pathOutput:
         try:
-            fileCodonTable = os.open(Globals.pathOutput, os.O_CREAT | os.O_TRUNC | os.O_WRONLY, 0664)
+            fileCodonTable = os.open(Globals.pathOutput, os.O_CREAT | os.O_TRUNC | os.O_WRONLY, 0o664)
             os.write(fileCodonTable, strCodonTable)
-        except IOError, err: raise Common.BiologicError('Unable to create %s - %s' % (Globals.pathOutput, str(err)))
+        except IOError as err: raise Common.BiologicError('Unable to create %s - %s' % (Globals.pathOutput, str(err)))
         os.close(fileCodonTable)
 
         Common.say('Codon table written to ' + Globals.pathOutput)
@@ -309,7 +309,7 @@ def translateGenome():
     newCodonTable = Globals.codonTable
     
     bases = Codons.Constants.startCodon
-    for i in xrange(3,len(genome.bases),3):
+    for i in range(3,len(genome.bases),3):
         bases += newCodonTable.vectorToCodon(oldCodonTable.codonToVector(genome.bases[i:i+3]))
     genome.bases = bases
     
@@ -324,14 +324,14 @@ def translateGenome():
                                     genome.bases,
                                     len(genome.bases),
                                     genome.gene.xOrigin, genome.gene.yOrigin,
-                                    genome.gene.unicode,
+                                    genome.gene.str,
                                     '\n'.join(aryStrokes))
     
     if Globals.pathOutput:
         try:
-            fileGenome = os.open(Globals.pathOutput, os.O_CREAT | os.O_TRUNC | os.O_WRONLY, 0664)
+            fileGenome = os.open(Globals.pathOutput, os.O_CREAT | os.O_TRUNC | os.O_WRONLY, 0o664)
             os.write(fileGenome, strGenome)
-        except IOError, err: raise Common.BiologicError('Unable to create %s - %s' % (Globals.pathOutput, str(err)))
+        except IOError as err: raise Common.BiologicError('Unable to create %s - %s' % (Globals.pathOutput, str(err)))
         os.close(fileGenome)
         
         Common.say('Genome written to ' + Globals.pathOutput)
@@ -359,7 +359,7 @@ def main(argv=None):
         
         if Globals.urlCodonTable:
             Globals.codonTable = Genome.CodonTable(Globals.urlCodonTable)
-        elif Globals.urlGenome and Globals.cmd <> Constants.cmdTranslate:
+        elif Globals.urlGenome and Globals.cmd != Constants.cmdTranslate:
             Globals.codonTable = Globals.genome.codonTable
 
         if Globals.cmd == Constants.cmdCreate:
@@ -373,11 +373,11 @@ def main(argv=None):
 
         return 0
         
-    except Usage, err:
+    except Usage as err:
         Common.sayError(err)
         return 0
 
-    except Common.BiologicError, err:
+    except Common.BiologicError as err:
         Common.sayError(err)
         return 2
 

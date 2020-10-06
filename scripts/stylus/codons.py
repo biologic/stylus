@@ -24,7 +24,7 @@ Stylus, Copyright 2006-2009 Biologic Institute.
 
 import random
 import re
-import common as Common
+from . import common as Common
 
 #==============================================================================
 # Global Constants
@@ -728,24 +728,24 @@ class CodonTable(object):
             raise BiologicError('Codon table is missing a UUID')
         
         # Ensure entries exist for all codons and all vectors
-        if len(self.__mapCodonToVector) <> len(CodonTable.__mapCodonToVector):
+        if len(self.__mapCodonToVector) != len(CodonTable.__mapCodonToVector):
             raise Common.BiologicError('Codon map contains an incorrect number of entries (%d) - it should have %d entries' % (len(self.__mapCodonToVector), len(CodonTable.__mapCodonToVector)))
-        if len(self.__mapVectorToCodons) <> len(CodonTable.__mapVectorToCodons):
+        if len(self.__mapVectorToCodons) != len(CodonTable.__mapVectorToCodons):
             raise Common.BiologicError('Vector map contains an incorrect number of entries (%d) - it should have %d entries' % (len(self.__mapVectorToCodons), len(CodonTable.__mapVectorToCodons)))
             
         # Ensure that each vector maps only to codons that map to itself and that at least one codon maps to each vector
-        for idVector in xrange(len(self.__mapVectorToCodons)):
+        for idVector in range(len(self.__mapVectorToCodons)):
             aryCodons = self.__mapVectorToCodons[idVector]
 
             if len(aryCodons) <= 0:
                 raise Common.BiologicError('Vector %s does not map to any codons' % _vectors[idVector].name)
 
             for codon in aryCodons:
-                if idVector <> self.__mapCodonToVector[codonToIndex(codon)]:
+                if idVector != self.__mapCodonToVector[codonToIndex(codon)]:
                     raise Common.BiologicError('Vector %s maps to %s which does not map to %s' % (_vectors[idVector].name, codon, _vectors[idVector].name))
         
         # Ensure each possible codon maps to a vector containing that codon and that each vector is mapped by at least one codon
-        aryMappedVectors = [ False for i in xrange(len(self.__mapVectorToCodons)) ]
+        aryMappedVectors = [ False for i in range(len(self.__mapVectorToCodons)) ]
         for b1 in 'TCAG':
             for b2 in 'TCAG':
                 for b3 in 'TCAG':
@@ -759,7 +759,7 @@ class CodonTable(object):
                     if not c in codons:
                         raise Common.BiologicError('Codon %s maps to %v which does not map to %s' % (c, v.name, c))
                         
-        for idVector in xrange(len(aryMappedVectors)):
+        for idVector in range(len(aryMappedVectors)):
             if not aryMappedVectors[idVector]:
                 raise Common.BiologicError('Vector %s is not mapped by any codon' % _vectors[idVector].name)
         return
@@ -3097,7 +3097,7 @@ if __name__ == "__main__":
     # Generate codon mapping table for use in Stylus C/C++ file
     iEntry = 0
     for entry in codonTable.table():
-        print 'ACID_%s, // %02d - %s' % (entry[1], codonToIndex(entry[0]), entry[0])
+        print('ACID_%s, // %02d - %s' % (entry[1], codonToIndex(entry[0]), entry[0]))
         iEntry += 1
         if (iEntry % 4) == 0:
-            print
+            print()

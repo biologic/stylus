@@ -25,6 +25,9 @@
 //
 //-----------------------------------------------------------------------------
 %module stylusengine
+%begin %{
+#define SWIG_PYTHON_STRICT_BYTE_CHAR
+%}
 %include "cstring.i" 
 %{
 #include <cstdarg>
@@ -566,7 +569,7 @@ bool python_status_callback()
 				: ::stSetRecordRate(cRate, stringsToFlags(s_aryRECORDDETAILS, s_aryRECORDDETAILFLAGS, s_cRECORDDETAILS, pvecDetail), pszDirectory, fRecordHistory));
 	}
 
-	unsigned long setGenome(const char* pszGenome, const char* pszAuthor)
+	unsigned long setGenome(char* pszGenome, const char* pszAuthor)
 	{
 		ST_RETCODE rc = ::ensureStylus();
 		if (!VALID(pszAuthor) || EMPTYSZ(pszAuthor))

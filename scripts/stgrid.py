@@ -200,7 +200,7 @@ def getArguments():
         opts, Globals.aryArgs = getopt.getopt(argv,
                     'erj:lg:p:xv:n:s:c:h',
                     [ 'exec', 'report', 'job=', 'launch', 'genomes=', 'plans=', 'xgrid', 'volume=', 'notify=', 'shell=', 'controller=', 'help' ])
-    except getopt.error, err:
+    except getopt.error as err:
         raise Usage(' '.join(argv[1:]) + ' contains unknown arguments')
 
     for option, value in opts:
@@ -343,7 +343,7 @@ def spawnSingle(fScript, iJob, dictEnv):
     else:
         strXgridJob = 'Stylus - %s' % datetime.datetime.now().isoformat()
 
-        aryXgridEnv = [ _XGRID_ENVIRONMENT % (key, dictEnv[key]) for key in dictEnv.keys() if key in _STYLUS_ENVIRONMENT ]
+        aryXgridEnv = [ _XGRID_ENVIRONMENT % (key, dictEnv[key]) for key in list(dictEnv.keys()) if key in _STYLUS_ENVIRONMENT ]
         if not Globals.fLaunchJobs and (Globals.strGenomes or Globals.strPlans):
             aryXgridEnv.append(_XGRID_ENVIRONMENT % ('STYLUS_GRIDARGS', ('-x -l %s %s') % ((Globals.strGenomes and ('-g ' + Globals.strGenomes) or ''), (Globals.strPlans and ('-p ' + Globals.strPlans) or ''))))
             
@@ -393,7 +393,7 @@ def main(argv=None):
             os.environ['STYLUS_RPTARGS'] = Common.readEnvironment('$STYLUS_RPTARGS') + ' ' + ' '.join(Globals.aryArgs)
             spawnStylus(_SCRIPT_REPORT, os.environ)
 
-    except Common.BiologicError, err:
+    except Common.BiologicError as err:
         Common.sayError(str(err))
         return 2
 

@@ -107,7 +107,7 @@ def getArguments():
         opts, Globals.aryArgs = getopt.getopt(argv,
                     's:d:f:r:h',
                     [ 'src=', 'dst=', 'folders=', 'removeage=', 'help' ])
-    except getopt.error, err:
+    except getopt.error as err:
         raise Usage(' '.join(argv[1:]) + ' contains unknown arguments')
 
     for option, value in opts:
@@ -205,7 +205,7 @@ def main(argv=None):
         getArguments()
         doBackup()
         
-    except Common.BiologicError, err:
+    except Common.BiologicError as err:
         Common.sayError(str(err))
         return 2
 

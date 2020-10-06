@@ -24,8 +24,8 @@ import os
 import shutil
 import sys
 import time
-import urllib2
-import urlparse
+import urllib.request, urllib.error, urllib.parse
+import urllib.parse
 import xml.sax
 import xml.sax.handler
 
@@ -81,7 +81,7 @@ class XMLDict(object):
 
             if not self.__cPruning:
                 dictParent = self.__stack[-1]
-                dictElement = dict(attrs.items())
+                dictElement = dict(list(attrs.items()))
                 
                 if tag in self.__dictOptions[XMLDict.toList]:
                     dictElement[XMLDict.children] = []
@@ -111,7 +111,7 @@ class XMLDict(object):
             return
             
         def characters(self, str):
-            self.__text += str.encode('utf-8')
+            self.__text += str
             return
     
     def __init__(self, dictOptions={}):
@@ -128,11 +128,11 @@ class XMLDict(object):
         else:
             strPath = os.path.expanduser(strPath)
         if os.path.isabs(strPath):
-            strPath = urlparse.urljoin(XMLDict.__scheme_FILE, strPath)
-        aryURL = urlparse.urlsplit(strPath)
+            strPath = urllib.parse.urljoin(XMLDict.__scheme_FILE, strPath)
+        aryURL = urllib.parse.urlsplit(strPath)
         if not aryURL[0].lower() in ('http', 'https', 'file', 'ftp', 'gopher'):
             raise XMLDictError(strPath + ' contains an unknown URL scheme')
-        return urllib2.urlopen(strPath)
+        return urllib.request.urlopen(strPath)
     __openFile = staticmethod(__openFile)
         
     def load(self, strPath):
