@@ -679,6 +679,146 @@ inline bool Line::intersectsAt(const Line& ln, UNIT x, Point& ptIntersection) co
 	return fIntersects;
 }
 
+inline bool Line::intersects(const Line& ln, Point& ptIntersection) const
+{
+	bool fIntersects = false;
+	Unit xIntersect;
+	Unit yIntersect;
+
+	DASSERT(_ptStart.isDefined());
+	DASSERT(_ptEnd.isDefined());
+	DASSERT(ln._ptStart.isDefined());
+	DASSERT(ln._ptEnd.isDefined());
+
+	DASSERT(_fCanonical);
+	DASSERT(	(_ptStart.x() < _ptEnd.x())
+		  ||	(	_ptStart.x() == _ptEnd.x()
+				&&	_ptStart.y() >= _ptEnd.y()));
+
+	DASSERT(ln._fCanonical);
+	DASSERT(	(ln._ptStart.x() < ln._ptEnd.x())
+		  ||	(	ln._ptStart.x() == ln._ptEnd.x()
+				&&	ln._ptStart.y() >= ln._ptEnd.y()));
+				
+	// Calculate the intersection point, if any, based on the types of slopes involved
+	// Note:
+	// - The predicate order below is important as latter cases presuppose the earlier
+	//   cases have been handled
+
+	// Both lines have infinite slope
+	// - The lines intersect if they have a common y-value
+	// - The intersection is defined as the first point they share (y-descending)
+	if (	!_nSlope.isDefined()
+		&&	!ln._nSlope.isDefined())
+	{
+		if (	_ptStart.x() == ln._ptStart.x())
+		{
+			if (	_ptStart.y() >= ln._ptStart.y()
+				&&	_ptEnd.y() <= ln._ptStart.y())
+			{
+				xIntersect = ln._ptStart.x();
+				yIntersect = ln._ptStart.y();
+				fIntersects = true;
+			}
+			else if (	ln._ptStart.y() >= _ptStart.y()
+					&&	ln._ptEnd.y() <= _ptStart.y())
+			{
+				xIntersect = _ptStart.x();
+				yIntersect = _ptStart.y();
+				fIntersects = true;
+			}
+		}
+	}
+
+	// Both lines have the same slope
+	// - The lines intersect if they have at least one common point
+	// - The intersection is defined as the first point they share (x-ascending)
+	else if (	_nSlope.isDefined()
+			&&	ln._nSlope.isDefined()
+			&&	_nSlope == ln._nSlope)
+	{
+		if (_yIntercept == ln._yIntercept)
+		{
+			if (	_ptStart.x() <= ln._ptStart.x()
+				&&	_ptEnd.x() >= ln._ptStart.x())
+			{
+				xIntersect = ln._ptStart.x();
+				yIntersect = ln._ptStart.y();
+				fIntersects = true;
+			}
+			else if (	ln._ptStart.x() <= _ptStart.x()
+					&&	ln._ptEnd.x() >= _ptStart.x())
+			{
+				xIntersect = _ptStart.x();
+				yIntersect = _ptStart.y();
+				fIntersects = true;
+			}
+		}
+	}
+
+	// One of the lines has infinite slope
+	// - The lines intersect if the sloped line crosses the vertical line
+	else if (	!_nSlope.isDefined()
+			||	!ln._nSlope.isDefined())
+	{
+		DASSERT(_nSlope.isDefined() || ln._nSlope.isDefined());
+		
+		const Line& lnWithSlope = (_nSlope.isDefined() ? *this : ln);
+		const Line& lnWithoutSlope = (_nSlope.isDefined() ? ln : *this);
+
+    	
+            xIntersect = lnWithoutSlope._ptStart.x();
+            if (xIntersect >= lnWithSlope._ptStart.x() && xIntersect <= lnWithSlope._ptEnd.x()) {
+            yIntersect = (lnWithSlope._nSlope * xIntersect) + lnWithSlope._yIntercept;
+			fIntersects = (lnWithoutSlope._ptStart.y() >= yIntersect && yIntersect >= lnWithoutSlope._ptEnd.y());
+            }
+	}
+
+	// Otherwise, the lines intersect if they share an (x,y) point
+	else
+	{
+		DASSERT(_nSlope.isDefined() && ln._nSlope.isDefined());
+		DASSERT(_nSlope != ln._nSlope);
+
+		xIntersect = (ln._yIntercept - _yIntercept) / (_nSlope - ln._nSlope);
+		{
+			if (xIntersect == _ptStart.x())
+			{
+				xIntersect = _ptStart.x();
+				yIntersect = _ptStart.y();
+			}
+			else if (xIntersect == _ptEnd.x())
+			{
+				xIntersect = _ptEnd.x();
+				yIntersect = _ptEnd.y();
+			}
+			else if (xIntersect == ln._ptStart.x())
+			{
+				xIntersect = ln._ptStart.x();
+				yIntersect = ln._ptStart.y();
+			}
+			else if (xIntersect == ln._ptEnd.x())
+			{
+				xIntersect = ln._ptEnd.x();
+				yIntersect = ln._ptEnd.y();
+			}
+			else
+				yIntersect = (_nSlope * xIntersect) + _yIntercept;
+
+			fIntersects = (	_ptStart.x() <= xIntersect
+						&&	_ptEnd.x() >= xIntersect
+						&&	ln._ptStart.x() <= xIntersect
+						&&	ln._ptEnd.x() >= xIntersect);
+		}
+	}
+
+	if (fIntersects)
+		ptIntersection.set(xIntersect, yIntersect);
+	return fIntersects;
+}
+
+
+
 inline int Line::compare(const Line& ln) const
 {
 	if (_id == ln._id)

@@ -23,6 +23,8 @@
 using namespace std;
 using namespace stylus;
 
+
+
 //--------------------------------------------------------------------------------
 //
 // LineEvent
@@ -343,6 +345,7 @@ Overlaps::checkIntersection(const Line& lnAbove, const Line& lnBelow, const Poin
 									: LINEOVERLAP(lnBelow, lnAbove, ptIntersection));
 		if (pairResult.second)
 		{
+            std::cout << "I" << lnAbove.getID() << ","<< lnBelow.getID() << "," << ptIntersection.toString() << std::endl;
 			LineEvent le(LET_SWAP, ptIntersection, lnAbove);
 			_events.push(le);
 
@@ -384,112 +387,16 @@ Overlaps::ensureOverlaps()
 	if (_vecLines.empty())
 		return;
 
-	_events.pushLines(_vecLines);
-	LineStack lines;
-
-	// Process the event stack until empty
-	while (!_events.isEmpty())
-	{
-		const LineEvent le(_events.pop());
-		const Line& ln = le.getLine();
-		const Line* plnAbove = NULL;
-		const Line* plnBelow = NULL;
-		
-		IFDEBUG(_events.validate());
-
-		TRACEDOIF(VALIDATION,DATA,L5,_events.traceStack());
-
-		switch (le.getType())
-		{
-			// When a line enters scope, check for intersections with its (new) immediate neighbors
-		case LET_ENTER:
-			lines.handleEnter(ln);
-			plnAbove = lines.getAbove();
-			plnBelow = lines.getBelow();
-
-			TFLOW(VALIDATION,L5,(LLTRACE,
-								 "EVENT: %s above(%ld) below(%ld)",
-								 le.toString().c_str(),
-								 (plnAbove ? plnAbove->getID() : -1),
-								 (plnBelow ? plnBelow->getID() : -1)));
-
-			if (VALID(plnAbove))
-				checkIntersection(*plnAbove, ln, le.getPoint());
-			if (VALID(plnBelow))
-				checkIntersection(ln, *plnBelow, le.getPoint());
-			break;
-
-			// When a line moves down (due to an intersection), check for an intersection between its
-			// (previous) neighbors and between the line and its new neighbor below
-		case LET_SWAP:
-			lines.makeActive(le.getLine());
-			plnAbove = lines.getAbove();
-			plnBelow = lines.getBelow();
-
-			lines.handleSwap();
-
-			TFLOW(VALIDATION,L5,(LLTRACE,
-								 "EVENT: %s above(%ld) below(%ld)",
-								 le.toString().c_str(),
-								 (plnAbove ? plnAbove->getID() : -1),
-								 (plnBelow ? plnBelow->getID() : -1)));
-
-			if (VALID(plnAbove) && VALID(plnBelow))
-				checkIntersection(*plnAbove, *plnBelow, le.getPoint());
-
-			plnBelow = lines.getBelow();
-			if (VALID(plnBelow))
-				checkIntersection(ln, *plnBelow, le.getPoint());
-			break;
-
-			// When a line leaves scope, check its (old) neighbors for a possible intersection
-		case LET_EXIT:
-			lines.makeActive(le.getLine());
-			plnAbove = lines.getAbove();
-			plnBelow = lines.getBelow();
-
-			lines.handleExit();
-
-			TFLOW(VALIDATION,L5,(LLTRACE,
-								 "EVENT: %s above(%ld) below(%ld)",
-								 le.toString().c_str(),
-								 (plnAbove ? plnAbove->getID() : -1),
-								 (plnBelow ? plnBelow->getID() : -1)));
-
-			if (VALID(plnAbove) && VALID(plnBelow))
-				checkIntersection(*plnAbove, *plnBelow, le.getPoint());
-			break;
-		}
-
-		TRACEDOIF(VALIDATION,DATA,L5,lines.traceStack());
-	}
-
-	TRACEDOIF(VALIDATION,DATA,L4,traceLineOverlaps());
-
-	// Reduce the found line overlaps to overlaps between different strokes
-	// - Overlaps between the same stroke do not require tracking
-	// - Stroke fit-deviation scoring is sufficient to score a stroke
-	for (LINEOVERLAPS::iterator itOverlap = _setLineOverlaps.begin();
-		 itOverlap != _setLineOverlaps.end();
-		 ++itOverlap)
-	{
-		size_t idStroke1 = itOverlap->getFirst().getOwnerID();
-		size_t idStroke2 = itOverlap->getSecond().getOwnerID();
-
-		TFLOW(VALIDATION,L4,(LLTRACE,
-							 "Mapping line overlap (%ld with %ld at %s) to strokes(%ld,%ld)",
-							 itOverlap->getFirst().getID(),
-							 itOverlap->getSecond().getID(),
-							 itOverlap->getPoint().toString().c_str(),
-							 idStroke1, idStroke2));
-
-		if (idStroke1 != idStroke2)
-		{
-			if (idStroke1 > idStroke2)
-				swap<size_t>(idStroke1, idStroke2);
-			_setOverlaps.insert(STROKEOVERLAP(idStroke1, idStroke2, itOverlap->getPoint()));
-		}
-	}
+    for (auto iter = _vecLines.begin(); iter != _vecLines.end(); iter++) {
+        for (auto iter2 = iter+1; iter2 != _vecLines.end(); iter2++) {
+            if (iter->getOwnerID() != iter2->getOwnerID()) {
+                Point ptIntersection;
+                if (iter->intersects(*iter2, ptIntersection)) {
+                    _setOverlaps.insert(STROKEOVERLAP(iter->getOwnerID(), iter2->getOwnerID(), ptIntersection));
+                }
+            }
+        }
+    }
 }	
 
 #ifdef ST_TRACE

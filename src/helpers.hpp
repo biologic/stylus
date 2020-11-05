@@ -351,6 +351,7 @@ namespace org_biologicinstitute_stylus
 		int compareAt(const Line& ln, UNIT x) const;
 
 		bool intersectsAt(const Line& ln, UNIT x, Point& ptIntersection) const;
+		bool intersects(const Line& ln, Point& ptIntersection) const;
 
 		std::string toString() const;
 
