@@ -14,7 +14,7 @@ include_dirs = ['src']
 if platform.system() == 'Darwin':
     extra_compile_args = subprocess.check_output(['xml2-config', '--cflags']).decode('utf-8').split()
     extra_link_args = subprocess.check_output(['xml2-config', '--libs']).decode('utf-8').split()
-    libraries = []
+    libraries = ['ssl']
 elif platform.system() == 'Linux':
     extra_compile_args = subprocess.check_output(['xml2-config', '--cflags']).split()
     extra_link_args = subprocess.check_output(['xml2-config', '--libs']).split()
