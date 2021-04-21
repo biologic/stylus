@@ -1,5 +1,5 @@
 #include <iostream>
-#include <openssl/sha.h>
+#include "sha256.h"
 /**************************   mersenne.cpp   **********************************
  *
 * Author:        Agner Fog
@@ -239,11 +239,11 @@ void CRandomMersenne::SetState(const std::string & state)
     }
     else
     {
-        unsigned char hash[SHA256_DIGEST_LENGTH];
+        unsigned char hash[SHA256_BLOCK_SIZE];
         SHA256_CTX sha256;
-        SHA256_Init(&sha256);
-        SHA256_Update(&sha256, state.data(), state.size());
-        SHA256_Final(hash, &sha256);
-        RandomInitByArray(reinterpret_cast<int*>(hash), SHA256_DIGEST_LENGTH / sizeof(int));
+        sha256_init(&sha256);
+        sha256_update(&sha256, (BYTE*)state.data(), state.size());
+        sha256_final(&sha256, hash);
+        RandomInitByArray(reinterpret_cast<int*>(hash), SHA256_BLOCK_SIZE / sizeof(int));
     }
 }

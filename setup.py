@@ -14,11 +14,11 @@ include_dirs = ['src']
 if platform.system() == 'Darwin':
     extra_compile_args = subprocess.check_output(['xml2-config', '--cflags']).decode('utf-8').split()
     extra_link_args = subprocess.check_output(['xml2-config', '--libs']).decode('utf-8').split()
-    libraries = ['ssl']
+    libraries = []
 elif platform.system() == 'Linux':
     extra_compile_args = subprocess.check_output(['xml2-config', '--cflags']).split()
     extra_link_args = subprocess.check_output(['xml2-config', '--libs']).split()
-    libraries = ['ssl', 'crypto']
+    libraries = []
 elif platform.system() == 'Windows':
     if not os.path.exists("extern"):
         os.mkdir("extern")
@@ -29,7 +29,7 @@ elif platform.system() == 'Windows':
             zipfile.extractall("extern")
 
     os.environ['PATH'] += ';' + os.path.abspath("extern/swigwin-3.0.7")            
-    libraries = ["libeay32", r"ssleay32", "libxml2"] 
+    libraries = ["libeay32", "libxml2"] 
     extra_compile_args = ['/D_USE_MATH_DEFINES']
     extra_link_args = [r"/LIBPATH:C:\extern\lib\vc\static", r"/LIBPATH:C:\extern\lib"]
     include_dirs.append(r"C:\extern\include")
