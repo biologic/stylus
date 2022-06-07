@@ -60,10 +60,7 @@
 #include <Saturn.h>
 #endif
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+
 // LibXML2/LibXSLT --------------------------------------------------------------
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
@@ -89,10 +86,6 @@ extern "C"
 	
 #ifndef __cplusplus
 #include <stdbool.h>
-#endif
-
-#ifdef __cplusplus
-}
 #endif
 
 #endif  // PREFIX_HPP

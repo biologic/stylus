@@ -16,8 +16,8 @@ if platform.system() == 'Darwin':
     extra_link_args = subprocess.check_output(['xml2-config', '--libs']).decode('utf-8').split()
     libraries = []
 elif platform.system() == 'Linux':
-    extra_compile_args = subprocess.check_output(['xml2-config', '--cflags']).split()
-    extra_link_args = subprocess.check_output(['xml2-config', '--libs']).split()
+    extra_compile_args = [x.decode('utf-8') for x in subprocess.check_output(['xml2-config', '--cflags']).split()]
+    extra_link_args = [x.decode('utf-8') for x in subprocess.check_output(['xml2-config', '--libs']).split()]
     libraries = []
 elif platform.system() == 'Windows':
     if not os.path.exists("extern"):

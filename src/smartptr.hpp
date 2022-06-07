@@ -39,7 +39,7 @@ namespace org_biologicinstitute_stylus
 	 * assuming \c delete). The freeing routine must take a pointer to
 	 * the object as a single argument and return \c void.
 	 */
-	template<typename _Tp, void (*_Fpt)(_Tp*) throw() = __delete<_Tp> >
+	template<typename _Tp, void (*_Fpt)(_Tp*)  = __delete<_Tp> >
 	class smart_ptr
 	{
 	private:
