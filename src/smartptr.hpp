@@ -26,7 +26,7 @@ namespace org_biologicinstitute_stylus
 	 * \brief Function template to free a pointer using \c delete
 	 * \param[in] _Tp Object type to free
 	 */
-	template<typename _Tp> void __delete(_Tp* p) throw() { ::delete p; }
+	template<typename _Tp> void __delete(_Tp* p) { ::delete p; }
 	
 	/**
 	 * \brief A smart pointer that allows user-selected free routines
@@ -105,7 +105,7 @@ namespace org_biologicinstitute_stylus
 	 * - This class is based on that described in "The C++ Standard Library", by Nicolai Josuttis,
 	 *   published by Addison-Wesley, Copyright 1999. See section 6.8, page 222 and following.
 	 */
-	template<typename _Tp, void (*_Fpt)(_Tp*) throw() = __delete<_Tp> >
+	template<typename _Tp, void (*_Fpt)(_Tp*) = __delete<_Tp> >
 	class smartref_ptr
 	{
 	private:
